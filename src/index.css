@@ -1,0 +1,695 @@
+@import "tailwindcss";
+
+/* =========================================================
+   W.P. LIMPIEZA & MANTENIMIENTO
+   SISTEMA GLOBAL
+========================================================= */
+
+:root {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color-scheme: dark;
+  background: #020617;
+  color: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  background: #020617;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #020617;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* =========================================================
+   HOME
+========================================================= */
+
+.wp-home {
+  min-height: 100vh;
+  background: #020617;
+  color: white;
+}
+
+.wp-hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #020617;
+}
+
+.wp-hero__image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.wp-hero__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.wp-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2, 6, 23, 0.96) 0%,
+      rgba(2, 6, 23, 0.58) 18%,
+      rgba(2, 6, 23, 0.42) 42%,
+      rgba(2, 6, 23, 0.76) 72%,
+      rgba(2, 6, 23, 0.98) 100%
+    );
+}
+
+.wp-hero__grid {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.08;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.35) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.35) 1px,
+      transparent 1px
+    );
+  background-size: 44px 44px;
+  pointer-events: none;
+}
+
+.wp-header {
+  position: relative;
+  z-index: 10;
+
+  width: 100%;
+  height: 140px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 36px;
+
+  background: rgba(2, 6, 23, 0.88);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(18px);
+}
+
+.wp-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wp-logo__brand {
+  font-size: 52px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  color: white;
+}
+
+.wp-logo__words {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wp-logo__words strong {
+  color: #60a5fa;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+}
+
+.wp-logo__words span {
+  color: #94a3b8;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.wp-menu {
+  width: 62px;
+  height: 62px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+
+  background: rgba(15, 23, 42, 0.75);
+  color: white;
+
+  cursor: pointer;
+
+  backdrop-filter: blur(18px);
+
+  transition:
+    transform 180ms ease,
+    background 180ms ease;
+}
+
+.wp-menu:hover {
+  transform: scale(1.04);
+  background: rgba(37, 99, 235, 0.2);
+}
+
+.wp-content {
+  position: relative;
+  z-index: 5;
+
+  max-width: 900px;
+  margin: 0 auto;
+
+  padding: 34px 36px 70px;
+}
+
+.wp-access__heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 24px;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.42em;
+}
+
+.wp-access__heading > span {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: #3b82f6;
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.9);
+}
+
+.wp-access__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.wp-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 0;
+
+  color: white;
+}
+
+.wp-app__icon {
+  width: 108px;
+  height: 108px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(59, 130, 246, 0.34);
+  border-radius: 28px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15, 23, 42, 0.96),
+      rgba(2, 6, 23, 0.92)
+    );
+
+  color: #60a5fa;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 35px rgba(0, 0, 0, 0.18);
+
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.wp-app:hover .wp-app__icon {
+  transform: translateY(-3px);
+  border-color: rgba(96, 165, 250, 0.65);
+  background: rgba(37, 99, 235, 0.13);
+}
+
+.wp-app > span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.wp-social .wp-app__icon svg {
+  width: 36px;
+  height: 36px;
+}
+
+.wp-whatsapp .wp-app__icon {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.wp-copy {
+  margin-top: 52px;
+}
+
+.wp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 11px 17px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+
+  background: rgba(2, 6, 23, 0.62);
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+
+  backdrop-filter: blur(16px);
+}
+
+.wp-badge > span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #60a5fa;
+  box-shadow: 0 0 14px rgba(96, 165, 250, 0.9);
+}
+
+.wp-kicker {
+  margin-top: 32px;
+
+  color: #60a5fa;
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.42em;
+}
+
+.wp-copy h1 {
+  max-width: 800px;
+
+  margin: 18px 0 0;
+
+  font-size: clamp(48px, 9vw, 88px);
+  line-height: 0.91;
+
+  font-weight: 900;
+  letter-spacing: -0.075em;
+}
+
+.wp-copy h1 strong {
+  display: block;
+  color: #3b82f6;
+}
+
+.wp-copy p {
+  max-width: 650px;
+
+  margin: 25px 0 0;
+
+  color: rgba(226, 232, 240, 0.72);
+
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.wp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  min-width: 310px;
+  min-height: 64px;
+
+  margin-top: 30px;
+  padding: 8px 9px 8px 24px;
+
+  border-radius: 999px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1769ff
+  );
+
+  color: white;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  box-shadow:
+    0 20px 55px rgba(37, 99, 235, 0.3);
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.wp-button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 25px 65px rgba(37, 99, 235, 0.42);
+}
+
+.wp-button__arrow {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.13);
+}
+
+/* =========================================================
+   MENÚ
+========================================================= */
+
+.wp-menu-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+.wp-menu-background {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+
+  background: rgba(0, 0, 0, 0.62);
+
+  backdrop-filter: blur(5px);
+}
+
+.wp-menu-panel {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  width: min(420px, 90vw);
+  height: 100%;
+
+  padding: 30px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #071027,
+      #020617
+    );
+
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+
+  box-shadow: -25px 0 80px rgba(0, 0, 0, 0.35);
+}
+
+.wp-menu-panel__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-bottom: 30px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wp-menu-panel__top div {
+  display: flex;
+  flex-direction: column;
+}
+
+.wp-menu-panel__top strong {
+  font-size: 34px;
+  letter-spacing: -0.06em;
+}
+
+.wp-menu-panel__top span {
+  margin-top: 4px;
+
+  color: #60a5fa;
+
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.wp-menu-close {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  color: white;
+
+  cursor: pointer;
+}
+
+.wp-menu-nav {
+  display: flex;
+  flex-direction: column;
+
+  margin-top: 30px;
+}
+
+.wp-menu-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 4px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-size: 15px;
+  font-weight: 600;
+
+  transition:
+    color 180ms ease,
+    padding 180ms ease;
+}
+
+.wp-menu-nav a:hover {
+  padding-left: 8px;
+  color: white;
+}
+
+.wp-menu-nav .wp-menu-quote {
+  margin-top: 18px;
+
+  padding: 17px 20px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #2563eb;
+
+  color: white;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .wp-header {
+    height: 140px;
+    padding: 0 22px;
+  }
+
+  .wp-logo__brand {
+    font-size: 43px;
+  }
+
+  .wp-logo__words strong {
+    font-size: 10px;
+  }
+
+  .wp-logo__words span {
+    font-size: 7px;
+  }
+
+  .wp-menu {
+    width: 58px;
+    height: 58px;
+  }
+
+  .wp-content {
+    padding: 32px 20px 55px;
+  }
+
+  .wp-access__grid {
+    gap: 17px 12px;
+  }
+
+  .wp-app__icon {
+    width: 94px;
+    height: 94px;
+    border-radius: 25px;
+  }
+
+  .wp-app > span {
+    font-size: 11px;
+  }
+
+  .wp-copy {
+    margin-top: 42px;
+  }
+
+  .wp-copy h1 {
+    font-size: clamp(45px, 14vw, 68px);
+  }
+
+  .wp-copy p {
+    font-size: 14px;
+  }
+
+  .wp-button {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .wp-header {
+    height: 125px;
+    padding: 0 17px;
+  }
+
+  .wp-logo__brand {
+    font-size: 38px;
+  }
+
+  .wp-logo {
+    gap: 8px;
+  }
+
+  .wp-menu {
+    width: 52px;
+    height: 52px;
+  }
+
+  .wp-content {
+    padding: 28px 16px 45px;
+  }
+
+  .wp-access__grid {
+    gap: 15px 8px;
+  }
+
+  .wp-app__icon {
+    width: 82px;
+    height: 82px;
+    border-radius: 22px;
+  }
+
+  .wp-app__icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .wp-app > span {
+    font-size: 10px;
+  }
+
+  .wp-badge {
+    font-size: 7px;
+    letter-spacing: 0.15em;
+  }
+
+  .wp-kicker {
+    font-size: 8px;
+  }
+
+  .wp-copy h1 {
+    font-size: 43px;
+  }
+}
