@@ -4,16 +4,49 @@ import {
   Building2,
   CheckCircle2,
   Layers3,
+  Loader2,
+  Play,
   ShieldCheck,
   Sparkles,
+  X,
 } from 'lucide-react'
 
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import AppShell from '../components/AppShell'
+import { supabase } from '../lib/supabase'
 
-const projects = [
+type ProjectId =
+  | 'limpieza-institucional'
+  | 'mantenimiento-profesional'
+  | 'limpieza-post-obra'
+  | 'tratamiento-superficies'
+
+type GalleryVideo = {
+  id: string
+  title: string
+  description: string | null
+  media_type: 'video'
+  file_url: string
+  thumbnail_url: string | null
+  is_published: boolean
+  sort_order: number
+  project_id: string | null
+}
+
+type Project = {
+  id: ProjectId
+  number: string
+  title: string
+  category: string
+  description: string
+  icon: typeof Building2
+}
+
+const projects: Project[] = [
   {
+    id: 'limpieza-institucional',
     number: '01',
     title: 'Limpieza institucional',
     category: 'Institucional',
@@ -22,6 +55,7 @@ const projects = [
     icon: Building2,
   },
   {
+    id: 'mantenimiento-profesional',
     number: '02',
     title: 'Mantenimiento profesional',
     category: 'Mantenimiento',
@@ -30,6 +64,7 @@ const projects = [
     icon: ShieldCheck,
   },
   {
+    id: 'limpieza-post-obra',
     number: '03',
     title: 'Limpieza post-obra',
     category: 'Post-obra',
@@ -38,6 +73,7 @@ const projects = [
     icon: Layers3,
   },
   {
+    id: 'tratamiento-superficies',
     number: '04',
     title: 'Tratamiento de superficies',
     category: 'Especializado',
@@ -55,6 +91,67 @@ const highlights = [
 ]
 
 function Projects() {
+  const [videos, setVideos] = useState<GalleryVideo[]>([])
+  const [loadingVideos, setLoadingVideos] = useState(true)
+  const [videoError, setVideoError] = useState('')
+
+  const [selectedVideo, setSelectedVideo] =
+    useState<GalleryVideo | null>(null)
+
+  useEffect(() => {
+    loadVideos()
+  }, [])
+
+  async function loadVideos() {
+    setLoadingVideos(true)
+    setVideoError('')
+
+    const { data, error } = await supabase
+      .from('gallery_items')
+      .select(
+        `
+        id,
+        title,
+        description,
+        media_type,
+        file_url,
+        thumbnail_url,
+        is_published,
+        sort_order,
+        project_id
+        `,
+      )
+      .eq('is_published', true)
+      .eq('media_type', 'video')
+      .not('project_id', 'is', null)
+      .order('sort_order', {
+        ascending: true,
+      })
+      .order('created_at', {
+        ascending: false,
+      })
+
+    if (error) {
+      console.error(error)
+
+      setVideoError(
+        'No se pudieron cargar los videos.',
+      )
+
+      setLoadingVideos(false)
+      return
+    }
+
+    setVideos((data ?? []) as GalleryVideo[])
+    setLoadingVideos(false)
+  }
+
+  function getProjectVideos(projectId: ProjectId) {
+    return videos.filter(
+      (video) => video.project_id === projectId,
+    )
+  }
+
   return (
     <AppShell>
       <main className="min-h-screen overflow-hidden bg-[#020617] text-white">
@@ -164,40 +261,131 @@ function Projects() {
 
               const Icon = project.icon
 
+              const projectVideos =
+                getProjectVideos(project.id)
+
+              const mainVideo =
+                projectVideos.length > 0
+                  ? projectVideos[0]
+                  : null
+
+              const otherVideos =
+                projectVideos.length > 1
+                  ? projectVideos.slice(1)
+                  : []
+
               return (
                 <article
                   key={project.number}
                   className="group relative overflow-hidden rounded-[2rem] border border-white/[0.075] bg-white/[0.025] transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-white/[0.045]"
                 >
 
-                  {/* IMAGEN / VISUAL */}
+                  {/* =================================================
+                      VISUAL PRINCIPAL DEL PROYECTO
+                  ================================================== */}
 
-                  <div className="relative flex aspect-[16/9] items-center justify-center overflow-hidden bg-gradient-to-br from-blue-950 via-slate-950 to-slate-900">
+                  <div className="relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-blue-950 via-slate-950 to-slate-900">
 
-                    <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-blue-600/20 blur-[80px] transition-all duration-500 group-hover:bg-blue-500/30" />
+                    {mainVideo ? (
 
-                    <div className="pointer-events-none absolute -bottom-24 -left-20 h-48 w-48 rounded-full bg-blue-900/20 blur-[70px]" />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSelectedVideo(mainVideo)
+                        }
+                        className="absolute inset-0 h-full w-full text-left"
+                      >
 
-                    <div className="relative flex h-20 w-20 items-center justify-center rounded-[1.5rem] border border-blue-400/20 bg-white/[0.035] text-blue-400 shadow-2xl backdrop-blur-xl transition-transform duration-500 group-hover:scale-110">
+                        {/* VIDEO */}
 
-                      <Icon
-                        size={31}
-                        strokeWidth={1.4}
-                      />
+                        <video
+                          src={mainVideo.file_url}
+                          preload="metadata"
+                          muted
+                          playsInline
+                          className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                        />
 
-                    </div>
+                        {/* OSCURECIMIENTO */}
 
-                    <span className="absolute bottom-5 left-5 text-6xl font-black tracking-[-0.08em] text-white/[0.045]">
+                        <div className="absolute inset-0 bg-black/35 transition duration-300 group-hover:bg-black/20" />
+
+                        {/* BRILLO */}
+
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
+
+                        {/* PLAY */}
+
+                        <div className="absolute inset-0 flex items-center justify-center">
+
+                          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-slate-950 shadow-2xl transition-all duration-300 group-hover:scale-110">
+
+                            <Play
+                              size={24}
+                              fill="currentColor"
+                            />
+
+                          </div>
+
+                        </div>
+
+                        {/* TITULO */}
+
+                        <div className="absolute bottom-5 left-5 right-5">
+
+                          <p className="text-[8px] font-bold uppercase tracking-[0.3em] text-blue-300">
+                            Trabajo realizado
+                          </p>
+
+                          <p className="mt-1 truncate text-sm font-bold text-white drop-shadow-lg">
+                            {mainVideo.title}
+                          </p>
+
+                        </div>
+
+                      </button>
+
+                    ) : (
+
+                      <>
+
+                        <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-blue-600/20 blur-[80px] transition-all duration-500 group-hover:bg-blue-500/30" />
+
+                        <div className="pointer-events-none absolute -bottom-24 -left-20 h-48 w-48 rounded-full bg-blue-900/20 blur-[70px]" />
+
+                        <div className="relative flex h-full w-full items-center justify-center">
+
+                          <div className="flex h-20 w-20 items-center justify-center rounded-[1.5rem] border border-blue-400/20 bg-white/[0.035] text-blue-400 shadow-2xl backdrop-blur-xl transition-transform duration-500 group-hover:scale-110">
+
+                            <Icon
+                              size={31}
+                              strokeWidth={1.4}
+                            />
+
+                          </div>
+
+                        </div>
+
+                      </>
+                    )}
+
+                    {/* NUMERO */}
+
+                    <span className="absolute bottom-5 left-5 z-10 text-6xl font-black tracking-[-0.08em] text-white/[0.045]">
                       {project.number}
                     </span>
 
-                    <span className="absolute right-5 top-5 rounded-full border border-white/[0.08] bg-black/20 px-3 py-1.5 text-[8px] font-bold uppercase tracking-[0.2em] text-slate-500 backdrop-blur-md">
+                    {/* MARCA */}
+
+                    <span className="absolute right-5 top-5 z-10 rounded-full border border-white/[0.08] bg-black/20 px-3 py-1.5 text-[8px] font-bold uppercase tracking-[0.2em] text-slate-300 backdrop-blur-md">
                       W.P.
                     </span>
 
                   </div>
 
-                  {/* INFORMACIÓN */}
+                  {/* =================================================
+                      INFORMACIÓN
+                  ================================================== */}
 
                   <div className="p-5 sm:p-6">
 
@@ -222,13 +410,152 @@ function Projects() {
                       {project.description}
                     </p>
 
-                    <div className="mt-6 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-700">
+                    <div className="mt-6 flex items-center justify-between">
 
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500/70" />
+                      <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-700">
 
-                      Servicio profesional
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500/70" />
+
+                        Servicio profesional
+
+                      </div>
+
+                      {!loadingVideos &&
+                        projectVideos.length > 0 && (
+                          <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[9px] font-bold text-slate-500">
+                            {projectVideos.length}
+                          </span>
+                        )}
 
                     </div>
+
+                    {/* =================================================
+                        CARGANDO
+                    ================================================== */}
+
+                    {loadingVideos && (
+                      <div className="mt-6 flex items-center gap-2 text-xs text-slate-600">
+
+                        <Loader2
+                          size={14}
+                          className="animate-spin"
+                        />
+
+                        Cargando videos...
+
+                      </div>
+                    )}
+
+                    {/* =================================================
+                        OTROS VIDEOS
+                    ================================================== */}
+
+                    {!loadingVideos &&
+                      otherVideos.length > 0 && (
+
+                        <div className="mt-7 border-t border-white/[0.06] pt-6">
+
+                          <div className="mb-4">
+
+                            <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-blue-400">
+                              Trabajos realizados
+                            </p>
+
+                            <p className="mt-1 text-xs text-slate-600">
+                              Más videos de este proyecto
+                            </p>
+
+                          </div>
+
+                          <div className="grid gap-3">
+
+                            {otherVideos.map((video) => (
+
+                              <button
+                                key={video.id}
+                                type="button"
+                                onClick={() =>
+                                  setSelectedVideo(video)
+                                }
+                                className="group/video relative overflow-hidden rounded-2xl border border-white/[0.07] bg-black text-left"
+                              >
+
+                                <div className="relative aspect-video overflow-hidden">
+
+                                  {video.thumbnail_url ? (
+
+                                    <img
+                                      src={
+                                        video.thumbnail_url
+                                      }
+                                      alt={video.title}
+                                      className="h-full w-full object-cover transition duration-500 group-hover/video:scale-105"
+                                    />
+
+                                  ) : (
+
+                                    <video
+                                      src={video.file_url}
+                                      preload="metadata"
+                                      muted
+                                      playsInline
+                                      className="h-full w-full object-cover"
+                                    />
+
+                                  )}
+
+                                  <div className="absolute inset-0 bg-black/30 transition group-hover/video:bg-black/10" />
+
+                                  <div className="absolute inset-0 flex items-center justify-center">
+
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-950 shadow-2xl transition-transform duration-300 group-hover/video:scale-110">
+
+                                      <Play
+                                        size={18}
+                                        fill="currentColor"
+                                      />
+
+                                    </div>
+
+                                  </div>
+
+                                  <div className="absolute bottom-3 left-3 right-3">
+
+                                    <p className="truncate text-xs font-bold text-white drop-shadow-lg">
+                                      {video.title}
+                                    </p>
+
+                                  </div>
+
+                                </div>
+
+                              </button>
+
+                            ))}
+
+                          </div>
+
+                        </div>
+
+                      )}
+
+                    {/* =================================================
+                        SIN VIDEOS
+                    ================================================== */}
+
+                    {!loadingVideos &&
+                      projectVideos.length === 0 && (
+
+                        <div className="mt-6 rounded-2xl border border-dashed border-white/[0.06] p-4">
+
+                          <p className="text-[10px] font-semibold text-slate-600">
+                            Próximamente mostraremos trabajos
+                            realizados en esta área.
+                          </p>
+
+                        </div>
+
+                      )}
 
                   </div>
 
@@ -237,6 +564,12 @@ function Projects() {
             })}
 
           </div>
+
+          {videoError && (
+            <p className="mt-6 text-center text-xs text-slate-600">
+              {videoError}
+            </p>
+          )}
 
         </section>
 
@@ -367,7 +700,9 @@ function Projects() {
 
         </section>
 
-        {/* FOOTER */}
+        {/* =====================================================
+            FOOTER
+        ====================================================== */}
 
         <footer className="border-t border-white/[0.06] px-5 py-8 text-center">
 
@@ -380,6 +715,76 @@ function Projects() {
           </p>
 
         </footer>
+
+        {/* =====================================================
+            MODAL VIDEO
+        ====================================================== */}
+
+        {selectedVideo && (
+
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+            onClick={() =>
+              setSelectedVideo(null)
+            }
+          >
+
+            <div
+              className="relative w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/10 bg-[#020617] shadow-2xl"
+              onClick={(event) =>
+                event.stopPropagation()
+              }
+            >
+
+              <button
+                type="button"
+                onClick={() =>
+                  setSelectedVideo(null)
+                }
+                className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white backdrop-blur transition hover:bg-white hover:text-black"
+              >
+
+                <X size={20} />
+
+              </button>
+
+              <div className="bg-black">
+
+                <video
+                  src={selectedVideo.file_url}
+                  controls
+                  autoPlay
+                  playsInline
+                  className="max-h-[75vh] w-full"
+                />
+
+              </div>
+
+              <div className="p-6">
+
+                <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-blue-400">
+                  W.P. Limpieza
+                </p>
+
+                <h3 className="mt-2 text-xl font-black text-white sm:text-2xl">
+                  {selectedVideo.title}
+                </h3>
+
+                {selectedVideo.description && (
+
+                  <p className="mt-3 text-sm leading-6 text-slate-400">
+                    {selectedVideo.description}
+                  </p>
+
+                )}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        )}
 
       </main>
     </AppShell>

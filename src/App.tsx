@@ -1,5 +1,10 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
+import AdminProducts from './pages/admin/AdminProducts'
+import AdminLogin from './pages/admin/AdminLogin'
+import Admin from './pages/admin/Admin'
+import AdminGallery from './pages/admin/AdminGallery'
+
 import Home from './pages/Home'
 import Services from './pages/Services'
 import Products from './pages/Products'
@@ -12,19 +17,66 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
 
-        <Route path="/servicios" element={<Services />} />
+        {/* WEB PÚBLICA */}
 
-        <Route path="/productos" element={<Products />} />
+        <Route
+          path="/"
+          element={<Home />}
+        />
 
-        <Route path="/proyectos" element={<Projects />} />
+        <Route
+          path="/servicios"
+          element={<Services />}
+        />
 
-        <Route path="/nosotros" element={<About />} />
+        <Route
+          path="/productos"
+          element={<Products />}
+        />
 
-        <Route path="/contacto" element={<Contact />} />
+        <Route
+          path="/proyectos"
+          element={<Projects />}
+        />
 
-        <Route path="/cotizar" element={<Quote />} />
+        <Route
+          path="/nosotros"
+          element={<About />}
+        />
+
+        <Route
+          path="/contacto"
+          element={<Contact />}
+        />
+
+        <Route
+          path="/cotizar"
+          element={<Quote />}
+        />
+
+        {/* ADMINISTRADOR */}
+
+        <Route
+          path="/admin/login"
+          element={<AdminLogin />}
+        />
+
+        <Route
+          path="/admin"
+          element={<Admin />}
+        />
+
+        <Route
+          path="/admin/productos"
+          element={<AdminProducts />}
+        />
+
+        <Route
+          path="/admin/galeria"
+          element={<AdminGallery />}
+        />
+
       </Routes>
     </BrowserRouter>
   )
