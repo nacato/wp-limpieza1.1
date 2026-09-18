@@ -1,33 +1,20 @@
+import { useEffect, useState } from 'react'
 import {
-  ArrowLeft,
-  ArrowUpRight,
   Building2,
-  CheckCircle2,
+  HardHat,
   Layers3,
-  Loader2,
   Play,
-  ShieldCheck,
-  Sparkles,
   X,
 } from 'lucide-react'
-
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-
-import AppShell from '../components/AppShell'
+import type { LucideIcon } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import AppShell from '../components/AppShell'
 
-type ProjectId =
-  | 'limpieza-institucional'
-  | 'mantenimiento-profesional'
-  | 'limpieza-post-obra'
-  | 'tratamiento-superficies'
-
-type GalleryVideo = {
+type GalleryItem = {
   id: string
   title: string
   description: string | null
-  media_type: 'video'
+  media_type: string
   file_url: string
   thumbnail_url: string | null
   is_published: boolean
@@ -35,747 +22,207 @@ type GalleryVideo = {
   project_id: string | null
 }
 
-type Project = {
-  id: ProjectId
-  number: string
-  title: string
-  category: string
-  description: string
-  icon: typeof Building2
+type ProjectConfig = {
+  id: string
+  name: string
+  icon: LucideIcon
 }
 
-const projects: Project[] = [
+const projects: ProjectConfig[] = [
   {
     id: 'limpieza-institucional',
-    number: '01',
-    title: 'Limpieza institucional',
-    category: 'Institucional',
-    description:
-      'Soluciones profesionales de limpieza para empresas, oficinas e instituciones.',
+    name: 'Limpieza institucional',
     icon: Building2,
   },
   {
     id: 'mantenimiento-profesional',
-    number: '02',
-    title: 'Mantenimiento profesional',
-    category: 'Mantenimiento',
-    description:
-      'Cuidado especializado y mantenimiento de diferentes espacios.',
-    icon: ShieldCheck,
-  },
-  {
-    id: 'limpieza-post-obra',
-    number: '03',
-    title: 'Limpieza post-obra',
-    category: 'Post-obra',
-    description:
-      'Recuperación y limpieza profesional de espacios después de obras y remodelaciones.',
+    name: 'Mantenimiento profesional',
     icon: Layers3,
   },
   {
+    id: 'limpieza-post-obra',
+    name: 'Limpieza post-obra',
+    icon: HardHat,
+  },
+  {
     id: 'tratamiento-superficies',
-    number: '04',
-    title: 'Tratamiento de superficies',
-    category: 'Especializado',
-    description:
-      'Procesos profesionales para conservar superficies en excelentes condiciones.',
-    icon: Sparkles,
+    name: 'Tratamiento de superficies',
+    icon: Layers3,
   },
 ]
 
-const highlights = [
-  'Atención profesional',
-  'Soluciones adaptadas',
-  'Procedimientos especializados',
-  'Compromiso con cada espacio',
-]
+export default function Projects() {
+  const [items, setItems] = useState<GalleryItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selected, setSelected] = useState<GalleryItem | null>(null)
 
-function Projects() {
-  const [videos, setVideos] = useState<GalleryVideo[]>([])
-  const [loadingVideos, setLoadingVideos] = useState(true)
-  const [videoError, setVideoError] = useState('')
+  async function loadProjects() {
+    try {
+      setLoading(true)
+      setError(null)
 
-  const [selectedVideo, setSelectedVideo] =
-    useState<GalleryVideo | null>(null)
+      const { data, error: queryError } = await supabase
+        .from('gallery_items')
+        .select(`
+          id,
+          title,
+          description,
+          media_type,
+          file_url,
+          thumbnail_url,
+          is_published,
+          sort_order,
+          project_id
+        `)
+        .eq('is_published', true)
+        .eq('media_type', 'video')
+        .not('project_id', 'is', null)
+        .order('sort_order', { ascending: true })
+        .order('created_at', { ascending: false })
+
+      if (queryError) {
+        throw queryError
+      }
+
+      setItems(data ?? [])
+    } catch (err) {
+      console.error('Error cargando proyectos:', err)
+      setError('No fue posible cargar los proyectos.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    loadVideos()
+    loadProjects()
   }, [])
-
-  async function loadVideos() {
-    setLoadingVideos(true)
-    setVideoError('')
-
-    const { data, error } = await supabase
-      .from('gallery_items')
-      .select(
-        `
-        id,
-        title,
-        description,
-        media_type,
-        file_url,
-        thumbnail_url,
-        is_published,
-        sort_order,
-        project_id
-        `,
-      )
-      .eq('is_published', true)
-      .eq('media_type', 'video')
-      .not('project_id', 'is', null)
-      .order('sort_order', {
-        ascending: true,
-      })
-      .order('created_at', {
-        ascending: false,
-      })
-
-    if (error) {
-      console.error(error)
-
-      setVideoError(
-        'No se pudieron cargar los videos.',
-      )
-
-      setLoadingVideos(false)
-      return
-    }
-
-    setVideos((data ?? []) as GalleryVideo[])
-    setLoadingVideos(false)
-  }
-
-  function getProjectVideos(projectId: ProjectId) {
-    return videos.filter(
-      (video) => video.project_id === projectId,
-    )
-  }
 
   return (
     <AppShell>
-      <main className="min-h-screen overflow-hidden bg-[#020617] text-white">
+      <main className="min-h-screen bg-[#F8FAFC] text-[#172033]">
 
-        {/* =====================================================
-            HERO
-        ====================================================== */}
+        {/* CABECERA MINIMALISTA */}
+        <section className="mx-auto max-w-7xl px-5 pb-7 pt-8 sm:px-8 lg:px-10">
+          <div className="flex items-end justify-between border-b border-[#D9E2EC] pb-5">
 
-        <section className="relative overflow-hidden border-b border-white/[0.06]">
-
-          <div className="pointer-events-none absolute -right-32 -top-40 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
-
-          <div className="pointer-events-none absolute -left-40 top-52 h-80 w-80 rounded-full bg-blue-900/20 blur-[110px]" />
-
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.035]"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(255,255,255,.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.8) 1px, transparent 1px)',
-              backgroundSize: '44px 44px',
-            }}
-          />
-
-          <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-12">
-
-            <Link
-              to="/"
-              className="group mb-12 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.025] px-4 py-2 text-xs font-medium text-slate-400 backdrop-blur-xl transition-all hover:border-blue-400/30 hover:bg-blue-500/[0.06] hover:text-white"
-            >
-              <ArrowLeft
-                size={15}
-                className="transition-transform group-hover:-translate-x-1"
-              />
-
-              Inicio
-            </Link>
-
-            <div className="flex items-center gap-3">
-
-              <span className="h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_15px_rgba(96,165,250,.9)]" />
-
-              <p className="text-[9px] font-bold uppercase tracking-[0.5em] text-blue-400">
-                Nuestro trabajo
+            <div>
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#0F4C81]">
+                W.P. Limpieza y Mantenimiento
               </p>
 
+              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-[#123B5D] sm:text-4xl">
+                Proyectos
+              </h1>
             </div>
 
-            <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.92] tracking-[-0.065em] sm:text-7xl">
-
-              Proyectos que
-
-              <span className="block bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-                hablan por nosotros.
-              </span>
-
-            </h1>
-
-            <p className="mt-7 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
-              Conozca las áreas de trabajo en las que W.P. Limpieza
-              y Mantenimiento desarrolla soluciones profesionales.
-            </p>
-
-            <div className="mt-8 flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-600">
-
-              <span>
-                Experiencia W.P.
-              </span>
-
-              <span className="h-px w-10 bg-white/10" />
-
-              <span>
-                Calidad · Compromiso
-              </span>
-
-            </div>
+            <span className="hidden text-xs text-[#64748B] sm:block">
+              Nuestro trabajo
+            </span>
 
           </div>
-
         </section>
 
-        {/* =====================================================
-            PROYECTOS
-        ====================================================== */}
-
-        <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
-
-          <div className="mb-8">
-
-            <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-600">
-              Portafolio
-            </p>
-
-            <h2 className="mt-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
-              Áreas de trabajo
-            </h2>
-
-            <p className="mt-3 max-w-xl text-sm leading-6 text-slate-500">
-              Una muestra de las soluciones que forman parte
-              del trabajo profesional de W.P.
-            </p>
-
-          </div>
-
-          <div className="grid gap-5 sm:grid-cols-2">
-
-            {projects.map((project) => {
-
-              const Icon = project.icon
-
-              const projectVideos =
-                getProjectVideos(project.id)
-
-              const mainVideo =
-                projectVideos.length > 0
-                  ? projectVideos[0]
-                  : null
-
-              const otherVideos =
-                projectVideos.length > 1
-                  ? projectVideos.slice(1)
-                  : []
-
-              return (
-                <article
-                  key={project.number}
-                  className="group relative overflow-hidden rounded-[2rem] border border-white/[0.075] bg-white/[0.025] transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-white/[0.045]"
-                >
-
-                  {/* =================================================
-                      VISUAL PRINCIPAL DEL PROYECTO
-                  ================================================== */}
-
-                  <div className="relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-blue-950 via-slate-950 to-slate-900">
-
-                    {mainVideo ? (
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setSelectedVideo(mainVideo)
-                        }
-                        className="absolute inset-0 h-full w-full text-left"
-                      >
-
-                        {/* VIDEO */}
-
-                        <video
-                          src={mainVideo.file_url}
-                          preload="metadata"
-                          muted
-                          playsInline
-                          className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                        />
-
-                        {/* OSCURECIMIENTO */}
-
-                        <div className="absolute inset-0 bg-black/35 transition duration-300 group-hover:bg-black/20" />
-
-                        {/* BRILLO */}
-
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
-
-                        {/* PLAY */}
-
-                        <div className="absolute inset-0 flex items-center justify-center">
-
-                          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-slate-950 shadow-2xl transition-all duration-300 group-hover:scale-110">
-
-                            <Play
-                              size={24}
-                              fill="currentColor"
-                            />
-
-                          </div>
-
-                        </div>
-
-                        {/* TITULO */}
-
-                        <div className="absolute bottom-5 left-5 right-5">
-
-                          <p className="text-[8px] font-bold uppercase tracking-[0.3em] text-blue-300">
-                            Trabajo realizado
-                          </p>
-
-                          <p className="mt-1 truncate text-sm font-bold text-white drop-shadow-lg">
-                            {mainVideo.title}
-                          </p>
-
-                        </div>
-
-                      </button>
-
-                    ) : (
-
-                      <>
-
-                        <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-blue-600/20 blur-[80px] transition-all duration-500 group-hover:bg-blue-500/30" />
-
-                        <div className="pointer-events-none absolute -bottom-24 -left-20 h-48 w-48 rounded-full bg-blue-900/20 blur-[70px]" />
-
-                        <div className="relative flex h-full w-full items-center justify-center">
-
-                          <div className="flex h-20 w-20 items-center justify-center rounded-[1.5rem] border border-blue-400/20 bg-white/[0.035] text-blue-400 shadow-2xl backdrop-blur-xl transition-transform duration-500 group-hover:scale-110">
-
-                            <Icon
-                              size={31}
-                              strokeWidth={1.4}
-                            />
-
-                          </div>
-
-                        </div>
-
-                      </>
-                    )}
-
-                    {/* NUMERO */}
-
-                    <span className="absolute bottom-5 left-5 z-10 text-6xl font-black tracking-[-0.08em] text-white/[0.045]">
-                      {project.number}
-                    </span>
-
-                    {/* MARCA */}
-
-                    <span className="absolute right-5 top-5 z-10 rounded-full border border-white/[0.08] bg-black/20 px-3 py-1.5 text-[8px] font-bold uppercase tracking-[0.2em] text-slate-300 backdrop-blur-md">
-                      W.P.
-                    </span>
-
-                  </div>
-
-                  {/* =================================================
-                      INFORMACIÓN
-                  ================================================== */}
-
-                  <div className="p-5 sm:p-6">
-
-                    <div className="flex items-center justify-between">
-
-                      <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-blue-400">
-                        {project.category}
-                      </span>
-
-                      <ArrowUpRight
-                        size={17}
-                        className="text-blue-400 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1"
-                      />
-
-                    </div>
-
-                    <h2 className="mt-4 text-xl font-bold tracking-tight text-white sm:text-2xl">
-                      {project.title}
-                    </h2>
-
-                    <p className="mt-3 text-sm leading-6 text-slate-500">
-                      {project.description}
-                    </p>
-
-                    <div className="mt-6 flex items-center justify-between">
-
-                      <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-700">
-
-                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500/70" />
-
-                        Servicio profesional
-
-                      </div>
-
-                      {!loadingVideos &&
-                        projectVideos.length > 0 && (
-                          <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[9px] font-bold text-slate-500">
-                            {projectVideos.length}
-                          </span>
-                        )}
-
-                    </div>
-
-                    {/* =================================================
-                        CARGANDO
-                    ================================================== */}
-
-                    {loadingVideos && (
-                      <div className="mt-6 flex items-center gap-2 text-xs text-slate-600">
-
-                        <Loader2
-                          size={14}
-                          className="animate-spin"
-                        />
-
-                        Cargando videos...
-
-                      </div>
-                    )}
-
-                    {/* =================================================
-                        OTROS VIDEOS
-                    ================================================== */}
-
-                    {!loadingVideos &&
-                      otherVideos.length > 0 && (
-
-                        <div className="mt-7 border-t border-white/[0.06] pt-6">
-
-                          <div className="mb-4">
-
-                            <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-blue-400">
-                              Trabajos realizados
-                            </p>
-
-                            <p className="mt-1 text-xs text-slate-600">
-                              Más videos de este proyecto
-                            </p>
-
-                          </div>
-
-                          <div className="grid gap-3">
-
-                            {otherVideos.map((video) => (
-
-                              <button
-                                key={video.id}
-                                type="button"
-                                onClick={() =>
-                                  setSelectedVideo(video)
-                                }
-                                className="group/video relative overflow-hidden rounded-2xl border border-white/[0.07] bg-black text-left"
-                              >
-
-                                <div className="relative aspect-video overflow-hidden">
-
-                                  {video.thumbnail_url ? (
-
-                                    <img
-                                      src={
-                                        video.thumbnail_url
-                                      }
-                                      alt={video.title}
-                                      className="h-full w-full object-cover transition duration-500 group-hover/video:scale-105"
-                                    />
-
-                                  ) : (
-
-                                    <video
-                                      src={video.file_url}
-                                      preload="metadata"
-                                      muted
-                                      playsInline
-                                      className="h-full w-full object-cover"
-                                    />
-
-                                  )}
-
-                                  <div className="absolute inset-0 bg-black/30 transition group-hover/video:bg-black/10" />
-
-                                  <div className="absolute inset-0 flex items-center justify-center">
-
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-950 shadow-2xl transition-transform duration-300 group-hover/video:scale-110">
-
-                                      <Play
-                                        size={18}
-                                        fill="currentColor"
-                                      />
-
-                                    </div>
-
-                                  </div>
-
-                                  <div className="absolute bottom-3 left-3 right-3">
-
-                                    <p className="truncate text-xs font-bold text-white drop-shadow-lg">
-                                      {video.title}
-                                    </p>
-
-                                  </div>
-
-                                </div>
-
-                              </button>
-
-                            ))}
-
-                          </div>
-
-                        </div>
-
-                      )}
-
-                    {/* =================================================
-                        SIN VIDEOS
-                    ================================================== */}
-
-                    {!loadingVideos &&
-                      projectVideos.length === 0 && (
-
-                        <div className="mt-6 rounded-2xl border border-dashed border-white/[0.06] p-4">
-
-                          <p className="text-[10px] font-semibold text-slate-600">
-                            Próximamente mostraremos trabajos
-                            realizados en esta área.
-                          </p>
-
-                        </div>
-
-                      )}
-
-                  </div>
-
-                </article>
-              )
-            })}
-
-          </div>
-
-          {videoError && (
-            <p className="mt-6 text-center text-xs text-slate-600">
-              {videoError}
-            </p>
+        {/* CONTENIDO */}
+        <section className="mx-auto max-w-7xl px-5 pb-12 sm:px-8 lg:px-10">
+
+          {/* LOADING */}
+          {loading && (
+            <div className="flex min-h-[300px] items-center justify-center">
+              <div className="flex items-center gap-3 text-sm text-[#64748B]">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[#0F4C81]" />
+                Cargando proyectos...
+              </div>
+            </div>
+          )}
+
+          {/* ERROR */}
+          {error && !loading && (
+            <div className="flex min-h-[300px] flex-col items-center justify-center text-center">
+
+              <p className="text-sm text-[#64748B]">
+                {error}
+              </p>
+
+              <button
+                type="button"
+                onClick={loadProjects}
+                className="mt-4 text-xs font-semibold uppercase tracking-[0.15em] text-[#0F4C81]"
+              >
+                Reintentar
+              </button>
+
+            </div>
+          )}
+
+          {/* GALERÍA */}
+          {!loading && !error && (
+            <div className="grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+
+              {projects.map((project) => {
+                const projectVideos = items.filter(
+                  (item) => item.project_id === project.id,
+                )
+
+                return (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    videos={projectVideos}
+                    onOpen={setSelected}
+                  />
+                )
+              })}
+
+            </div>
           )}
 
         </section>
 
-        {/* =====================================================
-            DIFERENCIAL
-        ====================================================== */}
-
-        <section className="border-y border-white/[0.06] bg-white/[0.012]">
-
-          <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
-
-            <div className="grid gap-10 md:grid-cols-2 md:items-center">
-
-              <div>
-
-                <div className="flex items-center gap-3">
-
-                  <span className="h-2 w-2 rounded-full bg-blue-400" />
-
-                  <p className="text-[9px] font-bold uppercase tracking-[0.45em] text-blue-400">
-                    Nuestro compromiso
-                  </p>
-
-                </div>
-
-                <h2 className="mt-5 max-w-xl text-3xl font-black leading-[1.02] tracking-[-0.04em] sm:text-5xl">
-
-                  Cada proyecto
-
-                  <span className="block text-blue-500">
-                    merece atención.
-                  </span>
-
-                </h2>
-
-                <p className="mt-6 max-w-lg text-sm leading-7 text-slate-400">
-                  Nuestro objetivo es entregar soluciones de limpieza
-                  y mantenimiento con un enfoque profesional,
-                  responsable y orientado a las necesidades de cada cliente.
-                </p>
-
-              </div>
-
-              <div className="grid gap-3">
-
-                {highlights.map((highlight, index) => (
-
-                  <div
-                    key={highlight}
-                    className="flex items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4 transition-all hover:border-blue-500/20 hover:bg-blue-500/[0.04]"
-                  >
-
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-500/10 bg-blue-500/10 text-blue-400">
-
-                      <CheckCircle2 size={17} />
-
-                    </div>
-
-                    <div className="flex flex-1 items-center justify-between">
-
-                      <span className="text-sm text-slate-300">
-                        {highlight}
-                      </span>
-
-                      <span className="text-[9px] font-bold text-slate-700">
-                        0{index + 1}
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                ))}
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* =====================================================
-            CTA
-        ====================================================== */}
-
-        <section className="px-5 py-16 sm:px-8 sm:py-24">
-
-          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-600 to-blue-700 p-7 shadow-[0_30px_100px_rgba(37,99,235,0.20)] sm:rounded-[2.5rem] sm:p-12">
-
-            <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10 blur-[90px]" />
-
-            <div className="pointer-events-none absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-blue-950/40 blur-[90px]" />
-
-            <div className="relative">
-
-              <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-blue-100">
-                Hablemos de su proyecto
-              </p>
-
-              <h2 className="mt-4 max-w-3xl text-3xl font-black leading-tight tracking-[-0.035em] sm:text-5xl">
-                ¿Tiene un espacio que necesita atención profesional?
-              </h2>
-
-              <p className="mt-5 max-w-xl text-sm leading-7 text-blue-100 sm:text-base">
-                Cuéntenos qué necesita y encontraremos una solución
-                adecuada para su espacio.
-              </p>
-
-              <Link
-                to="/cotizar"
-                className="group mt-8 inline-flex min-h-13 items-center gap-4 rounded-full bg-white px-6 text-sm font-bold text-slate-950 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl active:scale-95"
-              >
-
-                Solicitar cotización
-
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-
-                  <ArrowUpRight size={16} />
-
-                </span>
-
-              </Link>
-
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* =====================================================
-            FOOTER
-        ====================================================== */}
-
-        <footer className="border-t border-white/[0.06] px-5 py-8 text-center">
-
-          <p className="text-[8px] font-bold uppercase tracking-[0.3em] text-slate-700">
-            W.P. LIMPIEZA & MANTENIMIENTO
-          </p>
-
-          <p className="mt-2 text-[8px] text-slate-800">
-            Soluciones profesionales para cada espacio.
-          </p>
-
-        </footer>
-
-        {/* =====================================================
-            MODAL VIDEO
-        ====================================================== */}
-
-        {selectedVideo && (
-
+        {/* MODAL */}
+        {selected && (
           <div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
-            onClick={() =>
-              setSelectedVideo(null)
-            }
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-[#123B5D]/90 p-4 backdrop-blur-sm"
+            onClick={() => setSelected(null)}
           >
 
             <div
-              className="relative w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/10 bg-[#020617] shadow-2xl"
-              onClick={(event) =>
-                event.stopPropagation()
-              }
+              className="relative w-full max-w-5xl overflow-hidden bg-black shadow-2xl"
+              onClick={(event) => event.stopPropagation()}
             >
 
               <button
                 type="button"
-                onClick={() =>
-                  setSelectedVideo(null)
-                }
-                className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white backdrop-blur transition hover:bg-white hover:text-black"
+                onClick={() => setSelected(null)}
+                className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#123B5D] shadow-lg transition hover:scale-105"
+                aria-label="Cerrar"
               >
-
-                <X size={20} />
-
+                <X size={18} strokeWidth={1.8} />
               </button>
 
-              <div className="bg-black">
+              <video
+                src={selected.file_url}
+                poster={selected.thumbnail_url ?? undefined}
+                controls
+                autoPlay
+                playsInline
+                className="max-h-[78vh] w-full bg-black object-contain"
+              />
 
-                <video
-                  src={selectedVideo.file_url}
-                  controls
-                  autoPlay
-                  playsInline
-                  className="max-h-[75vh] w-full"
-                />
+              <div className="bg-white px-5 py-4 sm:px-7">
 
-              </div>
-
-              <div className="p-6">
-
-                <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-blue-400">
-                  W.P. Limpieza
+                <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#0F4C81]">
+                  W.P. Limpieza y Mantenimiento
                 </p>
 
-                <h3 className="mt-2 text-xl font-black text-white sm:text-2xl">
-                  {selectedVideo.title}
-                </h3>
+                <h2 className="mt-1 text-lg font-semibold tracking-[-0.025em] text-[#123B5D]">
+                  {selected.title}
+                </h2>
 
-                {selectedVideo.description && (
-
-                  <p className="mt-3 text-sm leading-6 text-slate-400">
-                    {selectedVideo.description}
+                {selected.description && (
+                  <p className="mt-1 max-w-2xl text-sm leading-5 text-[#64748B]">
+                    {selected.description}
                   </p>
-
                 )}
 
               </div>
@@ -783,7 +230,6 @@ function Projects() {
             </div>
 
           </div>
-
         )}
 
       </main>
@@ -791,4 +237,141 @@ function Projects() {
   )
 }
 
-export default Projects
+
+/* =====================================================
+   TARJETA DE PROYECTO
+===================================================== */
+
+type ProjectCardProps = {
+  project: ProjectConfig
+  videos: GalleryItem[]
+  onOpen: (item: GalleryItem) => void
+}
+
+function ProjectCard({
+  project,
+  videos,
+  onOpen,
+}: ProjectCardProps) {
+  const Icon = project.icon
+
+  const video = videos[0]
+
+  /* SIN VIDEO */
+  if (!video) {
+    return (
+      <article className="group">
+
+        <div className="relative aspect-[4/3] overflow-hidden border border-[#D9E2EC] bg-[#EAF3F8]">
+
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D9E2EC] bg-white">
+              <Icon
+                size={18}
+                strokeWidth={1.5}
+                className="text-[#0F4C81]"
+              />
+            </div>
+
+            <span className="mt-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">
+              Próximamente
+            </span>
+
+          </div>
+
+        </div>
+
+        <div className="pt-3">
+          <h2 className="text-base font-semibold tracking-[-0.02em] text-[#123B5D]">
+            {project.name}
+          </h2>
+        </div>
+
+      </article>
+    )
+  }
+
+  return (
+    <article className="group">
+
+      {/* VISUAL */}
+      <button
+        type="button"
+        onClick={() => onOpen(video)}
+        className="relative block aspect-[4/3] w-full overflow-hidden bg-[#123B5D] text-left"
+        aria-label={`Ver ${project.name}`}
+      >
+
+        {/* IMAGEN */}
+        {video.thumbnail_url ? (
+          <img
+            src={video.thumbnail_url}
+            alt={video.title}
+            className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.035]"
+          />
+        ) : (
+          <video
+            src={video.file_url}
+            muted
+            playsInline
+            preload="metadata"
+            className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.035]"
+          />
+        )}
+
+        {/* OVERLAY */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071827]/80 via-transparent to-transparent opacity-80 transition duration-300 group-hover:opacity-100" />
+
+        {/* ICONO */}
+        <div className="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white backdrop-blur-md">
+          <Icon
+            size={14}
+            strokeWidth={1.6}
+          />
+        </div>
+
+        {/* PLAY */}
+        <div className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#123B5D] opacity-0 shadow-lg transition duration-300 group-hover:scale-105 group-hover:opacity-100">
+          <Play
+            size={13}
+            fill="currentColor"
+            strokeWidth={1.4}
+          />
+        </div>
+
+        {/* TEXTO SOBRE LA IMAGEN */}
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+
+          <p className="mb-1 text-[9px] font-medium uppercase tracking-[0.18em] text-white/65">
+            Proyecto
+          </p>
+
+          <h2 className="text-xl font-semibold tracking-[-0.03em] text-white">
+            {project.name}
+          </h2>
+
+        </div>
+
+      </button>
+
+      {/* INFORMACIÓN INFERIOR */}
+      <div className="flex items-center justify-between border-b border-[#D9E2EC] py-3">
+
+        <div className="min-w-0">
+
+          <p className="truncate text-xs text-[#64748B]">
+            {video.description || 'Trabajo profesional W.P.'}
+          </p>
+
+        </div>
+
+        <span className="ml-4 shrink-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#0F4C81]">
+          Ver
+        </span>
+
+      </div>
+
+    </article>
+  )
+}

@@ -1,160 +1,98 @@
 import {
   ArrowLeft,
-  ArrowUpRight,
+  ArrowRight,
   Building2,
-  CheckCircle2,
-  Droplets,
   Home,
   Layers3,
   ShieldCheck,
   Sparkles,
   SprayCan,
   Sofa,
+  Wrench,
 } from 'lucide-react'
-
 import { Link } from 'react-router-dom'
-
 import AppShell from '../components/AppShell'
 
 const services = [
-  {
-    number: '01',
-    title: 'Limpieza institucional',
-    description:
-      'Mantenimiento profesional de oficinas, empresas, instituciones y espacios corporativos.',
-    icon: Building2,
-  },
-  {
-    number: '02',
-    title: 'Limpieza residencial',
-    description:
-      'Cuidado profesional de hogares, departamentos y espacios residenciales.',
-    icon: Home,
-  },
-  {
-    number: '03',
-    title: 'Limpieza post-obra',
-    description:
-      'Recuperamos espacios después de trabajos de construcción, remodelación o adecuación.',
-    icon: Layers3,
-  },
-  {
-    number: '04',
-    title: 'Muebles y alfombras',
-    description:
-      'Limpieza especializada para muebles, tapizados, alfombras y diferentes superficies.',
-    icon: Sofa,
-  },
-  {
-    number: '05',
-    title: 'Recubrimiento de pisos',
-    description:
-      'Tratamiento y mantenimiento profesional de diferentes tipos de pisos y superficies.',
-    icon: Sparkles,
-  },
-  {
-    number: '06',
-    title: 'Estructuras',
-    description:
-      'Limpieza y mantenimiento de estructuras con procedimientos profesionales.',
-    icon: Building2,
-  },
-  {
-    number: '07',
-    title: 'Desinfección',
-    description:
-      'Procesos profesionales de limpieza y desinfección para espacios que requieren mayor cuidado.',
-    icon: SprayCan,
-  },
-  {
-    number: '08',
-    title: 'Mantenimiento personalizado',
-    description:
-      'Soluciones adaptadas a las necesidades específicas de cada cliente y espacio.',
-    icon: Droplets,
-  },
-]
-
-const benefits = [
-  'Personal capacitado',
-  'Atención profesional',
-  'Soluciones para diferentes espacios',
-  'Equipos y procedimientos especializados',
-]
+  ['01', 'Limpieza institucional', 'Empresas e instituciones.', Building2],
+  ['02', 'Limpieza residencial', 'Hogares y departamentos.', Home],
+  ['03', 'Limpieza post-obra', 'Espacios después de obra.', Layers3],
+  ['04', 'Muebles y alfombras', 'Tapizados y superficies.', Sofa],
+  ['05', 'Tratamiento de pisos', 'Cuidado profesional de pisos.', Sparkles],
+  ['06', 'Limpieza de estructuras', 'Estructuras y espacios.', Building2],
+  ['07', 'Desinfección', 'Espacios más seguros.', SprayCan],
+  ['08', 'Mantenimiento personalizado', 'Soluciones a medida.', Wrench],
+] as const
 
 function Services() {
   return (
     <AppShell>
-      <main className="min-h-screen overflow-hidden bg-[#020617] text-white">
+      <main className="min-h-screen bg-[#F8FAFC] text-[#172033]">
 
         {/* HERO */}
 
-        <section className="relative overflow-hidden border-b border-white/[0.06]">
+        <section className="border-b border-[#D9E2EC] bg-white">
 
-          <div className="pointer-events-none absolute -right-32 -top-40 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
-
-          <div className="pointer-events-none absolute -left-40 top-52 h-80 w-80 rounded-full bg-blue-900/20 blur-[110px]" />
-
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.035]"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(255,255,255,.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.8) 1px, transparent 1px)',
-              backgroundSize: '44px 44px',
-            }}
-          />
-
-          <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-12">
+          <div className="mx-auto max-w-7xl px-6 py-6 sm:px-10">
 
             <Link
               to="/"
-              className="group mb-12 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.025] px-4 py-2 text-xs font-medium text-slate-400 backdrop-blur-xl transition-all hover:border-blue-400/30 hover:bg-blue-500/[0.06] hover:text-white"
+              className="inline-flex items-center gap-2 text-xs font-bold text-[#64748B] hover:text-[#0F4C81]"
             >
-              <ArrowLeft
-                size={15}
-                className="transition-transform group-hover:-translate-x-1"
-              />
-
+              <ArrowLeft size={15} />
               Inicio
             </Link>
 
-            <div className="flex items-center gap-3">
+            <div className="mx-auto max-w-4xl py-12 text-center sm:py-14">
 
-              <span className="h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_15px_rgba(96,165,250,.9)]" />
+              <div className="flex items-center justify-center gap-3">
+                <span className="h-px w-8 bg-[#0F4C81]" />
+                <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#0F4C81]">
+                  Nuestros servicios
+                </span>
+                <span className="h-px w-8 bg-[#0F4C81]" />
+              </div>
 
-              <p className="text-[9px] font-bold uppercase tracking-[0.5em] text-blue-400">
-                Nuestros servicios
+              <h1 className="mt-5 text-5xl font-black leading-[0.9] tracking-[-0.06em] text-[#123B5D] sm:text-7xl">
+                Espacios más
+                <span className="block text-[#0F4C81]">
+                  limpios y seguros.
+                </span>
+              </h1>
+
+              <p className="mx-auto mt-5 max-w-xl text-sm leading-6 text-[#64748B]">
+                Soluciones profesionales de limpieza y mantenimiento
+                para hogares, empresas e instituciones.
               </p>
 
-            </div>
+              <div className="mx-auto mt-7 flex max-w-md justify-center gap-6 border-y border-[#D9E2EC] py-4">
 
-            <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.92] tracking-[-0.065em] sm:text-7xl">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck size={18} className="text-[#0F4C81]" />
+                  <span className="text-[9px] font-bold text-[#123B5D]">
+                    Calidad
+                  </span>
+                </div>
 
-              Soluciones para
+                <div className="h-5 w-px bg-[#D9E2EC]" />
 
-              <span className="block bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-                cada espacio.
-              </span>
+                <div className="flex items-center gap-2">
+                  <Sparkles size={18} className="text-[#0F4C81]" />
+                  <span className="text-[9px] font-bold text-[#123B5D]">
+                    Profesional
+                  </span>
+                </div>
 
-            </h1>
+                <div className="h-5 w-px bg-[#D9E2EC]" />
 
-            <p className="mt-7 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
-              Servicios profesionales de limpieza y mantenimiento
-              diseñados para mantener sus espacios limpios, seguros
-              y en excelentes condiciones.
-            </p>
+                <div className="flex items-center gap-2">
+                  <Building2 size={18} className="text-[#0F4C81]" />
+                  <span className="text-[9px] font-bold text-[#123B5D]">
+                    Integral
+                  </span>
+                </div>
 
-            <div className="mt-8 flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-600">
-
-              <span>
-                08 soluciones
-              </span>
-
-              <span className="h-px w-10 bg-white/10" />
-
-              <span>
-                W.P. Limpieza
-              </span>
+              </div>
 
             </div>
 
@@ -164,165 +102,58 @@ function Services() {
 
         {/* SERVICIOS */}
 
-        <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
+        <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12">
 
-          <div className="mb-8 flex items-end justify-between">
+          <div className="mb-7 text-center">
 
-            <div>
+            <p className="text-[8px] font-black uppercase tracking-[0.4em] text-[#0F4C81]">
+              Soluciones W.P.
+            </p>
 
-              <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-600">
-                Catálogo
-              </p>
-
-              <h2 className="mt-2 text-xl font-bold tracking-tight text-white">
-                Servicios W.P.
-              </h2>
-
-            </div>
-
-            <span className="hidden text-[9px] font-bold uppercase tracking-[0.25em] text-slate-600 sm:block">
-              Profesional · Preciso · Confiable
-            </span>
+            <h2 className="mt-2 text-3xl font-black tracking-[-0.045em] text-[#123B5D] sm:text-4xl">
+              Nuestros servicios
+            </h2>
 
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 
-            {services.map((service) => {
+            {services.map(([number, title, description, Icon]) => (
 
-              const Icon = service.icon
+              <article
+                key={number}
+                className="group rounded-2xl border border-[#D9E2EC] bg-white p-5 transition hover:-translate-y-1 hover:border-[#0F4C81]/30 hover:shadow-[0_15px_35px_rgba(18,59,93,0.07)]"
+              >
 
-              return (
-                <article
-                  key={service.number}
-                  className="group relative overflow-hidden rounded-[1.7rem] border border-white/[0.075] bg-white/[0.025] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-white/[0.045] sm:p-6"
-                >
+                <div className="flex items-center justify-between">
 
-                  <div className="pointer-events-none absolute -right-24 -top-24 h-52 w-52 rounded-full bg-blue-500/10 blur-[80px] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <span className="text-[9px] font-black tracking-[0.25em] text-[#94A3B8]">
+                    {number}
+                  </span>
 
-                  <div className="relative">
-
-                    <div className="flex items-start justify-between">
-
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] to-white/[0.015] text-blue-400 shadow-inner shadow-white/[0.03] transition-all duration-300 group-hover:border-blue-500/30 group-hover:bg-blue-500/10">
-
-                        <Icon
-                          size={23}
-                          strokeWidth={1.5}
-                        />
-
-                      </div>
-
-                      <span className="text-[10px] font-bold tracking-[0.25em] text-slate-700">
-                        {service.number}
-                      </span>
-
-                    </div>
-
-                    <h3 className="mt-7 text-lg font-bold tracking-tight text-white sm:text-xl">
-                      {service.title}
-                    </h3>
-
-                    <p className="mt-3 max-w-md text-sm leading-6 text-slate-500">
-                      {service.description}
-                    </p>
-
-                    <Link
-                      to="/cotizar"
-                      className="group/action mt-6 inline-flex items-center gap-2 text-[11px] font-bold text-blue-400 transition-colors hover:text-blue-300"
-                    >
-
-                      Solicitar este servicio
-
-                      <ArrowUpRight
-                        size={15}
-                        className="transition-transform duration-300 group-hover/action:-translate-y-0.5 group-hover/action:translate-x-0.5"
-                      />
-
-                    </Link>
-
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#EAF3F8] text-[#0F4C81] transition group-hover:bg-[#0F4C81] group-hover:text-white">
+                    <Icon size={17} strokeWidth={1.5} />
                   </div>
-
-                </article>
-              )
-            })}
-
-          </div>
-
-        </section>
-
-        {/* DIFERENCIAL */}
-
-        <section className="border-y border-white/[0.06] bg-white/[0.012]">
-
-          <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
-
-            <div className="grid gap-10 md:grid-cols-2 md:items-center">
-
-              <div>
-
-                <div className="flex items-center gap-3">
-
-                  <span className="h-2 w-2 rounded-full bg-blue-400" />
-
-                  <p className="text-[9px] font-bold uppercase tracking-[0.45em] text-blue-400">
-                    La diferencia W.P.
-                  </p>
 
                 </div>
 
-                <h2 className="mt-5 max-w-xl text-3xl font-black leading-[1.02] tracking-[-0.04em] sm:text-5xl">
+                <h3 className="mt-7 text-base font-black leading-tight text-[#123B5D]">
+                  {title}
+                </h3>
 
-                  Profesionalismo en
-
-                  <span className="block text-blue-500">
-                    cada servicio.
-                  </span>
-
-                </h2>
-
-                <p className="mt-6 max-w-lg text-sm leading-7 text-slate-400">
-                  Cada espacio tiene necesidades diferentes. Por eso
-                  trabajamos con soluciones profesionales adaptadas
-                  a las características de cada lugar.
+                <p className="mt-2 text-xs text-[#64748B]">
+                  {description}
                 </p>
 
-              </div>
+                <div className="mt-5 flex justify-end">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8FAFC] text-[#0F4C81] group-hover:bg-[#EAF3F8]">
+                    <ArrowRight size={14} />
+                  </span>
+                </div>
 
-              <div className="grid gap-3">
+              </article>
 
-                {benefits.map((benefit, index) => (
-
-                  <div
-                    key={benefit}
-                    className="group flex items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4 transition-all hover:border-blue-500/20 hover:bg-blue-500/[0.04]"
-                  >
-
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-500/10 bg-blue-500/10 text-blue-400">
-
-                      <CheckCircle2 size={17} />
-
-                    </div>
-
-                    <div className="flex flex-1 items-center justify-between">
-
-                      <span className="text-sm text-slate-300">
-                        {benefit}
-                      </span>
-
-                      <span className="text-[9px] font-bold text-slate-700">
-                        0{index + 1}
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                ))}
-
-              </div>
-
-            </div>
+            ))}
 
           </div>
 
@@ -330,49 +161,30 @@ function Services() {
 
         {/* CTA */}
 
-        <section className="px-5 py-16 sm:px-8 sm:py-24">
+        <section className="bg-[#123B5D]">
 
-          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-600 to-blue-700 p-7 shadow-[0_30px_100px_rgba(37,99,235,0.20)] sm:rounded-[2.5rem] sm:p-12">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-9 sm:px-10">
 
-            <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10 blur-[90px]" />
-
-            <div className="pointer-events-none absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-blue-950/40 blur-[90px]" />
-
-            <div className="relative">
-
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10">
-                <ShieldCheck size={22} />
-              </div>
-
-              <p className="mt-7 text-[9px] font-bold uppercase tracking-[0.4em] text-blue-100">
-                Atención personalizada
+            <div>
+              <p className="text-[8px] font-black uppercase tracking-[0.35em] text-[#B9D8EC]">
+                Trabajemos juntos
               </p>
 
-              <h2 className="mt-4 max-w-3xl text-3xl font-black leading-tight tracking-[-0.035em] sm:text-5xl">
-                ¿Necesita un servicio para su espacio?
+              <h2 className="mt-2 text-2xl font-black tracking-[-0.04em] text-white sm:text-3xl">
+                ¿Necesita un servicio personalizado?
               </h2>
-
-              <p className="mt-5 max-w-xl text-sm leading-7 text-blue-100 sm:text-base">
-                Cuéntenos qué necesita y nuestro equipo podrá orientarle
-                sobre la mejor solución.
-              </p>
-
-              <Link
-                to="/cotizar"
-                className="group mt-8 inline-flex min-h-13 items-center gap-4 rounded-full bg-white px-6 text-sm font-bold text-slate-950 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl active:scale-95"
-              >
-
-                Solicitar cotización
-
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-
-                  <ArrowUpRight size={16} />
-
-                </span>
-
-              </Link>
-
             </div>
+
+            <Link
+              to="/cotizar"
+              className="group flex shrink-0 items-center gap-3 rounded-full bg-white px-5 py-3 text-[10px] font-black uppercase tracking-wide text-[#123B5D] transition hover:bg-[#EAF3F8]"
+            >
+              Cotizar
+              <ArrowRight
+                size={15}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            </Link>
 
           </div>
 
@@ -380,14 +192,10 @@ function Services() {
 
         {/* FOOTER */}
 
-        <footer className="border-t border-white/[0.06] px-5 py-8 text-center">
+        <footer className="border-t border-[#D9E2EC] bg-white py-6 text-center">
 
-          <p className="text-[8px] font-bold uppercase tracking-[0.3em] text-slate-700">
+          <p className="text-[8px] font-black uppercase tracking-[0.35em] text-[#123B5D]">
             W.P. LIMPIEZA & MANTENIMIENTO
-          </p>
-
-          <p className="mt-2 text-[8px] text-slate-800">
-            Soluciones profesionales para cada espacio.
           </p>
 
         </footer>
