@@ -1,7 +1,6 @@
 import {
   ArrowLeft,
   ArrowRight,
-  Award,
   CheckCircle2,
   Leaf,
   ShieldCheck,
