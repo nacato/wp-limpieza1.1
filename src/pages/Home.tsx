@@ -1,2303 +1,845 @@
 import { useState } from 'react'
 import {
-  Building2,
-  CheckSquare,
+  ArrowUpRight,
+  BriefcaseBusiness,
+  CheckCircle2,
   Menu,
+  MessageCircle,
+  Package,
   Phone,
-  ShoppingBag,
   Sparkles,
   Users,
   X,
 } from 'lucide-react'
 
+import { Link } from 'react-router-dom'
+
 import heroImage from '../assets/hero-wp.jpg'
 
-/* =====================================================
-   PANELES PRINCIPALES
-===================================================== */
+const whatsappNumber = '593992699716'
 
-const mainPanels = [
+const whatsappMessage =
+  'Hola W.P. Limpieza, deseo información sobre sus servicios.'
+
+const navigationItems = [
   {
     title: 'Servicios',
-    description: 'Soluciones profesionales',
-    path: '/servicios',
+    href: '/servicios',
     icon: Sparkles,
   },
   {
     title: 'Productos',
-    description: 'Suministros de calidad',
-    path: '/productos',
-    icon: ShoppingBag,
+    href: '/productos',
+    icon: Package,
   },
   {
     title: 'Portafolio',
-    description: 'Nuestros proyectos',
-    path: '/proyectos',
-    icon: Building2,
+    href: '/proyectos',
+    icon: BriefcaseBusiness,
   },
   {
     title: 'Nosotros',
-    description: 'Conozca W.P.',
-    path: '/nosotros',
+    href: '/nosotros',
     icon: Users,
   },
   {
     title: 'Contacto',
-    description: 'Estamos para ayudarle',
-    path: '/contacto',
+    href: '/contacto',
     icon: Phone,
   },
   {
     title: 'Cotizar',
-    description: 'Solicite su servicio',
-    path: '/cotizar',
-    icon: CheckSquare,
+    href: '/cotizar',
+    icon: CheckCircle2,
   },
 ]
-
-
-/* =====================================================
-   FACEBOOK
-===================================================== */
 
 function FacebookIcon() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M14.2 8H17V4.4c-.5-.1-1.8-.2-3.1-.2-3.1 0-5.2 1.9-5.2 5.4V12H5v4h3.7v8h4.2v-8h3.5l.6-4h-4.1V10c0-1.2.3-2 1.3-2Z"
-      />
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5 fill-current"
+      aria-hidden="true"
+    >
+      <path d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V3.9c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1V10H8v3h2.4v8h3.1Z" />
     </svg>
   )
 }
-
-
-/* =====================================================
-   TIKTOK
-===================================================== */
 
 function TikTokIcon() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M15.2 3c.4 2.5 1.8 4.1 4.3 4.4v3.4c-1.5 0-2.9-.4-4.3-1.2v6.1c0 4.1-2.8 6.8-6.7 6.8-3.6 0-6.2-2.5-6.2-5.8 0-3.6 2.9-6.2 6.8-6.2.3 0 .6 0 .9.1v3.5c-.3-.1-.6-.1-.9-.1-1.7 0-2.9 1.1-2.9 2.6 0 1.5 1 2.5 2.4 2.5 1.7 0 2.4-1.1 2.4-3.1V3h4.2Z"
-      />
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5 fill-current"
+      aria-hidden="true"
+    >
+      <path d="M15.5 3c.3 1.7 1.3 3 3 3.6v3c-1.1-.1-2.1-.5-3-1.1v5.7c0 3.6-2.2 5.8-5.4 5.8-3 0-5.1-2-5.1-4.7 0-2.9 2.4-5 5.6-5 .4 0 .8 0 1.2.1v3c-.4-.1-.7-.2-1.1-.2-1.3 0-2.4.8-2.4 2 0 1.1.9 1.9 2 1.9 1.3 0 2.2-.9 2.2-2.7V3h3Z" />
     </svg>
   )
 }
-
-
-/* =====================================================
-   WHATSAPP
-===================================================== */
 
 function WhatsAppIcon() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M12 2.4a9.6 9.6 0 0 0-8.2 14.6L2.5 21.5l4.7-1.3A9.6 9.6 0 1 0 12 2.4Zm0 17.3c-1.5 0-3-.4-4.3-1.2l-.3-.2-2.8.8.8-2.7-.2-.3A8 8 0 1 1 12 19.7Zm4.4-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.6.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.3 0-.4.1-.6l.4-.5c.1-.2.1-.3 0-.5l-.7-1.7c-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9.6.2 1.1.4 1.4.6.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3Z"
-      />
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5 fill-current"
+      aria-hidden="true"
+    >
+      <path d="M20.5 3.5A11.2 11.2 0 0 0 12.6 0C6.5 0 1.5 5 1.5 11.1c0 2 .5 3.9 1.5 5.6L1.4 22l5.5-1.5c1.6.9 3.5 1.4 5.4 1.4 6.1 0 11.1-5 11.1-11.1 0-2.8-1-5.4-2.9-7.3Zm-7.9 16.5c-1.7 0-3.4-.5-4.8-1.3l-.3-.2-3.3.9.9-3.2-.2-.3a9 9 0 1 1 7.7 4.1Zm4.9-6.8c-.3-.2-1.7-.9-1.9-1-.3-.1-.4-.2-.6.1-.2.3-.7.9-.8 1.1-.1.2-.3.2-.5.1-1.3-.7-2.2-1.3-3.1-2.9-.2-.3.2-.3.5-1 .1-.2.1-.3 0-.5s-.6-1.4-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.2.7 3 .6.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.1-1.3 0-.2-.2-.2-.5-.3Z" />
     </svg>
   )
 }
 
-
-/* =====================================================
-   REDES SOCIALES
-   MISMA ESTRUCTURA QUE LOS OTROS PANELES
-===================================================== */
-
-const socialPanels = [
-  {
-    title: 'Facebook',
-    description: 'Síguenos en Facebook',
-    url: 'https://www.facebook.com/',
-    icon: FacebookIcon,
-  },
-  {
-    title: 'TikTok',
-    description: 'Síguenos en TikTok',
-    url: 'https://www.tiktok.com/',
-    icon: TikTokIcon,
-  },
-  {
-    title: 'WhatsApp',
-    description: 'Escríbenos directamente',
-    url: 'https://wa.me/593992699716?text=Hola%20W.P.%20Limpieza%20y%20Mantenimiento%2C%20deseo%20solicitar%20informaci%C3%B3n%20sobre%20sus%20servicios.',
-    icon: WhatsAppIcon,
-  },
-]
-
-
-/* =====================================================
-   HOME
-===================================================== */
-
-export default function Home() {
-
+function Home() {
   const [menuOpen, setMenuOpen] = useState(false)
 
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+    whatsappMessage,
+  )}`
+
+  const socialItems = [
+    {
+      title: 'Facebook',
+      href: 'https://www.facebook.com/',
+      icon: FacebookIcon,
+    },
+    {
+      title: 'TikTok',
+      href: 'https://www.tiktok.com/',
+      icon: TikTokIcon,
+    },
+    {
+      title: 'WhatsApp',
+      href: whatsappUrl,
+      icon: WhatsAppIcon,
+    },
+  ]
+
   return (
-    <main className="wp-home">
+    <main className="relative min-h-screen overflow-hidden bg-[#F8FAFC] text-[#172033]">
 
+      {/* =====================================================
+          FONDO GENERAL
+      ====================================================== */}
 
-      {/* =================================================
-          FONDO
-      ================================================= */}
+      <div className="pointer-events-none fixed inset-0 z-0">
 
-      <div className="wp-home__image" />
+        <img
+          src={heroImage}
+          alt=""
+          className="
+            h-full
+            w-full
+            object-cover
+            object-center
+            grayscale
+            opacity-[0.16]
+          "
+        />
 
-      <div className="wp-home__overlay" />
+        <div className="absolute inset-0 bg-white/78" />
 
+        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/75 to-[#F8FAFC]/90" />
 
-      {/* =================================================
-          HEADER
-      ================================================= */}
+      </div>
 
-      <header className="wp-header">
+      {/* =====================================================
+          CONTENIDO
+      ====================================================== */}
 
-        <a
-          href="/"
-          className="wp-logo"
-        >
+      <div className="relative z-10 min-h-screen">
 
-          <span className="wp-logo__mark">
-            W.P.
-          </span>
+        {/* ===================================================
+            MOBILE
+        ==================================================== */}
 
-          <span className="wp-logo__text">
+        <div className="flex min-h-screen flex-col px-4 sm:hidden">
 
-            <strong>
-              LIMPIEZA
-            </strong>
+          {/* HEADER */}
 
-            <small>
-              & MANTENIMIENTO
-            </small>
+          <header className="flex shrink-0 items-center justify-between py-3">
 
-          </span>
+            <Link
+              to="/"
+              className="flex items-center"
+            >
+              <img
+                src="/logo.png"
+                alt="W.P. Limpieza & Mantenimiento"
+                className="h-10 w-auto object-contain"
+              />
+            </Link>
 
-        </a>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              className="
+                flex
+                h-10
+                items-center
+                gap-2
+                rounded-full
+                border
+                border-[#D9E2EC]
+                bg-white/95
+                px-4
+                text-[8px]
+                font-bold
+                uppercase
+                tracking-[0.28em]
+                text-[#123B5D]
+                shadow-[0_5px_20px_rgba(18,59,93,0.06)]
+              "
+            >
 
+              <Menu size={17} />
 
-        {/* HAMBURGUESA */}
+              MENÚ
 
-        <button
-          type="button"
-          className="wp-menu-button"
-          onClick={() =>
-            setMenuOpen((value) => !value)
-          }
-          aria-label={
-            menuOpen
-              ? 'Cerrar menú'
-              : 'Abrir menú'
-          }
-        >
+            </button>
 
-          {menuOpen ? (
-            <X size={18} />
-          ) : (
-            <Menu size={18} />
-          )}
+          </header>
 
-          <span>
-            {menuOpen ? 'CERRAR' : 'MENÚ'}
-          </span>
+          {/* SOLUCIONES */}
 
-        </button>
+          <section className="shrink-0 pt-2">
 
-      </header>
+            <div className="mb-4 flex items-center gap-4">
 
+              <span className="h-px flex-1 bg-[#C8D8E5]" />
 
-      {/* =================================================
-          MENÚ HAMBURGUESA
-          
-          SOLO NAVEGACIÓN.
-          
-          NO REEMPLAZA LOS PANELES
-          DE LA PANTALLA PRINCIPAL.
-      ================================================= */}
+              <p className="text-[9px] font-black uppercase tracking-[0.45em] text-[#0F4C81]">
+                Soluciones
+              </p>
+
+              <span className="h-px flex-1 bg-[#C8D8E5]" />
+
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5">
+
+              {navigationItems.map((item) => {
+
+                const Icon = item.icon
+
+                return (
+                  <Link
+                    key={item.title}
+                    to={item.href}
+                    className="
+                      group
+                      flex
+                      h-[92px]
+                      flex-col
+                      items-center
+                      justify-center
+                      rounded-[1.25rem]
+                      border
+                      border-[#D9E2EC]
+                      bg-white/95
+                      shadow-[0_7px_24px_rgba(18,59,93,0.06)]
+                      transition-all
+                      duration-300
+                      active:scale-[0.98]
+                    "
+                  >
+
+                    <span
+                      className="
+                        flex
+                        h-11
+                        w-11
+                        items-center
+                        justify-center
+                        rounded-full
+                        border
+                        border-[#CFE5F2]
+                        bg-[#F5FAFD]
+                        text-[#0F4C81]
+                      "
+                    >
+
+                      <Icon
+                        size={20}
+                        strokeWidth={1.6}
+                      />
+
+                    </span>
+
+                    <span className="mt-2 text-[11px] font-bold text-[#123B5D]">
+                      {item.title}
+                    </span>
+
+                  </Link>
+                )
+              })}
+
+            </div>
+
+          </section>
+
+          {/* PRESENTACIÓN */}
+
+          <section className="flex shrink-0 flex-col items-center px-2 pt-7 text-center">
+
+            <div className="flex items-center gap-2">
+
+              <span className="h-1.5 w-1.5 rounded-full bg-[#0F4C81]" />
+
+              <p className="text-[8px] font-bold uppercase tracking-[0.35em] text-[#0F4C81]">
+                Quito · Ecuador
+              </p>
+
+            </div>
+
+            <h1
+              className="
+                mt-3
+                max-w-[340px]
+                text-[2.7rem]
+                font-black
+                leading-[0.88]
+                tracking-[-0.065em]
+                text-[#123B5D]
+              "
+            >
+              Espacios que
+
+              <span className="block">
+                hablan{' '}
+                <span className="text-[#0F4C81]">
+                  por usted.
+                </span>
+              </span>
+
+            </h1>
+
+            <p className="mt-3 max-w-[310px] text-[10px] leading-4 text-[#64748B]">
+              Limpieza y mantenimiento profesional para empresas,
+              instituciones y hogares.
+            </p>
+
+            <Link
+              to="/cotizar"
+              className="
+                mt-4
+                flex
+                h-11
+                w-full
+                max-w-[285px]
+                items-center
+                justify-between
+                rounded-full
+                bg-[#0F4C81]
+                px-5
+                text-[9px]
+                font-bold
+                uppercase
+                tracking-[0.2em]
+                text-white
+                shadow-[0_10px_30px_rgba(15,76,129,0.18)]
+              "
+            >
+
+              Solicitar servicio
+
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15">
+
+                <ArrowUpRight size={15} />
+
+              </span>
+
+            </Link>
+
+          </section>
+
+          {/* REDES */}
+
+          <section className="mt-5 shrink-0">
+
+            <div className="mb-3 flex items-center gap-4">
+
+              <span className="h-px flex-1 bg-[#C8D8E5]" />
+
+              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#0F4C81]">
+                Síguenos
+              </p>
+
+              <span className="h-px flex-1 bg-[#C8D8E5]" />
+
+            </div>
+
+            <div className="grid grid-cols-3 gap-2.5">
+
+              {socialItems.map((item) => {
+
+                const Icon = item.icon
+
+                return (
+                  <a
+                    key={item.title}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="
+                      flex
+                      h-[82px]
+                      flex-col
+                      items-center
+                      justify-center
+                      rounded-[1.15rem]
+                      border
+                      border-[#D9E2EC]
+                      bg-white/95
+                      shadow-[0_7px_24px_rgba(18,59,93,0.05)]
+                    "
+                  >
+
+                    <span
+                      className="
+                        flex
+                        h-9
+                        w-9
+                        items-center
+                        justify-center
+                        rounded-full
+                        border
+                        border-[#CFE5F2]
+                        bg-[#F5FAFD]
+                        text-[#0F4C81]
+                      "
+                    >
+                      <Icon />
+                    </span>
+
+                    <span className="mt-1.5 text-[9px] font-bold text-[#123B5D]">
+                      {item.title}
+                    </span>
+
+                  </a>
+                )
+              })}
+
+            </div>
+
+          </section>
+
+          {/* FOOTER MOBILE */}
+
+          <footer className="mt-auto py-3 text-center">
+
+            <p className="text-[7px] font-bold uppercase tracking-[0.3em] text-[#64748B]">
+              W.P. LIMPIEZA & MANTENIMIENTO
+            </p>
+
+          </footer>
+
+        </div>
+
+        {/* ===================================================
+            DESKTOP
+        ==================================================== */}
+
+        <div className="hidden min-h-screen sm:flex sm:flex-col">
+
+          {/* HEADER */}
+
+          <header className="flex shrink-0 items-center justify-between px-10 py-5 lg:px-14">
+
+            <Link
+              to="/"
+              className="flex items-center"
+            >
+              <img
+                src="/logo.png"
+                alt="W.P. Limpieza & Mantenimiento"
+                className="h-12 w-auto object-contain"
+              />
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              className="
+                flex
+                h-11
+                items-center
+                gap-2
+                rounded-full
+                border
+                border-[#D9E2EC]
+                bg-white/90
+                px-5
+                text-[9px]
+                font-bold
+                uppercase
+                tracking-[0.3em]
+                text-[#123B5D]
+                shadow-sm
+                backdrop-blur-md
+                transition
+                hover:border-[#0F4C81]
+                hover:bg-[#EAF3F8]
+              "
+            >
+
+              <Menu size={18} />
+
+              MENÚ
+
+            </button>
+
+          </header>
+
+          {/* DESKTOP CONTENIDO */}
+
+          <section className="flex flex-1 flex-col justify-center px-10 pb-5 lg:px-14">
+
+            <div className="grid grid-cols-[1fr_1fr] items-center gap-12">
+
+              {/* TEXTO */}
+
+              <div className="max-w-2xl">
+
+                <div className="flex items-center gap-3">
+
+                  <span className="h-2 w-2 rounded-full bg-[#0F4C81]" />
+
+                  <p className="text-[10px] font-bold uppercase tracking-[0.42em] text-[#0F4C81]">
+                    Quito · Ecuador
+                  </p>
+
+                </div>
+
+                <p className="mt-3 text-[9px] font-bold uppercase tracking-[0.35em] text-[#64748B]">
+                  Soluciones profesionales
+                </p>
+
+                <h1
+                  className="
+                    mt-5
+                    text-6xl
+                    font-black
+                    leading-[0.87]
+                    tracking-[-0.07em]
+                    text-[#123B5D]
+                    lg:text-7xl
+                    xl:text-8xl
+                  "
+                >
+                  Espacios que
+
+                  <span className="block">
+                    hablan{' '}
+                    <span className="text-[#0F4C81]">
+                      por usted.
+                    </span>
+                  </span>
+
+                </h1>
+
+                <p className="mt-5 max-w-xl text-sm leading-6 text-[#52677B] lg:text-base">
+                  Limpieza y mantenimiento profesional para empresas,
+                  instituciones y hogares.
+                </p>
+
+                <Link
+                  to="/cotizar"
+                  className="
+                    mt-7
+                    inline-flex
+                    h-12
+                    min-w-[250px]
+                    items-center
+                    justify-between
+                    rounded-full
+                    bg-[#0F4C81]
+                    px-5
+                    text-[9px]
+                    font-bold
+                    uppercase
+                    tracking-[0.22em]
+                    text-white
+                    shadow-[0_12px_35px_rgba(15,76,129,0.18)]
+                    transition
+                    hover:bg-[#123B5D]
+                  "
+                >
+
+                  Solicitar servicio
+
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
+
+                    <ArrowUpRight size={16} />
+
+                  </span>
+
+                </Link>
+
+              </div>
+
+              {/* INFORMACIÓN VISUAL */}
+
+              <div className="flex justify-end">
+
+                <div className="max-w-md rounded-[2rem] border border-white/70 bg-white/70 p-7 shadow-[0_20px_60px_rgba(18,59,93,0.08)] backdrop-blur-md">
+
+                  <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#0F4C81]">
+                    W.P. Limpieza
+                  </p>
+
+                  <p className="mt-3 text-2xl font-black leading-tight tracking-[-0.04em] text-[#123B5D] lg:text-3xl">
+                    Profesionalismo en cada espacio.
+                  </p>
+
+                  <p className="mt-4 text-sm leading-6 text-[#64748B]">
+                    Soluciones para hogares, empresas e instituciones.
+                  </p>
+
+                  <div className="mt-6 grid grid-cols-3 border-t border-[#D9E2EC] pt-5">
+
+                    <div>
+                      <p className="text-lg font-black text-[#123B5D]">
+                        20+
+                      </p>
+
+                      <p className="mt-1 text-[7px] font-bold uppercase tracking-[0.12em] text-[#94A3B8]">
+                        Experiencia
+                      </p>
+                    </div>
+
+                    <div className="border-l border-[#D9E2EC] pl-4">
+                      <p className="text-lg font-black text-[#123B5D]">
+                        W.P.
+                      </p>
+
+                      <p className="mt-1 text-[7px] font-bold uppercase tracking-[0.12em] text-[#94A3B8]">
+                        Servicio
+                      </p>
+                    </div>
+
+                    <div className="border-l border-[#D9E2EC] pl-4">
+                      <p className="text-lg font-black text-[#123B5D]">
+                        100%
+                      </p>
+
+                      <p className="mt-1 text-[7px] font-bold uppercase tracking-[0.12em] text-[#94A3B8]">
+                        Compromiso
+                      </p>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+          {/* ACCESOS DESKTOP */}
+
+          <section className="shrink-0 px-10 pb-5 lg:px-14">
+
+            <div className="grid grid-cols-6 gap-3">
+
+              {navigationItems.map((item) => {
+
+                const Icon = item.icon
+
+                return (
+                  <Link
+                    key={item.title}
+                    to={item.href}
+                    className="
+                      group
+                      flex
+                      h-[72px]
+                      items-center
+                      gap-3
+                      rounded-2xl
+                      border
+                      border-white/80
+                      bg-white/88
+                      px-4
+                      shadow-[0_8px_25px_rgba(18,59,93,0.06)]
+                      backdrop-blur-md
+                      transition
+                      hover:-translate-y-1
+                      hover:border-[#0F4C81]/30
+                      hover:bg-white
+                    "
+                  >
+
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#CFE5F2] bg-[#F5FAFD] text-[#0F4C81]">
+
+                      <Icon
+                        size={17}
+                        strokeWidth={1.7}
+                      />
+
+                    </span>
+
+                    <span className="text-[10px] font-bold text-[#123B5D]">
+                      {item.title}
+                    </span>
+
+                    <ArrowUpRight
+                      size={14}
+                      className="ml-auto text-[#A7B5C2]"
+                    />
+
+                  </Link>
+                )
+              })}
+
+            </div>
+
+            <div className="mt-2 grid grid-cols-3 gap-3">
+
+              {socialItems.map((item) => {
+
+                const Icon = item.icon
+
+                return (
+                  <a
+                    key={item.title}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="
+                      flex
+                      h-10
+                      items-center
+                      justify-center
+                      gap-2
+                      rounded-xl
+                      border
+                      border-white/80
+                      bg-white/80
+                      text-[#123B5D]
+                      shadow-sm
+                      backdrop-blur-md
+                    "
+                  >
+
+                    <Icon />
+
+                    <span className="text-[9px] font-bold">
+                      {item.title}
+                    </span>
+
+                  </a>
+                )
+              })}
+
+            </div>
+
+          </section>
+
+          {/* FOOTER */}
+
+          <footer className="shrink-0 px-10 py-3 text-center lg:px-14">
+
+            <p className="text-[7px] font-bold uppercase tracking-[0.3em] text-[#52677B]">
+              W.P. LIMPIEZA & MANTENIMIENTO · QUITO · ECUADOR
+            </p>
+
+          </footer>
+
+        </div>
+
+      </div>
+
+      {/* =====================================================
+          MENÚ
+      ====================================================== */}
 
       {menuOpen && (
+        <div className="fixed inset-0 z-[100] bg-[#123B5D]/25 p-4 backdrop-blur-sm">
 
-        <div className="wp-hamburger-menu">
+          <div className="mx-auto mt-4 max-w-md overflow-hidden rounded-[2rem] border border-[#D9E2EC] bg-white shadow-[0_30px_100px_rgba(18,59,93,0.18)]">
 
-          <div className="wp-hamburger-inner">
+            <div className="flex items-center justify-between border-b border-[#D9E2EC] px-5 py-4">
 
-            <span className="wp-hamburger-label">
-              NAVEGACIÓN
-            </span>
+              <img
+                src="/logo.png"
+                alt="W.P. Limpieza"
+                className="h-9 w-auto"
+              />
 
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#D9E2EC] text-[#123B5D]"
+                aria-label="Cerrar menú"
+              >
+                <X size={18} />
+              </button>
 
-            <a
-              href="/"
-              className="wp-hamburger-link"
-              onClick={() => setMenuOpen(false)}
-            >
-              Inicio
-            </a>
+            </div>
 
+            <nav className="p-3">
 
-            <a
-              href="/servicios"
-              className="wp-hamburger-link"
-              onClick={() => setMenuOpen(false)}
-            >
-              Servicios
-            </a>
+              {navigationItems.map((item) => {
 
+                const Icon = item.icon
 
-            <a
-              href="/productos"
-              className="wp-hamburger-link"
-              onClick={() => setMenuOpen(false)}
-            >
-              Productos
-            </a>
+                return (
+                  <Link
+                    key={item.title}
+                    to={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-4 rounded-2xl px-4 py-3 transition hover:bg-[#EAF3F8]"
+                  >
 
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#D9E2EC] bg-[#F8FAFC] text-[#0F4C81]">
 
-            <a
-              href="/proyectos"
-              className="wp-hamburger-link"
-              onClick={() => setMenuOpen(false)}
-            >
-              Portafolio
-            </a>
+                      <Icon size={18} />
 
+                    </span>
 
-            <a
-              href="/nosotros"
-              className="wp-hamburger-link"
-              onClick={() => setMenuOpen(false)}
-            >
-              Nosotros
-            </a>
+                    <span className="flex-1 text-sm font-bold text-[#123B5D]">
+                      {item.title}
+                    </span>
 
+                    <ArrowUpRight
+                      size={16}
+                      className="text-[#94A3B8]"
+                    />
 
-            <a
-              href="/contacto"
-              className="wp-hamburger-link"
-              onClick={() => setMenuOpen(false)}
-            >
-              Contacto
-            </a>
+                  </Link>
+                )
+              })}
 
+            </nav>
 
-            <a
-              href="/cotizar"
-              className="wp-hamburger-link"
-              onClick={() => setMenuOpen(false)}
-            >
-              Cotizar
-            </a>
+            <div className="border-t border-[#D9E2EC] p-4">
+
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => setMenuOpen(false)}
+                className="flex h-11 items-center justify-center gap-2 rounded-full bg-[#0F4C81] text-xs font-bold text-white"
+              >
+
+                <MessageCircle size={16} />
+
+                Escribir por WhatsApp
+
+              </a>
+
+            </div>
 
           </div>
 
         </div>
-
       )}
-
-
-      {/* =================================================
-          CONTENIDO
-      ================================================= */}
-
-      <section className="wp-content">
-
-
-        {/* =================================================
-            IZQUIERDA
-        ================================================= */}
-
-        <div className="wp-intro">
-
-
-          <div className="wp-location">
-
-            <span />
-
-            QUITO · ECUADOR
-
-          </div>
-
-
-          <p className="wp-kicker">
-            SOLUCIONES PROFESIONALES
-          </p>
-
-
-          <h1>
-
-            Espacios
-
-            <br />
-
-            <strong>
-              que hablan
-            </strong>
-
-            <br />
-
-            <em>
-              por usted.
-            </em>
-
-          </h1>
-
-
-          <p className="wp-description">
-
-            Limpieza y mantenimiento profesional
-            para empresas, instituciones y hogares.
-
-          </p>
-
-
-          <a
-            href="/cotizar"
-            className="wp-cta"
-          >
-
-            <span>
-              SOLICITAR SERVICIO
-            </span>
-
-            <span className="wp-cta__arrow">
-              ↗
-            </span>
-
-          </a>
-
-
-          {/* BENEFICIOS */}
-
-          <div className="wp-benefits">
-
-            <div className="wp-benefit">
-
-              <strong>
-                20+
-              </strong>
-
-              <span>
-                AÑOS DE EXPERIENCIA
-              </span>
-
-            </div>
-
-
-            <div className="wp-benefit">
-
-              <strong>
-                W.P.
-              </strong>
-
-              <span>
-                SERVICIO PROFESIONAL
-              </span>
-
-            </div>
-
-
-            <div className="wp-benefit">
-
-              <strong>
-                100%
-              </strong>
-
-              <span>
-                COMPROMISO
-              </span>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        {/* =================================================
-            DERECHA
-        ================================================= */}
-
-        <div className="wp-navigation">
-
-
-          <div className="wp-navigation__heading">
-
-            <span>
-              EXPLORAR
-            </span>
-
-            <span>
-              W.P.
-            </span>
-
-          </div>
-
-
-          {/* =================================================
-              TODOS LOS PANELES
-              
-              6 PRINCIPALES + 3 REDES
-          ================================================= */}
-
-          <div className="wp-accesses">
-
-
-            {/* ---------------------------------------------
-                6 PANELES PRINCIPALES
-            --------------------------------------------- */}
-
-            {mainPanels.map((item) => {
-
-              const Icon = item.icon
-
-              return (
-
-                <a
-                  key={item.path}
-                  href={item.path}
-                  className="wp-access"
-                >
-
-                  <div className="wp-access__icon">
-
-                    <Icon />
-
-                  </div>
-
-
-                  <div className="wp-access__content">
-
-                    <h2>
-                      {item.title}
-                    </h2>
-
-                    <p>
-                      {item.description}
-                    </p>
-
-                  </div>
-
-                </a>
-
-              )
-
-            })}
-
-
-            {/* ---------------------------------------------
-                FACEBOOK
-            --------------------------------------------- */}
-
-            {socialPanels.map((item) => {
-
-              const Icon = item.icon
-
-              return (
-
-                <a
-                  key={item.title}
-                  href={item.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="wp-access wp-social-access"
-                >
-
-                  <div className="wp-access__icon">
-
-                    <Icon />
-
-                  </div>
-
-
-                  <div className="wp-access__content">
-
-                    <h2>
-                      {item.title}
-                    </h2>
-
-                    <p>
-                      {item.description}
-                    </p>
-
-                  </div>
-
-                </a>
-
-              )
-
-            })}
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* =================================================
-          FOOTER
-      ================================================= */}
-
-      <footer className="wp-footer">
-
-        <span>
-          W.P. LIMPIEZA & MANTENIMIENTO
-        </span>
-
-        <span>
-          UN MUNDO MÁS LIMPIO, UN MEJOR MAÑANA.
-        </span>
-
-      </footer>
-
-
-      {/* =================================================
-          ESTILOS
-      ================================================= */}
-
-      <style>{`
-
-        * {
-          box-sizing: border-box;
-        }
-
-
-        /* =================================================
-           BASE
-        ================================================= */
-
-        .wp-home {
-
-          position: relative;
-
-          width: 100%;
-
-          min-height: 100vh;
-
-          overflow: hidden;
-
-          background:
-            #F8FAFC;
-
-          color:
-            #123B5D;
-
-          font-family:
-            Inter,
-            ui-sans-serif,
-            system-ui,
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            sans-serif;
-        }
-
-
-        /* =================================================
-           FOTO
-        ================================================= */
-
-        .wp-home__image {
-
-          position: absolute;
-
-          inset: 0;
-
-          background-image:
-            url(${heroImage});
-
-          background-size:
-            cover;
-
-          background-position:
-            center;
-
-          transform:
-            scale(1.02);
-        }
-
-
-        /* =================================================
-           CAPA CLARA
-        ================================================= */
-
-        .wp-home__overlay {
-
-          position: absolute;
-
-          inset: 0;
-
-          background:
-            linear-gradient(
-              90deg,
-
-              rgba(248,250,252,0.97)
-              0%,
-
-              rgba(248,250,252,0.92)
-              29%,
-
-              rgba(248,250,252,0.69)
-              55%,
-
-              rgba(248,250,252,0.82)
-              100%
-            );
-        }
-
-
-        /* =================================================
-           HEADER
-        ================================================= */
-
-        .wp-header {
-
-          position: relative;
-
-          z-index: 100;
-
-          height: 82px;
-
-          padding:
-            0 4.5vw;
-
-          display:
-            flex;
-
-          align-items:
-            center;
-
-          justify-content:
-            space-between;
-        }
-
-
-        /* =================================================
-           LOGO
-        ================================================= */
-
-        .wp-logo {
-
-          display:
-            flex;
-
-          align-items:
-            center;
-
-          gap:
-            12px;
-
-          color:
-            #0F4C81;
-
-          text-decoration:
-            none;
-        }
-
-
-        .wp-logo__mark {
-
-          width:
-            43px;
-
-          height:
-            43px;
-
-          display:
-            grid;
-
-          place-items:
-            center;
-
-          border:
-            1.4px solid
-            #0F4C81;
-
-          border-radius:
-            50%;
-
-          font-size:
-            9px;
-
-          font-weight:
-            800;
-        }
-
-
-        .wp-logo__text {
-
-          display:
-            flex;
-
-          flex-direction:
-            column;
-
-          line-height:
-            1;
-        }
-
-
-        .wp-logo__text strong {
-
-          font-size:
-            14px;
-
-          letter-spacing:
-            2.3px;
-        }
-
-
-        .wp-logo__text small {
-
-          margin-top:
-            5px;
-
-          color:
-            #64748B;
-
-          font-size:
-            6px;
-
-          font-weight:
-            700;
-
-          letter-spacing:
-            1.8px;
-        }
-
-
-        /* =================================================
-           HAMBURGUESA
-        ================================================= */
-
-        .wp-menu-button {
-
-          height:
-            42px;
-
-          padding:
-            0 16px;
-
-          display:
-            flex;
-
-          align-items:
-            center;
-
-          gap:
-            9px;
-
-          border:
-            1px solid
-            rgba(15,76,129,0.17);
-
-          border-radius:
-            22px;
-
-          background:
-            rgba(255,255,255,0.84);
-
-          color:
-            #123B5D;
-
-          cursor:
-            pointer;
-
-          font-size:
-            8px;
-
-          font-weight:
-            750;
-
-          letter-spacing:
-            1.8px;
-
-          backdrop-filter:
-            blur(12px);
-        }
-
-
-        /* =================================================
-           MENÚ
-        ================================================= */
-
-        .wp-hamburger-menu {
-
-          position:
-            absolute;
-
-          z-index:
-            90;
-
-          top:
-            72px;
-
-          right:
-            4.5vw;
-
-          width:
-            270px;
-
-          padding:
-            9px;
-
-          background:
-            rgba(255,255,255,0.97);
-
-          border:
-            1px solid
-            #D9E2EC;
-
-          border-radius:
-            17px;
-
-          box-shadow:
-            0 20px 50px
-            rgba(15,59,93,0.15);
-
-          backdrop-filter:
-            blur(18px);
-        }
-
-
-        .wp-hamburger-inner {
-
-          padding:
-            12px;
-        }
-
-
-        .wp-hamburger-label {
-
-          display:
-            block;
-
-          margin-bottom:
-            5px;
-
-          color:
-            #64748B;
-
-          font-size:
-            7px;
-
-          font-weight:
-            750;
-
-          letter-spacing:
-            2px;
-        }
-
-
-        .wp-hamburger-link {
-
-          min-height:
-            40px;
-
-          display:
-            flex;
-
-          align-items:
-            center;
-
-          border-bottom:
-            1px solid
-            #EAF0F5;
-
-          color:
-            #123B5D;
-
-          text-decoration:
-            none;
-
-          font-size:
-            11px;
-
-          font-weight:
-            600;
-
-          transition:
-            0.2s ease;
-        }
-
-
-        .wp-hamburger-link:last-child {
-
-          border-bottom:
-            0;
-        }
-
-
-        .wp-hamburger-link:hover {
-
-          padding-left:
-            5px;
-
-          color:
-            #0F6FBB;
-        }
-
-
-        /* =================================================
-           CONTENIDO
-        ================================================= */
-
-        .wp-content {
-
-          position:
-            relative;
-
-          z-index:
-            5;
-
-          min-height:
-            calc(100vh - 115px);
-
-          padding:
-            1vh 4.5vw 70px;
-
-          display:
-            grid;
-
-          grid-template-columns:
-            minmax(0, 0.80fr)
-            minmax(550px, 1.20fr);
-
-          align-items:
-            center;
-
-          gap:
-            5vw;
-        }
-
-
-        /* =================================================
-           IZQUIERDA
-        ================================================= */
-
-        .wp-intro {
-
-          max-width:
-            620px;
-        }
-
-
-        .wp-location {
-
-          display:
-            flex;
-
-          align-items:
-            center;
-
-          gap:
-            8px;
-
-          margin-bottom:
-            23px;
-
-          color:
-            #0F4C81;
-
-          font-size:
-            8px;
-
-          font-weight:
-            750;
-
-          letter-spacing:
-            2.6px;
-        }
-
-
-        .wp-location span {
-
-          width:
-            7px;
-
-          height:
-            7px;
-
-          border-radius:
-            50%;
-
-          background:
-            #2497DC;
-        }
-
-
-        .wp-kicker {
-
-          margin:
-            0 0 10px;
-
-          color:
-            #2999DC;
-
-          font-size:
-            9px;
-
-          font-weight:
-            800;
-
-          letter-spacing:
-            2.8px;
-        }
-
-
-        .wp-intro h1 {
-
-          margin:
-            0;
-
-          color:
-            #123B5D;
-
-          font-size:
-            clamp(50px, 5.8vw, 82px);
-
-          line-height:
-            0.90;
-
-          letter-spacing:
-            -4.5px;
-
-          font-weight:
-            400;
-        }
-
-
-        .wp-intro h1 strong {
-
-          font-weight:
-            700;
-        }
-
-
-        .wp-intro h1 em {
-
-          font-style:
-            normal;
-
-          font-weight:
-            300;
-
-          color:
-            #258ED2;
-        }
-
-
-        .wp-description {
-
-          max-width:
-            440px;
-
-          margin:
-            20px 0;
-
-          color:
-            #52677D;
-
-          font-size:
-            13px;
-
-          line-height:
-            1.55;
-        }
-
-
-        /* =================================================
-           CTA
-        ================================================= */
-
-        .wp-cta {
-
-          width:
-            285px;
-
-          height:
-            50px;
-
-          padding:
-            0 17px 0 21px;
-
-          display:
-            inline-flex;
-
-          align-items:
-            center;
-
-          justify-content:
-            space-between;
-
-          border-radius:
-            28px;
-
-          background:
-            linear-gradient(
-              90deg,
-              #48B3F2,
-              #0F6FBB
-            );
-
-          color:
-            white;
-
-          text-decoration:
-            none;
-
-          font-size:
-            9px;
-
-          font-weight:
-            800;
-
-          letter-spacing:
-            1.6px;
-
-          box-shadow:
-            0 10px 25px
-            rgba(15,76,129,0.16);
-        }
-
-
-        .wp-cta__arrow {
-
-          font-size:
-            17px;
-        }
-
-
-        /* =================================================
-           BENEFICIOS
-        ================================================= */
-
-        .wp-benefits {
-
-          margin-top:
-            25px;
-
-          display:
-            flex;
-
-          gap:
-            28px;
-        }
-
-
-        .wp-benefit {
-
-          display:
-            flex;
-
-          flex-direction:
-            column;
-
-          gap:
-            4px;
-        }
-
-
-        .wp-benefit strong {
-
-          color:
-            #123B5D;
-
-          font-size:
-            16px;
-        }
-
-
-        .wp-benefit span {
-
-          color:
-            #64748B;
-
-          font-size:
-            6px;
-
-          letter-spacing:
-            1.1px;
-        }
-
-
-        /* =================================================
-           NAVEGACIÓN
-        ================================================= */
-
-        .wp-navigation {
-
-          width:
-            100%;
-
-          max-width:
-            720px;
-
-          justify-self:
-            end;
-        }
-
-
-        .wp-navigation__heading {
-
-          display:
-            flex;
-
-          justify-content:
-            space-between;
-
-          margin-bottom:
-            10px;
-
-          padding:
-            0 3px;
-
-          color:
-            #64748B;
-
-          font-size:
-            7px;
-
-          font-weight:
-            750;
-
-          letter-spacing:
-            2.2px;
-        }
-
-
-        /* =================================================
-           9 PANELES
-        ================================================= */
-
-        .wp-accesses {
-
-          display:
-            grid;
-
-          grid-template-columns:
-            repeat(3, minmax(0, 1fr));
-
-          gap:
-            10px;
-        }
-
-
-        /* =================================================
-           PANEL
-        ================================================= */
-
-        .wp-access {
-
-          min-height:
-            128px;
-
-          padding:
-            18px 19px;
-
-          display:
-            flex;
-
-          flex-direction:
-            column;
-
-          justify-content:
-            space-between;
-
-          border:
-            1px solid
-            rgba(15,76,129,0.12);
-
-          border-radius:
-            18px;
-
-          background:
-            rgba(255,255,255,0.78);
-
-          box-shadow:
-            0 8px 25px
-            rgba(15,59,93,0.06);
-
-          backdrop-filter:
-            blur(15px);
-
-          color:
-            #123B5D;
-
-          text-decoration:
-            none;
-
-          transition:
-            transform 0.22s ease,
-            background 0.22s ease,
-            box-shadow 0.22s ease,
-            border-color 0.22s ease;
-        }
-
-
-        .wp-access:hover {
-
-          transform:
-            translateY(-4px);
-
-          background:
-            rgba(255,255,255,0.95);
-
-          border-color:
-            rgba(15,76,129,0.25);
-
-          box-shadow:
-            0 16px 32px
-            rgba(15,59,93,0.11);
-        }
-
-
-        /* =================================================
-           ICONO DEL PANEL
-        ================================================= */
-
-        .wp-access__icon {
-
-          width:
-            43px;
-
-          height:
-            43px;
-
-          display:
-            grid;
-
-          place-items:
-            center;
-
-          border-radius:
-            50%;
-
-          background:
-            #F5FAFD;
-
-          border:
-            1px solid
-            rgba(45,153,218,0.16);
-
-          color:
-            #0F6FBB;
-        }
-
-
-        .wp-access__icon svg {
-
-          width:
-            22px;
-
-          height:
-            22px;
-
-          stroke-width:
-            1.5;
-        }
-
-
-        /* =================================================
-           TEXTO PANEL
-        ================================================= */
-
-        .wp-access__content h2 {
-
-          margin:
-            0;
-
-          color:
-            #123B5D;
-
-          font-size:
-            17px;
-
-          line-height:
-            1;
-
-          font-weight:
-            650;
-
-          letter-spacing:
-            -0.3px;
-        }
-
-
-        .wp-access__content p {
-
-          margin:
-            5px 0 0;
-
-          color:
-            #64748B;
-
-          font-size:
-            8px;
-        }
-
-
-        /* =================================================
-           REDES
-           
-           EXACTAMENTE IGUALES
-        ================================================= */
-
-        .wp-social-access .wp-access__icon {
-
-          color:
-            #0F4C81;
-        }
-
-
-        /* =================================================
-           FOOTER
-        ================================================= */
-
-        .wp-footer {
-
-          position:
-            absolute;
-
-          z-index:
-            5;
-
-          left:
-            4.5vw;
-
-          right:
-            4.5vw;
-
-          bottom:
-            14px;
-
-          display:
-            flex;
-
-          justify-content:
-            space-between;
-
-          color:
-            #718096;
-
-          font-size:
-            6px;
-
-          font-weight:
-            700;
-
-          letter-spacing:
-            1.5px;
-        }
-
-
-        /* =================================================
-           TABLET
-        ================================================= */
-
-        @media (max-width: 1150px) {
-
-          .wp-content {
-
-            grid-template-columns:
-              1fr;
-
-            gap:
-              40px;
-
-            padding-bottom:
-              90px;
-          }
-
-
-          .wp-intro {
-
-            max-width:
-              720px;
-          }
-
-
-          .wp-navigation {
-
-            max-width:
-              100%;
-          }
-
-        }
-
-
-        /* =================================================
-           MOBILE
-           PANTALLA TIPO ANDROID
-        ================================================= */
-
-        @media (max-width: 650px) {
-
-
-          /* -----------------------------------------------
-             PANTALLA COMPLETA
-          ----------------------------------------------- */
-
-          .wp-home {
-
-            height:
-              100dvh;
-
-            min-height:
-              100dvh;
-
-            overflow:
-              hidden;
-          }
-
-
-          /* -----------------------------------------------
-             FONDO
-          ----------------------------------------------- */
-
-          .wp-home__image {
-
-            background-position:
-              60% center;
-
-            transform:
-              scale(1.04);
-          }
-
-
-          .wp-home__overlay {
-
-            background:
-              linear-gradient(
-                180deg,
-
-                rgba(248,250,252,0.97)
-                0%,
-
-                rgba(248,250,252,0.92)
-                45%,
-
-                rgba(248,250,252,0.86)
-                100%
-              );
-          }
-
-
-          /* -----------------------------------------------
-             HEADER
-          ----------------------------------------------- */
-
-          .wp-header {
-
-            height:
-              58px;
-
-            padding:
-              0 14px;
-          }
-
-
-          .wp-logo {
-
-            gap:
-              7px;
-          }
-
-
-          .wp-logo__mark {
-
-            width:
-              32px;
-
-            height:
-              32px;
-
-            font-size:
-              7px;
-          }
-
-
-          .wp-logo__text strong {
-
-            font-size:
-              9px;
-
-            letter-spacing:
-              1.5px;
-          }
-
-
-          .wp-logo__text small {
-
-            margin-top:
-              3px;
-
-            font-size:
-              4.5px;
-
-            letter-spacing:
-              1.2px;
-          }
-
-
-          /* -----------------------------------------------
-             MENÚ
-          ----------------------------------------------- */
-
-          .wp-menu-button {
-
-            height:
-              32px;
-
-            padding:
-              0 11px;
-
-            gap:
-              6px;
-
-            border-radius:
-              17px;
-
-            font-size:
-              6.5px;
-          }
-
-
-          .wp-menu-button svg {
-
-            width:
-              14px;
-
-            height:
-              14px;
-          }
-
-
-          .wp-hamburger-menu {
-
-            top:
-              53px;
-
-            left:
-              14px;
-
-            right:
-              14px;
-
-            width:
-              auto;
-
-            border-radius:
-              14px;
-          }
-
-
-          .wp-hamburger-inner {
-
-            padding:
-              10px;
-          }
-
-
-          .wp-hamburger-label {
-
-            font-size:
-              6px;
-
-            margin-bottom:
-              2px;
-          }
-
-
-          .wp-hamburger-link {
-
-            min-height:
-              31px;
-
-            font-size:
-              9px;
-          }
-
-
-          /* -----------------------------------------------
-             CONTENIDO
-          ----------------------------------------------- */
-
-          .wp-content {
-
-            height:
-              calc(100dvh - 58px);
-
-            min-height:
-              0;
-
-            padding:
-              7px 14px 9px;
-
-            display:
-              flex;
-
-            flex-direction:
-              column;
-
-            justify-content:
-              space-between;
-
-            gap:
-              5px;
-          }
-
-
-          /* -----------------------------------------------
-             INTRO MUY COMPACTA
-          ----------------------------------------------- */
-
-          .wp-intro {
-
-            flex:
-              0 0 auto;
-
-            max-width:
-              100%;
-          }
-
-
-          .wp-location {
-
-            margin-bottom:
-              5px;
-
-            gap:
-              5px;
-
-            font-size:
-              5.5px;
-
-            letter-spacing:
-              1.5px;
-          }
-
-
-          .wp-location span {
-
-            width:
-              5px;
-
-            height:
-              5px;
-          }
-
-
-          .wp-kicker {
-
-            margin:
-              0 0 4px;
-
-            font-size:
-              5.5px;
-
-            letter-spacing:
-              1.5px;
-          }
-
-
-          .wp-intro h1 {
-
-            font-size:
-              clamp(28px, 8.5vw, 39px);
-
-            line-height:
-              0.88;
-
-            letter-spacing:
-              -2px;
-          }
-
-
-          .wp-description {
-
-            max-width:
-              330px;
-
-            margin:
-              6px 0;
-
-            font-size:
-              7px;
-
-            line-height:
-              1.25;
-          }
-
-
-          /* -----------------------------------------------
-             BOTÓN
-          ----------------------------------------------- */
-
-          .wp-cta {
-
-            width:
-              175px;
-
-            height:
-              31px;
-
-            min-width:
-              175px;
-
-            padding:
-              0 12px;
-
-            gap:
-              10px;
-
-            border-radius:
-              18px;
-
-            font-size:
-              6px;
-
-            letter-spacing:
-              1px;
-          }
-
-
-          .wp-cta__arrow {
-
-            font-size:
-              13px;
-          }
-
-
-          /* -----------------------------------------------
-             BENEFICIOS
-          ----------------------------------------------- */
-
-          .wp-benefits {
-
-            margin-top:
-              6px;
-
-            gap:
-              13px;
-          }
-
-
-          .wp-benefit {
-
-            gap:
-              2px;
-          }
-
-
-          .wp-benefit strong {
-
-            font-size:
-              8px;
-          }
-
-
-          .wp-benefit span {
-
-            font-size:
-              3.8px;
-
-            letter-spacing:
-              0.5px;
-          }
-
-
-          /* -----------------------------------------------
-             NAVEGACIÓN
-          ----------------------------------------------- */
-
-          .wp-navigation {
-
-            flex:
-              1 1 auto;
-
-            min-height:
-              0;
-
-            width:
-              100%;
-
-            max-width:
-              none;
-
-            display:
-              flex;
-
-            flex-direction:
-              column;
-          }
-
-
-          .wp-navigation__heading {
-
-            flex:
-              0 0 auto;
-
-            margin:
-              1px 2px 4px;
-
-            font-size:
-              5px;
-
-            letter-spacing:
-              1.3px;
-          }
-
-
-          /* ===============================================
-             3 × 3
-             
-             COMO PANTALLA DE ANDROID
-          =============================================== */
-
-          .wp-accesses {
-
-            flex:
-              1 1 auto;
-
-            min-height:
-              0;
-
-            display:
-              grid;
-
-            grid-template-columns:
-              repeat(3, 1fr);
-
-            grid-template-rows:
-              repeat(3, minmax(0, 1fr));
-
-            gap:
-              5px;
-          }
-
-
-          /* -----------------------------------------------
-             TODOS LOS PANELES
-          ----------------------------------------------- */
-
-          .wp-access {
-
-            min-height:
-              0;
-
-            height:
-              100%;
-
-            padding:
-              5px 3px;
-
-            border-radius:
-              13px;
-
-            display:
-              flex;
-
-            align-items:
-              center;
-
-            justify-content:
-              center;
-
-            flex-direction:
-              column;
-
-            gap:
-              3px;
-
-            background:
-              rgba(255,255,255,0.84);
-
-            border:
-              1px solid
-              rgba(15,76,129,0.10);
-
-            box-shadow:
-              0 4px 12px
-              rgba(15,59,93,0.05);
-
-            backdrop-filter:
-              blur(10px);
-          }
-
-
-          .wp-access:active {
-
-            transform:
-              scale(0.95);
-
-            background:
-              #EAF3F8;
-          }
-
-
-          /* -----------------------------------------------
-             ICONOS PEQUEÑOS
-          ----------------------------------------------- */
-
-          .wp-access__icon {
-
-            width:
-              31px;
-
-            height:
-              31px;
-
-            min-width:
-              31px;
-
-            border-radius:
-              50%;
-
-            background:
-              #F5FAFD;
-
-            border:
-              1px solid
-              rgba(45,153,218,0.13);
-
-            box-shadow:
-              none;
-          }
-
-
-          .wp-access__icon svg {
-
-            width:
-              16px;
-
-            height:
-              16px;
-
-            stroke-width:
-              1.5;
-          }
-
-
-          /* -----------------------------------------------
-             NOMBRES
-          ----------------------------------------------- */
-
-          .wp-access__content {
-
-            width:
-              100%;
-
-            text-align:
-              center;
-          }
-
-
-          .wp-access__content h2 {
-
-            font-size:
-              8px;
-
-            line-height:
-              1;
-
-            letter-spacing:
-              -0.1px;
-          }
-
-
-          /*
-             Las descripciones desaparecen
-             para que parezca una pantalla
-             de aplicación.
-          */
-
-          .wp-access__content p {
-
-            display:
-              none;
-          }
-
-
-          /* -----------------------------------------------
-             FOOTER
-          ----------------------------------------------- */
-
-          .wp-footer {
-
-            position:
-              relative;
-
-            left:
-              auto;
-
-            right:
-              auto;
-
-            bottom:
-              auto;
-
-            margin:
-              1px 0 0;
-
-            padding:
-              0;
-
-            text-align:
-              center;
-
-            flex:
-              0 0 auto;
-          }
-
-
-          .wp-footer span {
-
-            font-size:
-              4px;
-
-            letter-spacing:
-              0.8px;
-          }
-
-
-          .wp-footer span:last-child {
-
-            display:
-              none;
-          }
-
-        }
-
-
-        /* =================================================
-           CELULARES MUY PEQUEÑOS
-        ================================================= */
-
-        @media (max-width: 380px) {
-
-          .wp-header {
-
-            height:
-              54px;
-          }
-
-
-          .wp-content {
-
-            height:
-              calc(100dvh - 54px);
-
-            padding:
-              5px 11px 7px;
-          }
-
-
-          .wp-intro h1 {
-
-            font-size:
-              27px;
-
-            letter-spacing:
-              -1.6px;
-          }
-
-
-          .wp-description {
-
-            margin:
-              5px 0;
-
-            font-size:
-              6.5px;
-          }
-
-
-          .wp-cta {
-
-            width:
-              165px;
-
-            min-width:
-              165px;
-
-            height:
-              29px;
-
-            font-size:
-              5.7px;
-          }
-
-
-          .wp-benefits {
-
-            margin-top:
-              4px;
-
-            gap:
-              10px;
-          }
-
-
-          .wp-accesses {
-
-            gap:
-              4px;
-          }
-
-
-          .wp-access {
-
-            border-radius:
-              11px;
-
-            padding:
-              4px 2px;
-
-            gap:
-              2px;
-          }
-
-
-          .wp-access__icon {
-
-            width:
-              27px;
-
-            height:
-              27px;
-
-            min-width:
-              27px;
-          }
-
-
-          .wp-access__icon svg {
-
-            width:
-              14px;
-
-            height:
-              14px;
-          }
-
-
-          .wp-access__content h2 {
-
-            font-size:
-              7px;
-          }
-
-        }
-
-      `}</style>
 
     </main>
   )
 }
+
+export default Home
