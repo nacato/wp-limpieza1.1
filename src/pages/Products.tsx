@@ -7,7 +7,6 @@ import {
   Minus,
   Trash2,
   X,
-  MapPin,
   Navigation,
   MessageCircle,
   CreditCard,
