@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {
-  ArrowUpRight,
   BriefcaseBusiness,
   CheckCircle2,
   Menu,
@@ -10,11 +9,15 @@ import {
   Sparkles,
   Users,
   X,
+  ShieldCheck,
+  Clock3,
+  Leaf,
 } from 'lucide-react'
 
 import { Link } from 'react-router-dom'
 
 import heroImage from '../assets/hero-wp.jpg'
+import logoImage from '../assets/logo.png'
 
 const whatsappNumber = '593992699716'
 
@@ -51,6 +54,29 @@ const navigationItems = [
     title: 'Cotizar',
     href: '/cotizar',
     icon: CheckCircle2,
+  },
+]
+
+const companyValues = [
+  {
+    title: 'Confianza',
+    subtitle: 'En cada servicio',
+    icon: ShieldCheck,
+  },
+  {
+    title: 'Calidad',
+    subtitle: 'Garantizada',
+    icon: Sparkles,
+  },
+  {
+    title: 'Puntualidad',
+    subtitle: 'Y compromiso',
+    icon: Clock3,
+  },
+  {
+    title: 'Productos',
+    subtitle: 'Biodegradables',
+    icon: Leaf,
   },
 ]
 
@@ -102,16 +128,25 @@ function Home() {
       title: 'Facebook',
       href: 'https://www.facebook.com/',
       icon: FacebookIcon,
+      iconColor: 'text-[#1877F2]',
+      iconBg: 'bg-[#EAF2FF]',
+      borderColor: '#C9DDFF',
     },
     {
       title: 'TikTok',
       href: 'https://www.tiktok.com/',
       icon: TikTokIcon,
+      iconColor: 'text-[#111111]',
+      iconBg: 'bg-[#F1F1F1]',
+      borderColor: '#D8D8D8',
     },
     {
       title: 'WhatsApp',
       href: whatsappUrl,
       icon: WhatsAppIcon,
+      iconColor: 'text-[#25D366]',
+      iconBg: 'bg-[#E9FFF1]',
+      borderColor: '#BDEFCF',
     },
   ]
 
@@ -119,7 +154,7 @@ function Home() {
     <main className="relative min-h-screen overflow-hidden bg-[#F8FAFC] text-[#172033]">
 
       {/* =====================================================
-          FONDO GENERAL
+          FONDO
       ====================================================== */}
 
       <div className="pointer-events-none fixed inset-0 z-0">
@@ -128,24 +163,30 @@ function Home() {
           src={heroImage}
           alt=""
           className="
+            absolute
+            inset-0
             h-full
             w-full
             object-cover
             object-center
-            grayscale
-            opacity-[0.16]
+            opacity-[0.32]
           "
         />
 
-        <div className="absolute inset-0 bg-white/78" />
+        <div className="absolute inset-0 bg-[#F8FAFC]/45" />
 
-        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/75 to-[#F8FAFC]/90" />
+        <div
+          className="
+            absolute
+            inset-0
+            bg-gradient-to-r
+            from-[#F8FAFC]/60
+            via-[#F8FAFC]/28
+            to-white/5
+          "
+        />
 
       </div>
-
-      {/* =====================================================
-          CONTENIDO
-      ====================================================== */}
 
       <div className="relative z-10 min-h-screen">
 
@@ -153,20 +194,20 @@ function Home() {
             MOBILE
         ==================================================== */}
 
-        <div className="flex min-h-screen flex-col px-4 sm:hidden">
+        <div className="flex h-screen min-h-[600px] flex-col overflow-hidden px-3 sm:hidden">
 
           {/* HEADER */}
 
-          <header className="flex shrink-0 items-center justify-between py-3">
+          <header className="flex h-10 shrink-0 items-center justify-between">
 
             <Link
               to="/"
               className="flex items-center"
             >
               <img
-                src="/logo.png"
+                src={logoImage}
                 alt="W.P. Limpieza & Mantenimiento"
-                className="h-10 w-auto object-contain"
+                className="h-8 w-auto object-contain"
               />
             </Link>
 
@@ -175,40 +216,143 @@ function Home() {
               onClick={() => setMenuOpen(true)}
               className="
                 flex
-                h-10
+                h-8
                 items-center
-                gap-2
+                gap-1.5
                 rounded-full
                 border
                 border-[#D9E2EC]
-                bg-white/95
-                px-4
-                text-[8px]
+                bg-white/90
+                px-3
+                text-[7px]
                 font-bold
                 uppercase
-                tracking-[0.28em]
+                tracking-[0.25em]
                 text-[#123B5D]
-                shadow-[0_5px_20px_rgba(18,59,93,0.06)]
+                shadow-sm
               "
             >
-
-              <Menu size={17} />
-
+              <Menu size={14} />
               MENÚ
-
             </button>
 
           </header>
 
-          {/* SOLUCIONES */}
+          {/* IDENTIDAD */}
 
-          <section className="shrink-0 pt-2">
+          <section className="shrink-0 text-center">
 
-            <div className="mb-4 flex items-center gap-4">
+            <p className="text-[7px] font-black uppercase tracking-[0.28em] text-[#0F4C81]">
+              W.P. LIMPIEZA Y MANTENIMIENTO
+            </p>
+
+            <p className="mt-0.5 text-[6px] font-medium uppercase tracking-[0.16em] text-[#64748B]">
+              Calidad que se nota, limpieza que perdura
+            </p>
+
+          </section>
+
+          {/* =================================================
+              REDES SOCIALES
+          ================================================== */}
+
+          <section className="mt-2 shrink-0">
+
+            <div
+              className="
+                rounded-2xl
+                border
+                border-white/90
+                bg-white/88
+                px-2.5
+                py-2
+                shadow-[0_8px_25px_rgba(18,59,93,0.09)]
+                backdrop-blur-sm
+              "
+            >
+
+              <div className="mb-1.5 flex items-center justify-center gap-2">
+
+                <span className="h-px w-7 bg-[#C8D8E5]" />
+
+                <p className="text-[8px] font-black uppercase tracking-[0.25em] text-[#123B5D]">
+                  Síguenos en nuestras redes
+                </p>
+
+                <span className="h-px w-7 bg-[#C8D8E5]" />
+
+              </div>
+
+              <div className="grid grid-cols-3 gap-1.5">
+
+                {socialItems.map((item) => {
+
+                  const Icon = item.icon
+
+                  return (
+                    <a
+                      key={item.title}
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="
+                        flex
+                        h-[48px]
+                        items-center
+                        justify-center
+                        gap-1.5
+                        rounded-xl
+                        border
+                        bg-white
+                        transition-all
+                        duration-200
+                        active:scale-[0.95]
+                      "
+                      style={{
+                        borderColor: item.borderColor,
+                      }}
+                    >
+
+                      <span
+                        className={`
+                          flex
+                          h-7
+                          w-7
+                          items-center
+                          justify-center
+                          rounded-full
+                          ${item.iconBg}
+                          ${item.iconColor}
+                        `}
+                      >
+                        <Icon />
+                      </span>
+
+                      <span className="text-[7px] font-bold text-[#123B5D]">
+                        {item.title}
+                      </span>
+
+                    </a>
+                  )
+                })}
+
+              </div>
+
+            </div>
+
+          </section>
+
+          {/* =================================================
+              ACCESOS
+          ================================================== */}
+
+          <section className="mt-2 shrink-0">
+
+            <div className="mb-1.5 flex items-center gap-3">
 
               <span className="h-px flex-1 bg-[#C8D8E5]" />
 
-              <p className="text-[9px] font-black uppercase tracking-[0.45em] text-[#0F4C81]">
+              <p className="text-[7px] font-black uppercase tracking-[0.35em] text-[#0F4C81]">
                 Soluciones
               </p>
 
@@ -216,7 +360,7 @@ function Home() {
 
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-3 gap-1.5">
 
               {navigationItems.map((item) => {
 
@@ -227,46 +371,41 @@ function Home() {
                     key={item.title}
                     to={item.href}
                     className="
-                      group
                       flex
-                      h-[92px]
+                      h-[50px]
                       flex-col
                       items-center
                       justify-center
-                      rounded-[1.25rem]
+                      rounded-xl
                       border
                       border-[#D9E2EC]
-                      bg-white/95
-                      shadow-[0_7px_24px_rgba(18,59,93,0.06)]
-                      transition-all
-                      duration-300
-                      active:scale-[0.98]
+                      bg-white/90
+                      shadow-[0_4px_12px_rgba(18,59,93,0.05)]
+                      active:scale-[0.97]
                     "
                   >
 
                     <span
                       className="
                         flex
-                        h-11
-                        w-11
+                        h-6
+                        w-6
                         items-center
                         justify-center
                         rounded-full
                         border
                         border-[#CFE5F2]
-                        bg-[#F5FAFD]
+                        bg-[#EAF3F8]
                         text-[#0F4C81]
                       "
                     >
-
                       <Icon
-                        size={20}
-                        strokeWidth={1.6}
+                        size={13}
+                        strokeWidth={1.7}
                       />
-
                     </span>
 
-                    <span className="mt-2 text-[11px] font-bold text-[#123B5D]">
+                    <span className="mt-0.5 text-[7px] font-bold text-[#123B5D]">
                       {item.title}
                     </span>
 
@@ -278,15 +417,17 @@ function Home() {
 
           </section>
 
-          {/* PRESENTACIÓN */}
+          {/* =================================================
+              HERO
+          ================================================== */}
 
-          <section className="flex shrink-0 flex-col items-center px-2 pt-7 text-center">
+          <section className="flex shrink-0 flex-col items-center px-1 pt-3 text-center">
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
 
               <span className="h-1.5 w-1.5 rounded-full bg-[#0F4C81]" />
 
-              <p className="text-[8px] font-bold uppercase tracking-[0.35em] text-[#0F4C81]">
+              <p className="text-[6px] font-bold uppercase tracking-[0.3em] text-[#0F4C81]">
                 Quito · Ecuador
               </p>
 
@@ -294,11 +435,11 @@ function Home() {
 
             <h1
               className="
-                mt-3
-                max-w-[340px]
-                text-[2.7rem]
+                mt-1.5
+                max-w-[320px]
+                text-[2rem]
                 font-black
-                leading-[0.88]
+                leading-[0.86]
                 tracking-[-0.065em]
                 text-[#123B5D]
               "
@@ -314,7 +455,7 @@ function Home() {
 
             </h1>
 
-            <p className="mt-3 max-w-[310px] text-[10px] leading-4 text-[#64748B]">
+            <p className="mt-1.5 max-w-[290px] text-[7px] leading-3 text-[#64748B]">
               Limpieza y mantenimiento profesional para empresas,
               instituciones y hogares.
             </p>
@@ -322,114 +463,146 @@ function Home() {
             <Link
               to="/cotizar"
               className="
-                mt-4
+                mt-2
                 flex
-                h-11
-                w-full
-                max-w-[285px]
+                h-8
+                w-[220px]
                 items-center
-                justify-between
+                justify-center
                 rounded-full
                 bg-[#0F4C81]
-                px-5
-                text-[9px]
+                text-[7px]
                 font-bold
                 uppercase
-                tracking-[0.2em]
+                tracking-[0.18em]
                 text-white
-                shadow-[0_10px_30px_rgba(15,76,129,0.18)]
+                shadow-[0_6px_18px_rgba(15,76,129,0.18)]
               "
             >
-
               Solicitar servicio
-
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15">
-
-                <ArrowUpRight size={15} />
-
-              </span>
-
             </Link>
 
           </section>
 
-          {/* REDES */}
+          {/* =================================================
+              DIRECTOR + TELÉFONO
+          ================================================== */}
 
-          <section className="mt-5 shrink-0">
+          <section
+            className="
+              mx-auto
+              mt-2
+              flex
+              w-full
+              max-w-[360px]
+              shrink-0
+              items-center
+              justify-between
+              rounded-xl
+              border
+              border-white/80
+              bg-white/78
+              px-3
+              py-2
+              shadow-[0_5px_15px_rgba(18,59,93,0.06)]
+            "
+          >
 
-            <div className="mb-3 flex items-center gap-4">
+            <div className="text-left">
 
-              <span className="h-px flex-1 bg-[#C8D8E5]" />
-
-              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#0F4C81]">
-                Síguenos
+              <p className="text-[5.5px] font-bold uppercase tracking-[0.2em] text-[#64748B]">
+                Director de Operaciones
               </p>
 
-              <span className="h-px flex-1 bg-[#C8D8E5]" />
+              <p className="text-[12px] font-black uppercase tracking-[0.04em] text-[#123B5D]">
+                Waldir Palma
+              </p>
 
             </div>
 
-            <div className="grid grid-cols-3 gap-2.5">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 text-[#0F4C81]"
+            >
 
-              {socialItems.map((item) => {
+              <span
+                className="
+                  flex
+                  h-6
+                  w-6
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-[#0F4C81]
+                  text-white
+                "
+              >
+                <Phone size={11} />
+              </span>
 
-                const Icon = item.icon
+              <span className="text-[9px] font-black tracking-[0.08em]">
+                099 269 9716
+              </span>
 
-                return (
-                  <a
-                    key={item.title}
-                    href={item.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="
-                      flex
-                      h-[82px]
-                      flex-col
-                      items-center
-                      justify-center
-                      rounded-[1.15rem]
-                      border
-                      border-[#D9E2EC]
-                      bg-white/95
-                      shadow-[0_7px_24px_rgba(18,59,93,0.05)]
-                    "
-                  >
-
-                    <span
-                      className="
-                        flex
-                        h-9
-                        w-9
-                        items-center
-                        justify-center
-                        rounded-full
-                        border
-                        border-[#CFE5F2]
-                        bg-[#F5FAFD]
-                        text-[#0F4C81]
-                      "
-                    >
-                      <Icon />
-                    </span>
-
-                    <span className="mt-1.5 text-[9px] font-bold text-[#123B5D]">
-                      {item.title}
-                    </span>
-
-                  </a>
-                )
-              })}
-
-            </div>
+            </a>
 
           </section>
 
-          {/* FOOTER MOBILE */}
+          {/* =================================================
+              VALORES
+          ================================================== */}
 
-          <footer className="mt-auto py-3 text-center">
+          <section className="mt-1.5 grid shrink-0 grid-cols-4 gap-1.5">
 
-            <p className="text-[7px] font-bold uppercase tracking-[0.3em] text-[#64748B]">
-              W.P. LIMPIEZA & MANTENIMIENTO
+            {companyValues.map((value) => {
+
+              const Icon = value.icon
+
+              return (
+                <div
+                  key={value.title}
+                  className="
+                    flex
+                    h-[45px]
+                    flex-col
+                    items-center
+                    justify-center
+                    rounded-lg
+                    border
+                    border-[#D9E2EC]
+                    bg-white/85
+                    text-center
+                  "
+                >
+
+                  <Icon
+                    size={12}
+                    strokeWidth={1.7}
+                    className="text-[#0F4C81]"
+                  />
+
+                  <p className="mt-0.5 text-[5.5px] font-black uppercase text-[#123B5D]">
+                    {value.title}
+                  </p>
+
+                  <p className="text-[4.5px] uppercase text-[#64748B]">
+                    {value.subtitle}
+                  </p>
+
+                </div>
+              )
+            })}
+
+          </section>
+
+          {/* FOOTER */}
+
+          <footer className="mt-auto flex h-5 shrink-0 items-center justify-center">
+
+            <p className="text-[5px] font-bold uppercase tracking-[0.22em] text-[#64748B]">
+              W.P. LIMPIEZA & MANTENIMIENTO · QUITO
             </p>
 
           </footer>
@@ -437,10 +610,10 @@ function Home() {
         </div>
 
         {/* ===================================================
-            DESKTOP
+            DESKTOP / PC
         ==================================================== */}
 
-        <div className="hidden min-h-screen sm:flex sm:flex-col">
+        <div className="hidden min-h-screen flex-col sm:flex">
 
           {/* HEADER */}
 
@@ -451,9 +624,9 @@ function Home() {
               className="flex items-center"
             >
               <img
-                src="/logo.png"
+                src={logoImage}
                 alt="W.P. Limpieza & Mantenimiento"
-                className="h-12 w-auto object-contain"
+                className="h-14 w-auto object-contain"
               />
             </Link>
 
@@ -464,42 +637,36 @@ function Home() {
                 flex
                 h-11
                 items-center
-                gap-2
+                gap-3
                 rounded-full
                 border
-                border-[#D9E2EC]
-                bg-white/90
-                px-5
-                text-[9px]
+                border-white/90
+                bg-white/82
+                px-6
+                text-[10px]
                 font-bold
                 uppercase
                 tracking-[0.3em]
                 text-[#123B5D]
-                shadow-sm
+                shadow-[0_8px_30px_rgba(18,59,93,0.10)]
                 backdrop-blur-md
                 transition
-                hover:border-[#0F4C81]
-                hover:bg-[#EAF3F8]
+                hover:bg-white
               "
             >
-
-              <Menu size={18} />
-
+              <Menu size={19} />
               MENÚ
-
             </button>
 
           </header>
 
-          {/* DESKTOP CONTENIDO */}
+          {/* HERO */}
 
-          <section className="flex flex-1 flex-col justify-center px-10 pb-5 lg:px-14">
+          <section className="flex min-h-0 flex-1 items-center px-10 lg:px-14">
 
-            <div className="grid grid-cols-[1fr_1fr] items-center gap-12">
+            <div className="grid w-full grid-cols-[1.1fr_0.9fr] items-center gap-12">
 
-              {/* TEXTO */}
-
-              <div className="max-w-2xl">
+              <div className="max-w-3xl">
 
                 <div className="flex items-center gap-3">
 
@@ -511,7 +678,7 @@ function Home() {
 
                 </div>
 
-                <p className="mt-3 text-[9px] font-bold uppercase tracking-[0.35em] text-[#64748B]">
+                <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.35em] text-[#64748B]">
                   Soluciones profesionales
                 </p>
 
@@ -520,7 +687,7 @@ function Home() {
                     mt-5
                     text-6xl
                     font-black
-                    leading-[0.87]
+                    leading-[0.86]
                     tracking-[-0.07em]
                     text-[#123B5D]
                     lg:text-7xl
@@ -538,7 +705,7 @@ function Home() {
 
                 </h1>
 
-                <p className="mt-5 max-w-xl text-sm leading-6 text-[#52677B] lg:text-base">
+                <p className="mt-5 max-w-xl text-base leading-7 text-[#64748B]">
                   Limpieza y mantenimiento profesional para empresas,
                   instituciones y hogares.
                 </p>
@@ -548,87 +715,145 @@ function Home() {
                   className="
                     mt-7
                     inline-flex
-                    h-12
-                    min-w-[250px]
+                    h-14
+                    min-w-[285px]
                     items-center
-                    justify-between
+                    justify-center
                     rounded-full
                     bg-[#0F4C81]
-                    px-5
-                    text-[9px]
+                    px-7
+                    text-[10px]
                     font-bold
                     uppercase
                     tracking-[0.22em]
                     text-white
-                    shadow-[0_12px_35px_rgba(15,76,129,0.18)]
-                    transition
+                    shadow-[0_15px_40px_rgba(15,76,129,0.22)]
+                    transition-all
                     hover:bg-[#123B5D]
                   "
                 >
-
                   Solicitar servicio
-
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
-
-                    <ArrowUpRight size={16} />
-
-                  </span>
-
                 </Link>
 
               </div>
 
-              {/* INFORMACIÓN VISUAL */}
+              {/* BLOQUE CORPORATIVO */}
 
               <div className="flex justify-end">
 
-                <div className="max-w-md rounded-[2rem] border border-white/70 bg-white/70 p-7 shadow-[0_20px_60px_rgba(18,59,93,0.08)] backdrop-blur-md">
+                <div
+                  className="
+                    w-full
+                    max-w-[410px]
+                    rounded-[2rem]
+                    border
+                    border-white/75
+                    bg-white/58
+                    p-8
+                    shadow-[0_25px_70px_rgba(18,59,93,0.10)]
+                    backdrop-blur-[5px]
+                  "
+                >
 
-                  <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#0F4C81]">
-                    W.P. Limpieza
+                  <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#0F4C81]">
+                    W.P. Limpieza y Mantenimiento
                   </p>
 
-                  <p className="mt-3 text-2xl font-black leading-tight tracking-[-0.04em] text-[#123B5D] lg:text-3xl">
-                    Profesionalismo en cada espacio.
-                  </p>
+                  <h2 className="mt-3 text-3xl font-black leading-tight tracking-[-0.04em] text-[#123B5D]">
+                    Calidad que se nota,
+                    <span className="block">
+                      limpieza que perdura.
+                    </span>
+                  </h2>
 
                   <p className="mt-4 text-sm leading-6 text-[#64748B]">
-                    Soluciones para hogares, empresas e instituciones.
+                    Soluciones profesionales de limpieza y mantenimiento
+                    para hogares, empresas e instituciones.
                   </p>
 
-                  <div className="mt-6 grid grid-cols-3 border-t border-[#D9E2EC] pt-5">
+                  <div className="mt-6 border-t border-[#D9E2EC]/80 pt-5">
 
-                    <div>
-                      <p className="text-lg font-black text-[#123B5D]">
-                        20+
-                      </p>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-[#64748B]">
+                      Director de Operaciones
+                    </p>
 
-                      <p className="mt-1 text-[7px] font-bold uppercase tracking-[0.12em] text-[#94A3B8]">
-                        Experiencia
-                      </p>
-                    </div>
-
-                    <div className="border-l border-[#D9E2EC] pl-4">
-                      <p className="text-lg font-black text-[#123B5D]">
-                        W.P.
-                      </p>
-
-                      <p className="mt-1 text-[7px] font-bold uppercase tracking-[0.12em] text-[#94A3B8]">
-                        Servicio
-                      </p>
-                    </div>
-
-                    <div className="border-l border-[#D9E2EC] pl-4">
-                      <p className="text-lg font-black text-[#123B5D]">
-                        100%
-                      </p>
-
-                      <p className="mt-1 text-[7px] font-bold uppercase tracking-[0.12em] text-[#94A3B8]">
-                        Compromiso
-                      </p>
-                    </div>
+                    <p className="mt-1 text-2xl font-black uppercase tracking-[0.04em] text-[#123B5D]">
+                      Waldir Palma
+                    </p>
 
                   </div>
+
+                  <div className="mt-6 grid grid-cols-4 border-t border-[#D9E2EC]/80 pt-5">
+
+                    {companyValues.map((value) => {
+
+                      const Icon = value.icon
+
+                      return (
+                        <div
+                          key={value.title}
+                          className="flex flex-col items-center text-center"
+                        >
+
+                          <Icon
+                            size={19}
+                            strokeWidth={1.7}
+                            className="text-[#0F4C81]"
+                          />
+
+                          <p className="mt-2 text-[8px] font-black uppercase tracking-[0.04em] text-[#123B5D]">
+                            {value.title}
+                          </p>
+
+                          <p className="mt-0.5 text-[6px] uppercase leading-3 text-[#64748B]">
+                            {value.subtitle}
+                          </p>
+
+                        </div>
+                      )
+                    })}
+
+                  </div>
+
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="
+                      mt-6
+                      flex
+                      items-center
+                      justify-center
+                      gap-3
+                      border-t
+                      border-[#D9E2EC]/80
+                      pt-5
+                      text-[#123B5D]
+                      transition
+                      hover:text-[#0F4C81]
+                    "
+                  >
+
+                    <span
+                      className="
+                        flex
+                        h-9
+                        w-9
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-[#0F4C81]
+                        text-white
+                      "
+                    >
+                      <Phone size={16} />
+                    </span>
+
+                    <span className="text-lg font-black tracking-[0.14em]">
+                      099 269 9716
+                    </span>
+
+                  </a>
 
                 </div>
 
@@ -638,11 +863,11 @@ function Home() {
 
           </section>
 
-          {/* ACCESOS DESKTOP */}
+          {/* ACCESOS PC */}
 
-          <section className="shrink-0 px-10 pb-5 lg:px-14">
+          <section className="shrink-0 px-10 pb-4 lg:px-14">
 
-            <div className="grid grid-cols-6 gap-3">
+            <div className="grid grid-cols-6 gap-4">
 
               {navigationItems.map((item) => {
 
@@ -655,39 +880,67 @@ function Home() {
                     className="
                       group
                       flex
-                      h-[72px]
+                      h-[115px]
+                      flex-col
                       items-center
-                      gap-3
-                      rounded-2xl
+                      justify-center
+                      rounded-[1.5rem]
                       border
-                      border-white/80
-                      bg-white/88
-                      px-4
-                      shadow-[0_8px_25px_rgba(18,59,93,0.06)]
-                      backdrop-blur-md
-                      transition
-                      hover:-translate-y-1
-                      hover:border-[#0F4C81]/30
-                      hover:bg-white
+                      border-white/90
+                      bg-white/78
+                      shadow-[0_12px_35px_rgba(18,59,93,0.12)]
+                      backdrop-blur-[4px]
+                      transition-all
+                      duration-300
+                      hover:-translate-y-2
+                      hover:border-[#0F4C81]/50
+                      hover:bg-white/95
+                      hover:shadow-[0_20px_45px_rgba(15,76,129,0.18)]
+                      active:scale-[0.98]
                     "
                   >
 
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#CFE5F2] bg-[#F5FAFD] text-[#0F4C81]">
-
+                    <span
+                      className="
+                        flex
+                        h-14
+                        w-14
+                        items-center
+                        justify-center
+                        rounded-full
+                        border
+                        border-[#C8E4F5]
+                        bg-[#EAF3F8]
+                        text-[#0F4C81]
+                        transition-all
+                        duration-300
+                        group-hover:scale-105
+                        group-hover:border-[#0F4C81]
+                        group-hover:bg-white
+                      "
+                    >
                       <Icon
-                        size={17}
+                        size={25}
                         strokeWidth={1.7}
                       />
-
                     </span>
 
-                    <span className="text-[10px] font-bold text-[#123B5D]">
+                    <span className="mt-3 text-[13px] font-bold text-[#123B5D]">
                       {item.title}
                     </span>
 
-                    <ArrowUpRight
-                      size={14}
-                      className="ml-auto text-[#A7B5C2]"
+                    <span
+                      className="
+                        mt-2
+                        h-[2px]
+                        w-7
+                        rounded-full
+                        bg-[#CFE5F2]
+                        transition-all
+                        duration-300
+                        group-hover:w-12
+                        group-hover:bg-[#0F4C81]
+                      "
                     />
 
                   </Link>
@@ -696,7 +949,9 @@ function Home() {
 
             </div>
 
-            <div className="mt-2 grid grid-cols-3 gap-3">
+            {/* REDES PC */}
+
+            <div className="mt-3 grid grid-cols-3 gap-4">
 
               {socialItems.map((item) => {
 
@@ -709,24 +964,43 @@ function Home() {
                     target="_blank"
                     rel="noreferrer"
                     className="
+                      group
                       flex
-                      h-10
+                      h-14
                       items-center
                       justify-center
-                      gap-2
-                      rounded-xl
+                      gap-3
+                      rounded-2xl
                       border
-                      border-white/80
-                      bg-white/80
+                      border-white/90
+                      bg-white/78
                       text-[#123B5D]
-                      shadow-sm
-                      backdrop-blur-md
+                      shadow-[0_8px_25px_rgba(18,59,93,0.08)]
+                      backdrop-blur-[4px]
+                      transition-all
+                      duration-300
+                      hover:-translate-y-1
+                      hover:border-[#0F4C81]/40
+                      hover:bg-white/95
                     "
                   >
 
-                    <Icon />
+                    <span
+                      className={`
+                        flex
+                        h-9
+                        w-9
+                        items-center
+                        justify-center
+                        rounded-full
+                        ${item.iconBg}
+                        ${item.iconColor}
+                      `}
+                    >
+                      <Icon />
+                    </span>
 
-                    <span className="text-[9px] font-bold">
+                    <span className="text-[11px] font-bold">
                       {item.title}
                     </span>
 
@@ -738,11 +1012,11 @@ function Home() {
 
           </section>
 
-          {/* FOOTER */}
+          {/* FOOTER PC */}
 
-          <footer className="shrink-0 px-10 py-3 text-center lg:px-14">
+          <footer className="shrink-0 px-10 py-2.5 text-center lg:px-14">
 
-            <p className="text-[7px] font-bold uppercase tracking-[0.3em] text-[#52677B]">
+            <p className="text-[8px] font-bold uppercase tracking-[0.32em] text-[#64748B]">
               W.P. LIMPIEZA & MANTENIMIENTO · QUITO · ECUADOR
             </p>
 
@@ -757,14 +1031,14 @@ function Home() {
       ====================================================== */}
 
       {menuOpen && (
-        <div className="fixed inset-0 z-[100] bg-[#123B5D]/25 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] bg-[#123B5D]/20 p-4 backdrop-blur-sm">
 
           <div className="mx-auto mt-4 max-w-md overflow-hidden rounded-[2rem] border border-[#D9E2EC] bg-white shadow-[0_30px_100px_rgba(18,59,93,0.18)]">
 
             <div className="flex items-center justify-between border-b border-[#D9E2EC] px-5 py-4">
 
               <img
-                src="/logo.png"
+                src={logoImage}
                 alt="W.P. Limpieza"
                 className="h-9 w-auto"
               />
@@ -772,7 +1046,17 @@ function Home() {
               <button
                 type="button"
                 onClick={() => setMenuOpen(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#D9E2EC] text-[#123B5D]"
+                className="
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-[#D9E2EC]
+                  text-[#123B5D]
+                "
                 aria-label="Cerrar menú"
               >
                 <X size={18} />
@@ -791,23 +1075,38 @@ function Home() {
                     key={item.title}
                     to={item.href}
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-4 rounded-2xl px-4 py-3 transition hover:bg-[#EAF3F8]"
+                    className="
+                      flex
+                      items-center
+                      gap-4
+                      rounded-2xl
+                      px-4
+                      py-3
+                      transition
+                      hover:bg-[#EAF3F8]
+                    "
                   >
 
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#D9E2EC] bg-[#F8FAFC] text-[#0F4C81]">
-
+                    <span
+                      className="
+                        flex
+                        h-10
+                        w-10
+                        items-center
+                        justify-center
+                        rounded-xl
+                        border
+                        border-[#D9E2EC]
+                        bg-[#F8FAFC]
+                        text-[#0F4C81]
+                      "
+                    >
                       <Icon size={18} />
-
                     </span>
 
                     <span className="flex-1 text-sm font-bold text-[#123B5D]">
                       {item.title}
                     </span>
-
-                    <ArrowUpRight
-                      size={16}
-                      className="text-[#94A3B8]"
-                    />
 
                   </Link>
                 )
@@ -822,7 +1121,20 @@ function Home() {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => setMenuOpen(false)}
-                className="flex h-11 items-center justify-center gap-2 rounded-full bg-[#0F4C81] text-xs font-bold text-white"
+                className="
+                  flex
+                  h-11
+                  items-center
+                  justify-center
+                  gap-2
+                  rounded-full
+                  bg-[#0F4C81]
+                  text-xs
+                  font-bold
+                  text-white
+                  transition
+                  hover:bg-[#123B5D]
+                "
               >
 
                 <MessageCircle size={16} />
