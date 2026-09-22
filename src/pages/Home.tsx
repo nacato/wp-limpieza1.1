@@ -154,7 +154,7 @@ function Home() {
     <main className="relative min-h-screen overflow-hidden bg-[#F8FAFC] text-[#172033]">
 
       {/* =====================================================
-          FONDO
+          FONDO GENERAL
       ====================================================== */}
 
       <div className="pointer-events-none fixed inset-0 z-0">
@@ -194,11 +194,23 @@ function Home() {
             MOBILE
         ==================================================== */}
 
-        <div className="flex h-screen min-h-[600px] flex-col overflow-hidden px-3 sm:hidden">
+        <div
+          className="
+            flex
+            h-[100dvh]
+            min-h-0
+            flex-col
+            justify-between
+            overflow-hidden
+            px-3
+            py-2
+            sm:hidden
+          "
+        >
 
-          {/* HEADER */}
+          {/* ================= HEADER ================= */}
 
-          <header className="flex h-10 shrink-0 items-center justify-between">
+          <header className="flex shrink-0 items-center justify-between">
 
             <Link
               to="/"
@@ -207,7 +219,7 @@ function Home() {
               <img
                 src={logoImage}
                 alt="W.P. Limpieza & Mantenimiento"
-                className="h-8 w-auto object-contain"
+                className="h-12 w-auto object-contain"
               />
             </Link>
 
@@ -216,74 +228,72 @@ function Home() {
               onClick={() => setMenuOpen(true)}
               className="
                 flex
-                h-8
+                h-10
                 items-center
-                gap-1.5
+                gap-2
                 rounded-full
                 border
                 border-[#D9E2EC]
-                bg-white/90
-                px-3
-                text-[7px]
+                bg-white/95
+                px-4
+                text-[8px]
                 font-bold
                 uppercase
                 tracking-[0.25em]
                 text-[#123B5D]
-                shadow-sm
+                shadow-[0_6px_18px_rgba(18,59,93,0.10)]
               "
             >
-              <Menu size={14} />
+              <Menu size={17} />
               MENÚ
             </button>
 
           </header>
 
-          {/* IDENTIDAD */}
+          {/* ================= IDENTIDAD ================= */}
 
           <section className="shrink-0 text-center">
 
-            <p className="text-[7px] font-black uppercase tracking-[0.28em] text-[#0F4C81]">
+            <p className="text-[9px] font-black uppercase tracking-[0.30em] text-[#0F4C81]">
               W.P. LIMPIEZA Y MANTENIMIENTO
             </p>
 
-            <p className="mt-0.5 text-[6px] font-medium uppercase tracking-[0.16em] text-[#64748B]">
+            <p className="mt-1 text-[7px] font-medium uppercase tracking-[0.18em] text-[#64748B]">
               Calidad que se nota, limpieza que perdura
             </p>
 
           </section>
 
-          {/* =================================================
-              REDES SOCIALES
-          ================================================== */}
+          {/* ================= REDES ================= */}
 
-          <section className="mt-2 shrink-0">
+          <section className="shrink-0">
 
             <div
               className="
-                rounded-2xl
+                rounded-[1.5rem]
                 border
-                border-white/90
-                bg-white/88
+                border-white
+                bg-white/92
                 px-2.5
-                py-2
-                shadow-[0_8px_25px_rgba(18,59,93,0.09)]
+                py-3
+                shadow-[0_8px_28px_rgba(18,59,93,0.10)]
                 backdrop-blur-sm
               "
             >
 
-              <div className="mb-1.5 flex items-center justify-center gap-2">
+              <div className="mb-2.5 flex items-center justify-center gap-2">
 
-                <span className="h-px w-7 bg-[#C8D8E5]" />
+                <span className="h-px w-8 bg-[#C8D8E5]" />
 
-                <p className="text-[8px] font-black uppercase tracking-[0.25em] text-[#123B5D]">
+                <p className="text-[8px] font-black uppercase tracking-[0.28em] text-[#123B5D]">
                   Síguenos en nuestras redes
                 </p>
 
-                <span className="h-px w-7 bg-[#C8D8E5]" />
+                <span className="h-px w-8 bg-[#C8D8E5]" />
 
               </div>
 
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-3 gap-2">
 
                 {socialItems.map((item) => {
 
@@ -297,15 +307,14 @@ function Home() {
                       rel="noreferrer"
                       className="
                         flex
-                        h-[48px]
+                        h-[58px]
                         items-center
                         justify-center
-                        gap-1.5
+                        gap-2
                         rounded-xl
                         border
                         bg-white
                         transition-all
-                        duration-200
                         active:scale-[0.95]
                       "
                       style={{
@@ -316,8 +325,8 @@ function Home() {
                       <span
                         className={`
                           flex
-                          h-7
-                          w-7
+                          h-8
+                          w-8
                           items-center
                           justify-center
                           rounded-full
@@ -328,7 +337,7 @@ function Home() {
                         <Icon />
                       </span>
 
-                      <span className="text-[7px] font-bold text-[#123B5D]">
+                      <span className="text-[8px] font-bold text-[#123B5D]">
                         {item.title}
                       </span>
 
@@ -342,17 +351,15 @@ function Home() {
 
           </section>
 
-          {/* =================================================
-              ACCESOS
-          ================================================== */}
+          {/* ================= SOLUCIONES ================= */}
 
-          <section className="mt-2 shrink-0">
+          <section className="shrink-0">
 
-            <div className="mb-1.5 flex items-center gap-3">
+            <div className="mb-2 flex items-center gap-3">
 
               <span className="h-px flex-1 bg-[#C8D8E5]" />
 
-              <p className="text-[7px] font-black uppercase tracking-[0.35em] text-[#0F4C81]">
+              <p className="text-[8px] font-black uppercase tracking-[0.38em] text-[#0F4C81]">
                 Soluciones
               </p>
 
@@ -360,7 +367,7 @@ function Home() {
 
             </div>
 
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-3 gap-2">
 
               {navigationItems.map((item) => {
 
@@ -372,15 +379,15 @@ function Home() {
                     to={item.href}
                     className="
                       flex
-                      h-[50px]
+                      h-[62px]
                       flex-col
                       items-center
                       justify-center
-                      rounded-xl
+                      rounded-[1rem]
                       border
                       border-[#D9E2EC]
-                      bg-white/90
-                      shadow-[0_4px_12px_rgba(18,59,93,0.05)]
+                      bg-white/92
+                      shadow-[0_5px_15px_rgba(18,59,93,0.06)]
                       active:scale-[0.97]
                     "
                   >
@@ -388,8 +395,8 @@ function Home() {
                     <span
                       className="
                         flex
-                        h-6
-                        w-6
+                        h-7
+                        w-7
                         items-center
                         justify-center
                         rounded-full
@@ -400,12 +407,12 @@ function Home() {
                       "
                     >
                       <Icon
-                        size={13}
+                        size={15}
                         strokeWidth={1.7}
                       />
                     </span>
 
-                    <span className="mt-0.5 text-[7px] font-bold text-[#123B5D]">
+                    <span className="mt-1 text-[8px] font-bold text-[#123B5D]">
                       {item.title}
                     </span>
 
@@ -417,17 +424,26 @@ function Home() {
 
           </section>
 
-          {/* =================================================
-              HERO
-          ================================================== */}
+          {/* ================= HERO ================= */}
 
-          <section className="flex shrink-0 flex-col items-center px-1 pt-3 text-center">
+          <section
+            className="
+              flex
+              min-h-0
+              flex-1
+              flex-col
+              items-center
+              justify-center
+              px-2
+              text-center
+            "
+          >
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
 
-              <span className="h-1.5 w-1.5 rounded-full bg-[#0F4C81]" />
+              <span className="h-2 w-2 rounded-full bg-[#0F4C81]" />
 
-              <p className="text-[6px] font-bold uppercase tracking-[0.3em] text-[#0F4C81]">
+              <p className="text-[7px] font-bold uppercase tracking-[0.34em] text-[#0F4C81]">
                 Quito · Ecuador
               </p>
 
@@ -435,12 +451,12 @@ function Home() {
 
             <h1
               className="
-                mt-1.5
-                max-w-[320px]
-                text-[2rem]
+                mt-3
+                max-w-[350px]
+                text-[2.65rem]
                 font-black
-                leading-[0.86]
-                tracking-[-0.065em]
+                leading-[0.84]
+                tracking-[-0.07em]
                 text-[#123B5D]
               "
             >
@@ -455,7 +471,7 @@ function Home() {
 
             </h1>
 
-            <p className="mt-1.5 max-w-[290px] text-[7px] leading-3 text-[#64748B]">
+            <p className="mt-3 max-w-[315px] text-[8px] leading-4 text-[#64748B]">
               Limpieza y mantenimiento profesional para empresas,
               instituciones y hogares.
             </p>
@@ -463,20 +479,20 @@ function Home() {
             <Link
               to="/cotizar"
               className="
-                mt-2
+                mt-4
                 flex
-                h-8
-                w-[220px]
+                h-11
+                w-[245px]
                 items-center
                 justify-center
                 rounded-full
                 bg-[#0F4C81]
-                text-[7px]
+                text-[8px]
                 font-bold
                 uppercase
-                tracking-[0.18em]
+                tracking-[0.20em]
                 text-white
-                shadow-[0_6px_18px_rgba(15,76,129,0.18)]
+                shadow-[0_10px_28px_rgba(15,76,129,0.23)]
               "
             >
               Solicitar servicio
@@ -484,37 +500,31 @@ function Home() {
 
           </section>
 
-          {/* =================================================
-              DIRECTOR + TELÉFONO
-          ================================================== */}
+          {/* ================= DIRECTOR ================= */}
 
           <section
             className="
-              mx-auto
-              mt-2
               flex
-              w-full
-              max-w-[360px]
               shrink-0
               items-center
               justify-between
-              rounded-xl
+              rounded-[1.3rem]
               border
-              border-white/80
-              bg-white/78
-              px-3
-              py-2
-              shadow-[0_5px_15px_rgba(18,59,93,0.06)]
+              border-white
+              bg-white/92
+              px-4
+              py-3
+              shadow-[0_8px_25px_rgba(18,59,93,0.09)]
             "
           >
 
             <div className="text-left">
 
-              <p className="text-[5.5px] font-bold uppercase tracking-[0.2em] text-[#64748B]">
+              <p className="text-[6px] font-bold uppercase tracking-[0.22em] text-[#64748B]">
                 Director de Operaciones
               </p>
 
-              <p className="text-[12px] font-black uppercase tracking-[0.04em] text-[#123B5D]">
+              <p className="mt-1 text-[15px] font-black uppercase tracking-[0.04em] text-[#123B5D]">
                 Waldir Palma
               </p>
 
@@ -524,14 +534,19 @@ function Home() {
               href={whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 text-[#0F4C81]"
+              className="
+                flex
+                items-center
+                gap-2
+                text-[#0F4C81]
+              "
             >
 
               <span
                 className="
                   flex
-                  h-6
-                  w-6
+                  h-9
+                  w-9
                   items-center
                   justify-center
                   rounded-full
@@ -539,10 +554,10 @@ function Home() {
                   text-white
                 "
               >
-                <Phone size={11} />
+                <Phone size={14} />
               </span>
 
-              <span className="text-[9px] font-black tracking-[0.08em]">
+              <span className="text-[10px] font-black tracking-[0.07em]">
                 099 269 9716
               </span>
 
@@ -550,11 +565,9 @@ function Home() {
 
           </section>
 
-          {/* =================================================
-              VALORES
-          ================================================== */}
+          {/* ================= VALORES ================= */}
 
-          <section className="mt-1.5 grid shrink-0 grid-cols-4 gap-1.5">
+          <section className="grid shrink-0 grid-cols-4 gap-2">
 
             {companyValues.map((value) => {
 
@@ -565,29 +578,29 @@ function Home() {
                   key={value.title}
                   className="
                     flex
-                    h-[45px]
+                    h-[58px]
                     flex-col
                     items-center
                     justify-center
-                    rounded-lg
+                    rounded-xl
                     border
                     border-[#D9E2EC]
-                    bg-white/85
+                    bg-white/92
                     text-center
                   "
                 >
 
                   <Icon
-                    size={12}
+                    size={15}
                     strokeWidth={1.7}
                     className="text-[#0F4C81]"
                   />
 
-                  <p className="mt-0.5 text-[5.5px] font-black uppercase text-[#123B5D]">
+                  <p className="mt-1 text-[6px] font-black uppercase text-[#123B5D]">
                     {value.title}
                   </p>
 
-                  <p className="text-[4.5px] uppercase text-[#64748B]">
+                  <p className="text-[5px] uppercase text-[#64748B]">
                     {value.subtitle}
                   </p>
 
@@ -597,11 +610,11 @@ function Home() {
 
           </section>
 
-          {/* FOOTER */}
+          {/* ================= FOOTER ================= */}
 
-          <footer className="mt-auto flex h-5 shrink-0 items-center justify-center">
+          <footer className="flex h-6 shrink-0 items-center justify-center">
 
-            <p className="text-[5px] font-bold uppercase tracking-[0.22em] text-[#64748B]">
+            <p className="text-[5.5px] font-bold uppercase tracking-[0.24em] text-[#64748B]">
               W.P. LIMPIEZA & MANTENIMIENTO · QUITO
             </p>
 
@@ -615,7 +628,7 @@ function Home() {
 
         <div className="hidden min-h-screen flex-col sm:flex">
 
-          {/* HEADER */}
+          {/* ================= HEADER ================= */}
 
           <header className="flex shrink-0 items-center justify-between px-10 py-5 lg:px-14">
 
@@ -660,7 +673,7 @@ function Home() {
 
           </header>
 
-          {/* HERO */}
+          {/* ================= HERO PC ================= */}
 
           <section className="flex min-h-0 flex-1 items-center px-10 lg:px-14">
 
@@ -737,7 +750,7 @@ function Home() {
 
               </div>
 
-              {/* BLOQUE CORPORATIVO */}
+              {/* ================= PANEL PC ================= */}
 
               <div className="flex justify-end">
 
@@ -863,7 +876,7 @@ function Home() {
 
           </section>
 
-          {/* ACCESOS PC */}
+          {/* ================= ACCESOS PC ================= */}
 
           <section className="shrink-0 px-10 pb-4 lg:px-14">
 
@@ -949,7 +962,7 @@ function Home() {
 
             </div>
 
-            {/* REDES PC */}
+            {/* ================= REDES PC ================= */}
 
             <div className="mt-3 grid grid-cols-3 gap-4">
 
@@ -1012,7 +1025,7 @@ function Home() {
 
           </section>
 
-          {/* FOOTER PC */}
+          {/* ================= FOOTER PC ================= */}
 
           <footer className="shrink-0 px-10 py-2.5 text-center lg:px-14">
 
