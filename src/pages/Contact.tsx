@@ -16,36 +16,23 @@ const whatsappNumber = '593992699716'
 function Contact() {
   return (
     <AppShell>
-      <main className="min-h-screen overflow-hidden bg-[#020617] text-white">
+      <main className="min-h-screen overflow-hidden bg-[#F8FAFC] text-[#172033]">
 
         {/* =====================================================
             HERO
         ====================================================== */}
 
-        <section className="relative overflow-hidden border-b border-white/[0.06]">
+        <section className="border-b border-[#D9E2EC] bg-white">
 
-          <div className="pointer-events-none absolute -right-32 -top-40 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
-
-          <div className="pointer-events-none absolute -left-40 top-52 h-80 w-80 rounded-full bg-blue-900/20 blur-[110px]" />
-
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.035]"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(255,255,255,.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.8) 1px, transparent 1px)',
-              backgroundSize: '44px 44px',
-            }}
-          />
-
-          <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-12">
+          <div className="mx-auto max-w-6xl px-5 pb-14 pt-7 sm:px-8 sm:pb-16 sm:pt-9">
 
             <Link
               to="/"
-              className="group mb-12 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.025] px-4 py-2 text-xs font-medium text-slate-400 backdrop-blur-xl transition-all hover:border-blue-400/30 hover:bg-blue-500/[0.06] hover:text-white"
+              className="group mb-10 inline-flex items-center gap-2 rounded-full border border-[#D9E2EC] bg-[#F8FAFC] px-4 py-2 text-xs font-semibold text-[#64748B] transition-all duration-300 hover:border-[#0F4C81] hover:bg-[#EAF3F8] hover:text-[#0F4C81]"
             >
               <ArrowLeft
                 size={15}
-                className="transition-transform group-hover:-translate-x-1"
+                className="transition-transform duration-300 group-hover:-translate-x-1"
               />
 
               Inicio
@@ -53,25 +40,22 @@ function Contact() {
 
             <div className="flex items-center gap-3">
 
-              <span className="h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_15px_rgba(96,165,250,.9)]" />
+              <span className="h-2 w-2 rounded-full bg-[#0F4C81]" />
 
-              <p className="text-[9px] font-bold uppercase tracking-[0.5em] text-blue-400">
+              <p className="text-[9px] font-bold uppercase tracking-[0.45em] text-[#0F4C81]">
                 Contacto W.P.
               </p>
 
             </div>
 
-            <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.92] tracking-[-0.065em] sm:text-7xl">
-
+            <h1 className="mt-5 max-w-4xl text-5xl font-black leading-[0.94] tracking-[-0.055em] text-[#123B5D] sm:text-7xl">
               Hablemos de su
-
-              <span className="block bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+              <span className="block text-[#0F4C81]">
                 proyecto.
               </span>
-
             </h1>
 
-            <p className="mt-7 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
+            <p className="mt-6 max-w-2xl text-sm leading-7 text-[#64748B] sm:text-base">
               Estamos disponibles para atender sus necesidades
               de limpieza y mantenimiento.
             </p>
@@ -84,7 +68,7 @@ function Contact() {
             CONTACTOS
         ====================================================== */}
 
-        <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
+        <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
 
           <div className="grid gap-4 sm:grid-cols-2">
 
@@ -92,77 +76,77 @@ function Contact() {
 
             <a
               href="tel:3051060"
-              className="group rounded-[2rem] border border-white/[0.075] bg-white/[0.025] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-white/[0.045] sm:p-7"
+              className="group rounded-3xl border border-[#D9E2EC] bg-white p-6 shadow-[0_8px_30px_rgba(18,59,93,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81]/40 hover:shadow-[0_16px_40px_rgba(18,59,93,0.09)] sm:p-7"
             >
 
               <div className="flex items-start justify-between">
 
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
+                <div className="flex h-13 w-13 items-center justify-center rounded-2xl border border-[#0F4C81]/15 bg-[#EAF3F8] text-[#0F4C81]">
 
                   <Phone
-                    size={23}
-                    strokeWidth={1.5}
+                    size={22}
+                    strokeWidth={1.7}
                   />
 
                 </div>
 
                 <ArrowUpRight
                   size={18}
-                  className="text-slate-700 transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-blue-400"
+                  className="text-[#94A3B8] transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[#0F4C81]"
                 />
 
               </div>
 
-              <p className="mt-7 text-[9px] font-bold uppercase tracking-[0.3em] text-blue-400">
+              <p className="mt-6 text-[9px] font-bold uppercase tracking-[0.3em] text-[#0F4C81]">
                 Teléfono
               </p>
 
-              <p className="mt-3 text-2xl font-bold tracking-tight">
+              <p className="mt-2 text-2xl font-bold tracking-tight text-[#123B5D]">
                 3051060
               </p>
 
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-[#64748B]">
                 Llámenos directamente.
               </p>
 
             </a>
 
-            {/* CELULAR */}
+            {/* WHATSAPP */}
 
             <a
               href={`https://wa.me/${whatsappNumber}?text=Hola%20W.P.%20Limpieza,%20deseo%20información%20sobre%20sus%20servicios.`}
               target="_blank"
               rel="noreferrer"
-              className="group rounded-[2rem] border border-blue-500/20 bg-blue-500/[0.06] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400/40 hover:bg-blue-500/[0.1] sm:p-7"
+              className="group rounded-3xl border border-[#0F4C81]/25 bg-[#EAF3F8] p-6 shadow-[0_8px_30px_rgba(15,76,129,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81]/45 hover:bg-[#E3F0F7] hover:shadow-[0_16px_40px_rgba(15,76,129,0.10)] sm:p-7"
             >
 
               <div className="flex items-start justify-between">
 
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-blue-400/20 bg-blue-500/10 text-blue-400">
+                <div className="flex h-13 w-13 items-center justify-center rounded-2xl border border-[#0F4C81]/15 bg-white text-[#0F4C81]">
 
                   <MessageCircle
-                    size={23}
-                    strokeWidth={1.5}
+                    size={22}
+                    strokeWidth={1.7}
                   />
 
                 </div>
 
                 <ArrowUpRight
                   size={18}
-                  className="text-blue-400 transition-all group-hover:-translate-y-1 group-hover:translate-x-1"
+                  className="text-[#0F4C81] transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1"
                 />
 
               </div>
 
-              <p className="mt-7 text-[9px] font-bold uppercase tracking-[0.3em] text-blue-400">
+              <p className="mt-6 text-[9px] font-bold uppercase tracking-[0.3em] text-[#0F4C81]">
                 WhatsApp
               </p>
 
-              <p className="mt-3 text-2xl font-bold tracking-tight">
+              <p className="mt-2 text-2xl font-bold tracking-tight text-[#123B5D]">
                 099 269 9716
               </p>
 
-              <p className="mt-2 text-sm text-slate-400">
+              <p className="mt-2 text-sm text-[#64748B]">
                 Escríbanos directamente.
               </p>
 
@@ -172,36 +156,36 @@ function Contact() {
 
             <a
               href="mailto:w.aldirgregorio@hotmail.com"
-              className="group rounded-[2rem] border border-white/[0.075] bg-white/[0.025] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-white/[0.045] sm:p-7"
+              className="group rounded-3xl border border-[#D9E2EC] bg-white p-6 shadow-[0_8px_30px_rgba(18,59,93,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0F4C81]/40 hover:shadow-[0_16px_40px_rgba(18,59,93,0.09)] sm:p-7"
             >
 
               <div className="flex items-start justify-between">
 
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
+                <div className="flex h-13 w-13 items-center justify-center rounded-2xl border border-[#0F4C81]/15 bg-[#EAF3F8] text-[#0F4C81]">
 
                   <Mail
-                    size={23}
-                    strokeWidth={1.5}
+                    size={22}
+                    strokeWidth={1.7}
                   />
 
                 </div>
 
                 <ArrowUpRight
                   size={18}
-                  className="text-slate-700 transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-blue-400"
+                  className="text-[#94A3B8] transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[#0F4C81]"
                 />
 
               </div>
 
-              <p className="mt-7 text-[9px] font-bold uppercase tracking-[0.3em] text-blue-400">
+              <p className="mt-6 text-[9px] font-bold uppercase tracking-[0.3em] text-[#0F4C81]">
                 Correo electrónico
               </p>
 
-              <p className="mt-3 break-all text-base font-bold sm:text-lg">
+              <p className="mt-2 break-all text-base font-bold text-[#123B5D] sm:text-lg">
                 w.aldirgregorio@hotmail.com
               </p>
 
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-[#64748B]">
                 Envíenos su consulta.
               </p>
 
@@ -209,26 +193,26 @@ function Contact() {
 
             {/* UBICACIÓN */}
 
-            <div className="rounded-[2rem] border border-white/[0.075] bg-white/[0.025] p-6 sm:p-7">
+            <div className="rounded-3xl border border-[#D9E2EC] bg-white p-6 shadow-[0_8px_30px_rgba(18,59,93,0.05)] sm:p-7">
 
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
+              <div className="flex h-13 w-13 items-center justify-center rounded-2xl border border-[#0F4C81]/15 bg-[#EAF3F8] text-[#0F4C81]">
 
                 <MapPin
-                  size={23}
-                  strokeWidth={1.5}
+                  size={22}
+                  strokeWidth={1.7}
                 />
 
               </div>
 
-              <p className="mt-7 text-[9px] font-bold uppercase tracking-[0.3em] text-blue-400">
+              <p className="mt-6 text-[9px] font-bold uppercase tracking-[0.3em] text-[#0F4C81]">
                 Atención
               </p>
 
-              <p className="mt-3 text-2xl font-bold tracking-tight">
+              <p className="mt-2 text-2xl font-bold tracking-tight text-[#123B5D]">
                 Quito, Ecuador
               </p>
 
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-[#64748B]">
                 Atención a hogares, empresas e instituciones.
               </p>
 
@@ -242,47 +226,47 @@ function Contact() {
             WHATSAPP CTA
         ====================================================== */}
 
-        <section className="px-5 pb-16 sm:px-8 sm:pb-24">
+        <section className="px-5 pb-14 sm:px-8 sm:pb-20">
 
-          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-600 to-blue-700 p-7 shadow-[0_30px_100px_rgba(37,99,235,0.20)] sm:rounded-[2.5rem] sm:p-12">
+          <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl bg-[#123B5D] p-7 shadow-[0_20px_60px_rgba(18,59,93,0.14)] sm:rounded-[2rem] sm:p-10">
 
-            <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10 blur-[90px]" />
+            <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
 
-            <div className="pointer-events-none absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-blue-950/40 blur-[90px]" />
+              <div>
 
-            <div className="relative">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-white">
 
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10">
+                  <MessageCircle size={21} />
 
-                <MessageCircle size={22} />
+                </div>
+
+                <p className="mt-6 text-[9px] font-bold uppercase tracking-[0.4em] text-[#AFC7D8]">
+                  Atención directa
+                </p>
+
+                <h2 className="mt-3 max-w-3xl text-3xl font-black leading-tight tracking-[-0.04em] text-white sm:text-4xl">
+                  ¿Necesita una cotización?
+                </h2>
+
+                <p className="mt-4 max-w-xl text-sm leading-7 text-[#C8D8E5]">
+                  Escríbanos por WhatsApp y cuéntenos qué servicio
+                  necesita. Estamos listos para atenderle.
+                </p>
 
               </div>
 
-              <p className="mt-7 text-[9px] font-bold uppercase tracking-[0.4em] text-blue-100">
-                Atención directa
-              </p>
-
-              <h2 className="mt-4 max-w-3xl text-3xl font-black leading-tight tracking-[-0.035em] sm:text-5xl">
-                ¿Necesita una cotización?
-              </h2>
-
-              <p className="mt-5 max-w-xl text-sm leading-7 text-blue-100 sm:text-base">
-                Escríbanos por WhatsApp y cuéntenos qué servicio
-                necesita. Estamos listos para atenderle.
-              </p>
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
 
                 <a
                   href={`https://wa.me/${whatsappNumber}?text=Hola%20W.P.%20Limpieza,%20deseo%20solicitar%20una%20cotización.`}
                   target="_blank"
                   rel="noreferrer"
-                  className="group inline-flex min-h-13 items-center justify-center gap-4 rounded-full bg-white px-6 text-sm font-bold text-slate-950 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl active:scale-95"
+                  className="group inline-flex min-h-12 items-center justify-center gap-4 rounded-full bg-white px-6 text-sm font-bold text-[#123B5D] shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl active:scale-95"
                 >
 
                   WhatsApp
 
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4C81] text-white">
 
                     <ArrowUpRight size={16} />
 
@@ -292,7 +276,7 @@ function Contact() {
 
                 <Link
                   to="/cotizar"
-                  className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 text-sm font-bold text-white transition-all hover:bg-white/15 active:scale-95"
+                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 text-sm font-bold text-white transition-all duration-300 hover:bg-white/15 active:scale-95"
                 >
                   Formulario de cotización
                 </Link>
@@ -309,13 +293,13 @@ function Contact() {
             FOOTER
         ====================================================== */}
 
-        <footer className="border-t border-white/[0.06] px-5 py-8 text-center">
+        <footer className="border-t border-[#D9E2EC] bg-white px-5 py-7 text-center">
 
-          <p className="text-[8px] font-bold uppercase tracking-[0.3em] text-slate-700">
+          <p className="text-[8px] font-bold uppercase tracking-[0.3em] text-[#64748B]">
             W.P. LIMPIEZA & MANTENIMIENTO
           </p>
 
-          <p className="mt-2 text-[8px] text-slate-800">
+          <p className="mt-2 text-[8px] text-[#94A3B8]">
             Quito · Ecuador
           </p>
 
