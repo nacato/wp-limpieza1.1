@@ -16,7 +16,6 @@ import {
   Store,
   CheckCircle2,
   Loader2,
-  FileText,
   Download,
 } from 'lucide-react'
 
@@ -44,10 +43,10 @@ const WHATSAPP_NUMBER = '593979678105'
 const IVA_RATE = 0.15
 const DELIVERY_FEE = 3.0
 
-// ==========================================
+// =====================================================
 // DATOS BANCARIOS
-// CAMBIA ESTOS DATOS POR LOS REALES
-// ==========================================
+// REEMPLAZA ESTOS DATOS POR LOS REALES
+// =====================================================
 
 const BANK_NAME = 'BANCO XXXXX'
 const BANK_ACCOUNT = 'XXXXXXXXXX'
@@ -55,31 +54,35 @@ const BANK_TYPE = 'Cuenta corriente'
 const BANK_HOLDER = 'W.P. LIMPIEZA Y MANTENIMIENTO'
 const BANK_ID = 'XXXXXXXXXX'
 
+// =====================================================
+// LOCAL STORAGE
+// =====================================================
+
 const CART_STORAGE_KEY = 'wp-limpieza-carrito'
 const ORDER_NUMBER_KEY = 'wp-limpieza-numero-pedido'
 
-// ==========================================
+// =====================================================
 // GENERAR NÚMERO DE PEDIDO
-// ==========================================
+// =====================================================
 
 function generateOrderNumber() {
-  const currentNumber = Number(
+  const current = Number(
     localStorage.getItem(ORDER_NUMBER_KEY) || '0',
   )
 
-  const nextNumber = currentNumber + 1
+  const next = current + 1
 
   localStorage.setItem(
     ORDER_NUMBER_KEY,
-    String(nextNumber),
+    String(next),
   )
 
-  return `WP-${String(nextNumber).padStart(4, '0')}`
+  return `WP-${String(next).padStart(4, '0')}`
 }
 
-// ==========================================
+// =====================================================
 // COMPONENTE
-// ==========================================
+// =====================================================
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([])
@@ -106,32 +109,34 @@ export default function Products() {
 
   const [orderNumber, setOrderNumber] = useState('')
 
-  // ==========================================
+  // ===================================================
   // CARGAR CARRITO
-  // ==========================================
+  // ===================================================
 
   useEffect(() => {
-    const savedCart = localStorage.getItem(
+    const saved = localStorage.getItem(
       CART_STORAGE_KEY,
     )
 
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart))
-      } catch (error) {
-        console.error(
-          'Error cargando carrito:',
-          error,
-        )
+    if (!saved) return
 
-        localStorage.removeItem(CART_STORAGE_KEY)
-      }
+    try {
+      setCart(JSON.parse(saved))
+    } catch (error) {
+      console.error(
+        'Error cargando carrito:',
+        error,
+      )
+
+      localStorage.removeItem(
+        CART_STORAGE_KEY,
+      )
     }
   }, [])
 
-  // ==========================================
+  // ===================================================
   // GUARDAR CARRITO
-  // ==========================================
+  // ===================================================
 
   useEffect(() => {
     localStorage.setItem(
@@ -140,9 +145,9 @@ export default function Products() {
     )
   }, [cart])
 
-  // ==========================================
-  // PRODUCTOS SUPABASE
-  // ==========================================
+  // ===================================================
+  // CARGAR PRODUCTOS
+  // ===================================================
 
   useEffect(() => {
     loadProducts()
@@ -183,18 +188,18 @@ export default function Products() {
     setLoading(false)
   }
 
-  // ==========================================
+  // ===================================================
   // CARRITO
-  // ==========================================
+  // ===================================================
 
   function addToCart(product: Product) {
-    setCart((currentCart) => {
-      const existing = currentCart.find(
+    setCart((current) => {
+      const existing = current.find(
         (item) => item.id === product.id,
       )
 
       if (existing) {
-        return currentCart.map((item) =>
+        return current.map((item) =>
           item.id === product.id
             ? {
                 ...item,
@@ -205,7 +210,7 @@ export default function Products() {
       }
 
       return [
-        ...currentCart,
+        ...current,
         {
           ...product,
           cantidad: 1,
@@ -215,8 +220,8 @@ export default function Products() {
   }
 
   function increaseQuantity(id: string) {
-    setCart((currentCart) =>
-      currentCart.map((item) =>
+    setCart((current) =>
+      current.map((item) =>
         item.id === id
           ? {
               ...item,
@@ -228,8 +233,8 @@ export default function Products() {
   }
 
   function decreaseQuantity(id: string) {
-    setCart((currentCart) =>
-      currentCart
+    setCart((current) =>
+      current
         .map((item) =>
           item.id === id
             ? {
@@ -243,8 +248,8 @@ export default function Products() {
   }
 
   function removeFromCart(id: string) {
-    setCart((currentCart) =>
-      currentCart.filter(
+    setCart((current) =>
+      current.filter(
         (item) => item.id !== id,
       ),
     )
@@ -254,9 +259,9 @@ export default function Products() {
     setCart([])
   }
 
-  // ==========================================
+  // ===================================================
   // TOTALES
-  // ==========================================
+  // ===================================================
 
   const subtotal = useMemo(() => {
     return cart.reduce(
@@ -285,9 +290,9 @@ export default function Products() {
     )
   }, [cart])
 
-  // ==========================================
-  // UBICACIÓN
-  // ==========================================
+  // ===================================================
+  // UBICACIÓN ACTUAL
+  // ===================================================
 
   function getCurrentLocation() {
     if (!navigator.geolocation) {
@@ -312,14 +317,14 @@ export default function Products() {
 
       (error) => {
         console.error(
-          'Error de ubicación:',
+          'Error obteniendo ubicación:',
           error,
         )
 
         setLocating(false)
 
         alert(
-          'No se pudo obtener tu ubicación. Activa el permiso de ubicación del navegador.',
+          'No se pudo obtener tu ubicación. Activa el permiso de ubicación del navegador e inténtalo nuevamente.',
         )
       },
 
@@ -335,9 +340,9 @@ export default function Products() {
     ? `https://www.google.com/maps?q=${deliveryLocation.lat},${deliveryLocation.lng}`
     : ''
 
-  // ==========================================
+  // ===================================================
   // CHECKOUT
-  // ==========================================
+  // ===================================================
 
   function openCheckout() {
     if (cart.length === 0) {
@@ -359,9 +364,9 @@ export default function Products() {
     }
   }
 
-  // ==========================================
+  // ===================================================
   // GENERAR PDF
-  // ==========================================
+  // ===================================================
 
   function generatePDF(
     currentOrderNumber: string,
@@ -371,11 +376,11 @@ export default function Products() {
     const pageWidth =
       doc.internal.pageSize.getWidth()
 
-    let y = 20
+    let y = 18
 
-    // ------------------------------------------
+    // -----------------------------------------------
     // ENCABEZADO
-    // ------------------------------------------
+    // -----------------------------------------------
 
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(18)
@@ -399,7 +404,7 @@ export default function Products() {
       y,
     )
 
-    y += 12
+    y += 10
 
     doc.setDrawColor(217, 226, 236)
 
@@ -410,11 +415,11 @@ export default function Products() {
       y,
     )
 
-    y += 12
+    y += 10
 
-    // ------------------------------------------
-    // PEDIDO
-    // ------------------------------------------
+    // -----------------------------------------------
+    // TÍTULO
+    // -----------------------------------------------
 
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(14)
@@ -429,7 +434,7 @@ export default function Products() {
     y += 7
 
     doc.setFont('helvetica', 'normal')
-    doc.setFontSize(10)
+    doc.setFontSize(9)
     doc.setTextColor(100, 116, 139)
 
     doc.text(
@@ -438,7 +443,7 @@ export default function Products() {
       y,
     )
 
-    y += 6
+    y += 5
 
     const date = new Date()
 
@@ -456,14 +461,14 @@ export default function Products() {
       y,
     )
 
-    y += 12
+    y += 10
 
-    // ------------------------------------------
+    // -----------------------------------------------
     // CLIENTE
-    // ------------------------------------------
+    // -----------------------------------------------
 
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(11)
+    doc.setFontSize(10)
     doc.setTextColor(18, 59, 93)
 
     doc.text(
@@ -472,10 +477,10 @@ export default function Products() {
       y,
     )
 
-    y += 7
+    y += 6
 
     doc.setFont('helvetica', 'normal')
-    doc.setFontSize(10)
+    doc.setFontSize(9)
     doc.setTextColor(23, 32, 51)
 
     doc.text(
@@ -484,7 +489,7 @@ export default function Products() {
       y,
     )
 
-    y += 6
+    y += 5
 
     doc.text(
       `Teléfono: ${customerPhone}`,
@@ -492,14 +497,14 @@ export default function Products() {
       y,
     )
 
-    y += 12
+    y += 10
 
-    // ------------------------------------------
+    // -----------------------------------------------
     // PRODUCTOS
-    // ------------------------------------------
+    // -----------------------------------------------
 
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(11)
+    doc.setFontSize(10)
     doc.setTextColor(18, 59, 93)
 
     doc.text(
@@ -508,23 +513,24 @@ export default function Products() {
       y,
     )
 
-    y += 8
+    y += 7
 
+    doc.setFont('helvetica', 'normal')
     doc.setFontSize(9)
+    doc.setTextColor(23, 32, 51)
 
     cart.forEach((item) => {
       const itemTotal =
         Number(item.precio) *
         item.cantidad
 
-      const productName =
-        item.nombre.length > 55
-          ? item.nombre.substring(0, 52) +
-            '...'
-          : item.nombre
+      let productName = item.nombre
 
-      doc.setFont('helvetica', 'normal')
-      doc.setTextColor(23, 32, 51)
+      if (productName.length > 50) {
+        productName =
+          productName.substring(0, 47) +
+          '...'
+      }
 
       doc.text(
         `${item.cantidad} × ${productName}`,
@@ -544,7 +550,7 @@ export default function Products() {
       y += 6
     })
 
-    y += 5
+    y += 3
 
     doc.setDrawColor(217, 226, 236)
 
@@ -555,13 +561,13 @@ export default function Products() {
       y,
     )
 
-    y += 9
+    y += 8
 
-    // ------------------------------------------
+    // -----------------------------------------------
     // TOTALES
-    // ------------------------------------------
+    // -----------------------------------------------
 
-    doc.setFontSize(10)
+    doc.setFontSize(9)
 
     doc.text(
       'Subtotal',
@@ -578,7 +584,7 @@ export default function Products() {
       },
     )
 
-    y += 7
+    y += 6
 
     doc.text(
       'IVA 15%',
@@ -595,7 +601,7 @@ export default function Products() {
       },
     )
 
-    y += 7
+    y += 6
 
     doc.text(
       'Entrega',
@@ -612,10 +618,10 @@ export default function Products() {
       },
     )
 
-    y += 9
+    y += 8
 
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(13)
+    doc.setFontSize(12)
     doc.setTextColor(15, 76, 129)
 
     doc.text(
@@ -633,14 +639,14 @@ export default function Products() {
       },
     )
 
-    y += 14
+    y += 12
 
-    // ------------------------------------------
+    // -----------------------------------------------
     // ENTREGA
-    // ------------------------------------------
+    // -----------------------------------------------
 
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(11)
+    doc.setFontSize(10)
     doc.setTextColor(18, 59, 93)
 
     doc.text(
@@ -649,10 +655,10 @@ export default function Products() {
       y,
     )
 
-    y += 7
+    y += 6
 
     doc.setFont('helvetica', 'normal')
-    doc.setFontSize(10)
+    doc.setFontSize(9)
     doc.setTextColor(23, 32, 51)
 
     doc.text(
@@ -663,13 +669,12 @@ export default function Products() {
       y,
     )
 
-    y += 7
+    y += 6
 
     if (
       deliveryType === 'domicilio' &&
       googleMapsUrl
     ) {
-      doc.setFontSize(8)
       doc.setTextColor(15, 76, 129)
 
       doc.text(
@@ -680,21 +685,25 @@ export default function Products() {
 
       y += 5
 
+      const mapText = googleMapsUrl
+
+      doc.setFontSize(7)
+
       doc.text(
-        googleMapsUrl,
+        mapText,
         20,
         y,
       )
 
-      y += 8
+      y += 7
     }
 
-    // ------------------------------------------
+    // -----------------------------------------------
     // PAGO
-    // ------------------------------------------
+    // -----------------------------------------------
 
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(11)
+    doc.setFontSize(10)
     doc.setTextColor(18, 59, 93)
 
     doc.text(
@@ -703,10 +712,10 @@ export default function Products() {
       y,
     )
 
-    y += 7
+    y += 6
 
     doc.setFont('helvetica', 'normal')
-    doc.setFontSize(9)
+    doc.setFontSize(8)
     doc.setTextColor(23, 32, 51)
 
     doc.text(
@@ -715,7 +724,7 @@ export default function Products() {
       y,
     )
 
-    y += 6
+    y += 5
 
     doc.text(
       `Banco: ${BANK_NAME}`,
@@ -739,11 +748,11 @@ export default function Products() {
       y,
     )
 
-    y += 12
+    y += 10
 
-    // ------------------------------------------
+    // -----------------------------------------------
     // PIE
-    // ------------------------------------------
+    // -----------------------------------------------
 
     doc.setDrawColor(217, 226, 236)
 
@@ -754,18 +763,18 @@ export default function Products() {
       y,
     )
 
-    y += 9
+    y += 8
 
-    doc.setFontSize(8)
+    doc.setFontSize(7)
     doc.setTextColor(100, 116, 139)
 
     doc.text(
-      'Este documento es un comprobante de pedido.',
+      'Comprobante generado automáticamente por W.P. Limpieza.',
       20,
       y,
     )
 
-    y += 5
+    y += 4
 
     doc.text(
       'El pedido será procesado una vez verificado el pago.',
@@ -778,9 +787,9 @@ export default function Products() {
     )
   }
 
-  // ==========================================
+  // ===================================================
   // MENSAJE WHATSAPP
-  // ==========================================
+  // ===================================================
 
   function buildWhatsAppMessage(
     currentOrderNumber: string,
@@ -829,7 +838,7 @@ ${locationText}
 
 ━━━━━━━━━━━━━━━━━━
 
-💳 *PAGO*
+💳 *FORMA DE PAGO*
 Transferencia bancaria
 
 🏦 Banco: ${BANK_NAME}
@@ -839,15 +848,14 @@ Transferencia bancaria
 
 📎 El cliente enviará el comprobante de transferencia por este medio.
 
-📄 Comprobante del pedido generado:
-Pedido ${currentOrderNumber}
+📄 Pedido respaldado con comprobante PDF.
 
 Gracias por confiar en *W.P. Limpieza*. 🧼`
   }
 
-  // ==========================================
+  // ===================================================
   // FINALIZAR PEDIDO
-  // ==========================================
+  // ===================================================
 
   function finishOrder() {
     if (sendingOrder) return
@@ -863,7 +871,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
     }
 
     if (cart.length === 0) {
-      alert('El carrito está vacío.')
+      alert('Tu carrito está vacío.')
       return
     }
 
@@ -872,7 +880,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
       !deliveryLocation
     ) {
       alert(
-        'Usa tu ubicación actual para continuar.',
+        'Primero usa tu ubicación actual.',
       )
 
       return
@@ -885,10 +893,10 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
     setOrderNumber(newOrderNumber)
 
-    // Generamos el PDF inmediatamente
+    // Generar respaldo PDF
     generatePDF(newOrderNumber)
 
-    // Construimos WhatsApp
+    // Crear mensaje
     const message =
       buildWhatsAppMessage(
         newOrderNumber,
@@ -898,24 +906,46 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
       `https://wa.me/${WHATSAPP_NUMBER}` +
       `?text=${encodeURIComponent(message)}`
 
-    // Abrimos WhatsApp
+    // Abrir WhatsApp
     window.open(
       whatsappUrl,
       '_blank',
       'noopener,noreferrer',
     )
 
-    // Mostramos pantalla de éxito
     setTimeout(() => {
       setCheckoutOpen(false)
       setSuccessOpen(true)
       setSendingOrder(false)
-    }, 500)
+    }, 600)
   }
 
-  // ==========================================
-  // CERRAR ÉXITO
-  // ==========================================
+  // ===================================================
+  // ABRIR WHATSAPP NUEVAMENTE
+  // ===================================================
+
+  function openWhatsAppAgain() {
+    if (!orderNumber) return
+
+    const message =
+      buildWhatsAppMessage(
+        orderNumber,
+      )
+
+    const whatsappUrl =
+      `https://wa.me/${WHATSAPP_NUMBER}` +
+      `?text=${encodeURIComponent(message)}`
+
+    window.open(
+      whatsappUrl,
+      '_blank',
+      'noopener,noreferrer',
+    )
+  }
+
+  // ===================================================
+  // FINALIZAR
+  // ===================================================
 
   function finishAndClear() {
     clearCart()
@@ -927,12 +957,13 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
     setDeliveryType('domicilio')
     setDeliveryLocation(null)
+
     setOrderNumber('')
   }
 
-  // ==========================================
+  // ===================================================
   // LOADING
-  // ==========================================
+  // ===================================================
 
   if (loading) {
     return (
@@ -954,28 +985,28 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
     )
   }
 
-  // ==========================================
+  // ===================================================
   // INTERFAZ
-  // ==========================================
+  // ===================================================
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] pb-24 text-[#172033]">
+    <main className="min-h-screen bg-[#F8FAFC] pb-20 text-[#172033]">
 
-      {/* ======================================
+      {/* ==============================================
           HEADER
-      ======================================= */}
+      =============================================== */}
 
       <header className="sticky top-0 z-30 border-b border-[#D9E2EC] bg-white/95 backdrop-blur">
 
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-3 sm:px-6">
 
           <div>
 
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#0F4C81]">
+            <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-[#0F4C81]">
               W.P. LIMPIEZA
             </p>
 
-            <h1 className="text-lg font-bold leading-none text-[#123B5D]">
+            <h1 className="text-base font-bold leading-none text-[#123B5D] sm:text-lg">
               Productos
             </h1>
 
@@ -984,13 +1015,13 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
           <button
             type="button"
             onClick={() => setCartOpen(true)}
-            className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-[#D9E2EC] bg-white text-[#123B5D]"
+            className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-[#D9E2EC] text-[#123B5D]"
           >
 
-            <ShoppingCart className="h-5 w-5" />
+            <ShoppingCart className="h-4 w-4" />
 
             {cartQuantity > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#0F4C81] px-1 text-[10px] font-bold text-white">
+              <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#0F4C81] px-1 text-[9px] font-bold text-white">
                 {cartQuantity}
               </span>
             )}
@@ -1001,19 +1032,19 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
       </header>
 
-      {/* ======================================
+      {/* ==============================================
           PRODUCTOS
-      ======================================= */}
+      =============================================== */}
 
-      <section className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-8">
+      <section className="mx-auto max-w-7xl px-2.5 py-3 sm:px-6 sm:py-6">
 
         {products.length === 0 ? (
 
-          <div className="rounded-xl border border-[#D9E2EC] bg-white p-10 text-center">
+          <div className="rounded-xl border border-[#D9E2EC] bg-white p-8 text-center">
 
             <Package className="mx-auto h-8 w-8 text-[#64748B]" />
 
-            <p className="mt-3 text-sm text-[#64748B]">
+            <p className="mt-2 text-sm text-[#64748B]">
               No hay productos disponibles.
             </p>
 
@@ -1021,7 +1052,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
         ) : (
 
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
 
             {products.map((product) => (
 
@@ -1029,8 +1060,6 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                 key={product.id}
                 className="overflow-hidden rounded-xl border border-[#D9E2EC] bg-white"
               >
-
-                {/* IMAGEN */}
 
                 <div className="aspect-square overflow-hidden bg-[#EAF3F8]">
 
@@ -1045,30 +1074,28 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                   ) : (
 
                     <div className="flex h-full items-center justify-center">
-                      <Package className="h-9 w-9 text-[#64748B]" />
+                      <Package className="h-8 w-8 text-[#64748B]" />
                     </div>
 
                   )}
 
                 </div>
 
-                {/* INFO */}
-
-                <div className="p-2.5 sm:p-4">
+                <div className="p-2 sm:p-3">
 
                   {product.categoria && (
-                    <p className="mb-1 truncate text-[8px] font-bold uppercase tracking-wider text-[#0F4C81]">
+                    <p className="mb-0.5 truncate text-[7px] font-bold uppercase tracking-wider text-[#0F4C81]">
                       {product.categoria}
                     </p>
                   )}
 
-                  <h2 className="line-clamp-2 min-h-[32px] text-xs font-semibold leading-4 text-[#123B5D] sm:text-sm">
+                  <h2 className="line-clamp-2 min-h-[30px] text-[11px] font-semibold leading-[15px] text-[#123B5D] sm:text-sm">
                     {product.nombre}
                   </h2>
 
-                  <div className="mt-2.5 flex items-center justify-between gap-1">
+                  <div className="mt-2 flex items-center justify-between gap-1">
 
-                    <span className="text-sm font-bold text-[#123B5D] sm:text-lg">
+                    <span className="text-sm font-bold text-[#123B5D] sm:text-base">
                       ${Number(product.precio).toFixed(2)}
                     </span>
 
@@ -1077,13 +1104,13 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                       onClick={() =>
                         addToCart(product)
                       }
-                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0F4C81] text-white sm:h-9 sm:w-auto sm:px-3"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0F4C81] text-white sm:h-8 sm:w-auto sm:px-3"
                       aria-label={`Agregar ${product.nombre}`}
                     >
 
                       <Plus className="h-4 w-4" />
 
-                      <span className="ml-1 hidden text-xs font-semibold sm:inline">
+                      <span className="ml-1 hidden text-[10px] font-bold sm:inline">
                         Agregar
                       </span>
 
@@ -1103,26 +1130,26 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
       </section>
 
-      {/* ======================================
-          BARRA CARRITO MÓVIL
-      ======================================= */}
+      {/* ==============================================
+          CARRITO FIJO
+      =============================================== */}
 
       {cartQuantity > 0 && (
 
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#D9E2EC] bg-white px-3 py-2.5 shadow-[0_-4px_20px_rgba(15,76,129,0.08)] sm:px-6">
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#D9E2EC] bg-white px-2.5 py-2 shadow-[0_-4px_15px_rgba(15,76,129,0.08)]">
 
-          <div className="mx-auto flex max-w-7xl items-center gap-3">
+          <div className="mx-auto flex max-w-7xl items-center gap-2">
 
             <div className="min-w-0 flex-1">
 
-              <p className="text-[10px] text-[#64748B]">
+              <p className="text-[9px] text-[#64748B]">
                 {cartQuantity}{' '}
                 {cartQuantity === 1
                   ? 'producto'
                   : 'productos'}
               </p>
 
-              <p className="text-base font-bold text-[#123B5D]">
+              <p className="text-sm font-bold text-[#123B5D]">
                 ${total.toFixed(2)}
               </p>
 
@@ -1131,7 +1158,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
             <button
               type="button"
               onClick={() => setCartOpen(true)}
-              className="rounded-xl bg-[#0F4C81] px-5 py-3 text-xs font-bold text-white"
+              className="rounded-lg bg-[#0F4C81] px-4 py-2.5 text-[10px] font-bold text-white"
             >
               VER CARRITO
             </button>
@@ -1142,30 +1169,30 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
       )}
 
-      {/* ======================================
+      {/* ==============================================
           CARRITO
-      ======================================= */}
+      =============================================== */}
 
       {cartOpen && (
 
         <div className="fixed inset-0 z-50">
 
           <div
-            className="absolute inset-0 bg-[#172033]/40"
+            className="absolute inset-0 bg-[#172033]/45"
             onClick={() => setCartOpen(false)}
           />
 
-          <aside className="absolute bottom-0 left-0 right-0 max-h-[88vh] overflow-hidden rounded-t-2xl bg-white sm:bottom-auto sm:left-auto sm:right-0 sm:top-0 sm:h-full sm:max-h-none sm:w-full sm:max-w-md sm:rounded-none">
+          <aside className="absolute bottom-0 left-0 right-0 max-h-[90vh] overflow-hidden rounded-t-2xl bg-white sm:bottom-auto sm:left-auto sm:right-0 sm:top-0 sm:h-full sm:max-h-none sm:w-full sm:max-w-md sm:rounded-none">
 
             <div className="flex items-center justify-between border-b border-[#D9E2EC] px-4 py-3">
 
               <div>
 
-                <p className="text-[9px] font-bold uppercase tracking-wider text-[#0F4C81]">
+                <p className="text-[8px] font-bold uppercase tracking-wider text-[#0F4C81]">
                   Tu pedido
                 </p>
 
-                <h2 className="text-lg font-bold text-[#123B5D]">
+                <h2 className="text-base font-bold text-[#123B5D]">
                   Carrito
                 </h2>
 
@@ -1173,23 +1200,25 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
               <button
                 type="button"
-                onClick={() => setCartOpen(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-[#EAF3F8]"
+                onClick={() =>
+                  setCartOpen(false)
+                }
+                className="flex h-8 w-8 items-center justify-center rounded-lg"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
 
             </div>
 
-            <div className="max-h-[55vh] overflow-y-auto p-3">
+            <div className="max-h-[55vh] overflow-y-auto p-2.5">
 
               {cart.length === 0 ? (
 
                 <div className="py-10 text-center">
 
-                  <ShoppingCart className="mx-auto h-8 w-8 text-[#64748B]" />
+                  <ShoppingCart className="mx-auto h-7 w-7 text-[#64748B]" />
 
-                  <p className="mt-3 text-sm text-[#64748B]">
+                  <p className="mt-2 text-xs text-[#64748B]">
                     Tu carrito está vacío.
                   </p>
 
@@ -1203,10 +1232,10 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
                     <div
                       key={item.id}
-                      className="flex gap-3 rounded-xl border border-[#D9E2EC] p-2.5"
+                      className="flex gap-2.5 rounded-lg border border-[#D9E2EC] p-2"
                     >
 
-                      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-[#EAF3F8]">
+                      <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-[#EAF3F8]">
 
                         {item.imagen_url ? (
 
@@ -1217,9 +1246,11 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                           />
 
                         ) : (
+
                           <div className="flex h-full items-center justify-center">
-                            <Package className="h-5 w-5 text-[#64748B]" />
+                            <Package className="h-4 w-4 text-[#64748B]" />
                           </div>
+
                         )}
 
                       </div>
@@ -1228,7 +1259,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
                         <div className="flex justify-between gap-2">
 
-                          <h3 className="line-clamp-2 text-xs font-semibold text-[#123B5D]">
+                          <h3 className="line-clamp-2 text-[11px] font-semibold leading-4 text-[#123B5D]">
                             {item.nombre}
                           </h3>
 
@@ -1239,14 +1270,14 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                             }
                             className="shrink-0 text-[#64748B]"
                           >
-                            <Trash2 className="h-3.5 w-3.5" />
+                            <Trash2 className="h-3 w-3" />
                           </button>
 
                         </div>
 
-                        <div className="mt-2 flex items-center justify-between">
+                        <div className="mt-1.5 flex items-center justify-between">
 
-                          <div className="flex items-center rounded-lg border border-[#D9E2EC]">
+                          <div className="flex items-center rounded-md border border-[#D9E2EC]">
 
                             <button
                               type="button"
@@ -1255,12 +1286,12 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                                   item.id,
                                 )
                               }
-                              className="flex h-7 w-7 items-center justify-center"
+                              className="flex h-6 w-6 items-center justify-center"
                             >
-                              <Minus className="h-3 w-3" />
+                              <Minus className="h-2.5 w-2.5" />
                             </button>
 
-                            <span className="flex h-7 min-w-7 items-center justify-center border-x border-[#D9E2EC] text-[11px] font-bold">
+                            <span className="flex h-6 min-w-6 items-center justify-center border-x border-[#D9E2EC] text-[10px] font-bold">
                               {item.cantidad}
                             </span>
 
@@ -1271,14 +1302,14 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                                   item.id,
                                 )
                               }
-                              className="flex h-7 w-7 items-center justify-center"
+                              className="flex h-6 w-6 items-center justify-center"
                             >
-                              <Plus className="h-3 w-3" />
+                              <Plus className="h-2.5 w-2.5" />
                             </button>
 
                           </div>
 
-                          <span className="text-xs font-bold text-[#123B5D]">
+                          <span className="text-[11px] font-bold text-[#123B5D]">
                             $
                             {(
                               Number(item.precio) *
@@ -1302,14 +1333,15 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
             {cart.length > 0 && (
 
-              <div className="border-t border-[#D9E2EC] p-4">
+              <div className="border-t border-[#D9E2EC] p-3">
 
-                <div className="space-y-1.5 text-xs">
+                <div className="space-y-1 text-[11px]">
 
                   <div className="flex justify-between">
                     <span className="text-[#64748B]">
                       Subtotal
                     </span>
+
                     <span>
                       ${subtotal.toFixed(2)}
                     </span>
@@ -1319,6 +1351,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                     <span className="text-[#64748B]">
                       IVA 15%
                     </span>
+
                     <span>
                       ${iva.toFixed(2)}
                     </span>
@@ -1328,6 +1361,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                     <span className="text-[#64748B]">
                       Entrega
                     </span>
+
                     <span>
                       ${deliveryCost.toFixed(2)}
                     </span>
@@ -1335,6 +1369,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
                   <div className="flex justify-between border-t border-[#D9E2EC] pt-2 text-base font-bold text-[#123B5D]">
                     <span>TOTAL</span>
+
                     <span>
                       ${total.toFixed(2)}
                     </span>
@@ -1345,7 +1380,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                 <button
                   type="button"
                   onClick={openCheckout}
-                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F4C81] py-3.5 text-sm font-bold text-white"
+                  className="mt-3 flex w-full items-center justify-center rounded-lg bg-[#0F4C81] py-3 text-xs font-bold text-white"
                 >
                   CONTINUAR
                 </button>
@@ -1360,9 +1395,9 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
       )}
 
-      {/* ======================================
+      {/* ==============================================
           CHECKOUT
-      ======================================= */}
+      =============================================== */}
 
       {checkoutOpen && (
 
@@ -1374,11 +1409,11 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
               <div>
 
-                <p className="text-[9px] font-bold uppercase tracking-wider text-[#0F4C81]">
+                <p className="text-[8px] font-bold uppercase tracking-wider text-[#0F4C81]">
                   Último paso
                 </p>
 
-                <h2 className="text-lg font-bold text-[#123B5D]">
+                <h2 className="text-base font-bold text-[#123B5D]">
                   Confirmar pedido
                 </h2>
 
@@ -1389,20 +1424,20 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                 onClick={() =>
                   setCheckoutOpen(false)
                 }
-                className="flex h-9 w-9 items-center justify-center rounded-lg"
+                className="flex h-8 w-8 items-center justify-center rounded-lg"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
 
             </div>
 
-            <div className="space-y-4 p-3 sm:p-5">
+            <div className="space-y-2.5 p-2.5 sm:p-5">
 
               {/* DATOS */}
 
-              <section className="rounded-xl border border-[#D9E2EC] p-3">
+              <section className="rounded-lg border border-[#D9E2EC] p-2.5">
 
-                <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-[#123B5D]">
+                <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wide text-[#123B5D]">
                   Tus datos
                 </h3>
 
@@ -1417,7 +1452,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                       )
                     }
                     placeholder="Nombre completo"
-                    className="h-11 rounded-lg border border-[#D9E2EC] px-3 text-sm outline-none focus:border-[#0F4C81]"
+                    className="h-10 rounded-lg border border-[#D9E2EC] px-3 text-xs outline-none focus:border-[#0F4C81]"
                   />
 
                   <input
@@ -1429,7 +1464,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                       )
                     }
                     placeholder="Teléfono"
-                    className="h-11 rounded-lg border border-[#D9E2EC] px-3 text-sm outline-none focus:border-[#0F4C81]"
+                    className="h-10 rounded-lg border border-[#D9E2EC] px-3 text-xs outline-none focus:border-[#0F4C81]"
                   />
 
                 </div>
@@ -1438,9 +1473,9 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
               {/* ENTREGA */}
 
-              <section className="rounded-xl border border-[#D9E2EC] p-3">
+              <section className="rounded-lg border border-[#D9E2EC] p-2.5">
 
-                <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-[#123B5D]">
+                <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wide text-[#123B5D]">
                   Entrega
                 </h3>
 
@@ -1453,14 +1488,14 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                         'domicilio',
                       )
                     }
-                    className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-bold ${
+                    className={`flex items-center justify-center gap-1.5 rounded-lg border py-2.5 text-[10px] font-bold ${
                       deliveryType === 'domicilio'
                         ? 'border-[#0F4C81] bg-[#EAF3F8] text-[#0F4C81]'
                         : 'border-[#D9E2EC] text-[#64748B]'
                     }`}
                   >
-                    <Home className="h-4 w-4" />
-                    Domicilio
+                    <Home className="h-3.5 w-3.5" />
+                    DOMICILIO
                   </button>
 
                   <button
@@ -1470,14 +1505,14 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                         'retiro',
                       )
                     }
-                    className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-bold ${
+                    className={`flex items-center justify-center gap-1.5 rounded-lg border py-2.5 text-[10px] font-bold ${
                       deliveryType === 'retiro'
                         ? 'border-[#0F4C81] bg-[#EAF3F8] text-[#0F4C81]'
                         : 'border-[#D9E2EC] text-[#64748B]'
                     }`}
                   >
-                    <Store className="h-4 w-4" />
-                    Retiro
+                    <Store className="h-3.5 w-3.5" />
+                    RETIRO
                   </button>
 
                 </div>
@@ -1490,15 +1525,17 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
                       <button
                         type="button"
-                        onClick={getCurrentLocation}
+                        onClick={
+                          getCurrentLocation
+                        }
                         disabled={locating}
-                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0F4C81] px-4 py-3 text-xs font-bold text-white disabled:opacity-60"
+                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0F4C81] py-3 text-[10px] font-bold text-white disabled:opacity-60"
                       >
 
                         {locating ? (
                           <>
                             <Loader2 className="h-4 w-4 animate-spin" />
-                            Obteniendo ubicación...
+                            OBTENIENDO UBICACIÓN...
                           </>
                         ) : (
                           <>
@@ -1511,13 +1548,13 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
                     ) : (
 
-                      <div className="flex items-center gap-3 rounded-lg bg-[#EAF3F8] p-3">
+                      <div className="flex items-center gap-2 rounded-lg bg-[#EAF3F8] p-2.5">
 
-                        <CheckCircle2 className="h-5 w-5 shrink-0 text-green-600" />
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-green-600" />
 
                         <div className="min-w-0 flex-1">
 
-                          <p className="text-xs font-bold text-[#123B5D]">
+                          <p className="text-[10px] font-bold text-[#123B5D]">
                             Ubicación lista
                           </p>
 
@@ -1525,7 +1562,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                             href={googleMapsUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="mt-0.5 block truncate text-[10px] text-[#0F4C81]"
+                            className="text-[9px] text-[#0F4C81]"
                           >
                             Ver ubicación
                           </a>
@@ -1537,7 +1574,7 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                           onClick={
                             getCurrentLocation
                           }
-                          className="text-[10px] font-bold text-[#0F4C81]"
+                          className="text-[9px] font-bold text-[#0F4C81]"
                         >
                           CAMBIAR
                         </button>
@@ -1554,19 +1591,19 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
               {/* PAGO */}
 
-              <section className="rounded-xl border border-[#D9E2EC] p-3">
+              <section className="rounded-lg border border-[#D9E2EC] p-2.5">
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
 
-                  <CreditCard className="h-4 w-4 text-[#0F4C81]" />
+                  <CreditCard className="h-3.5 w-3.5 text-[#0F4C81]" />
 
-                  <h3 className="text-xs font-bold uppercase tracking-wide text-[#123B5D]">
+                  <h3 className="text-[10px] font-bold uppercase tracking-wide text-[#123B5D]">
                     Transferencia bancaria
                   </h3>
 
                 </div>
 
-                <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-[10px]">
+                <div className="mt-2 grid grid-cols-2 gap-y-1 text-[9px]">
 
                   <span className="text-[#64748B]">
                     Banco
@@ -1574,6 +1611,14 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
                   <span className="text-right font-semibold">
                     {BANK_NAME}
+                  </span>
+
+                  <span className="text-[#64748B]">
+                    Tipo
+                  </span>
+
+                  <span className="text-right font-semibold">
+                    {BANK_TYPE}
                   </span>
 
                   <span className="text-[#64748B]">
@@ -1596,32 +1641,32 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
               </section>
 
-              {/* TOTAL */}
+              {/* RESUMEN */}
 
-              <section className="rounded-xl bg-[#EAF3F8] p-3">
+              <section className="rounded-lg bg-[#EAF3F8] p-2.5">
 
-                <div className="flex justify-between text-xs">
+                <div className="flex justify-between text-[10px]">
                   <span>Subtotal</span>
                   <span>
                     ${subtotal.toFixed(2)}
                   </span>
                 </div>
 
-                <div className="mt-1 flex justify-between text-xs">
+                <div className="mt-1 flex justify-between text-[10px]">
                   <span>IVA 15%</span>
                   <span>
                     ${iva.toFixed(2)}
                   </span>
                 </div>
 
-                <div className="mt-1 flex justify-between text-xs">
+                <div className="mt-1 flex justify-between text-[10px]">
                   <span>Entrega</span>
                   <span>
                     ${deliveryCost.toFixed(2)}
                   </span>
                 </div>
 
-                <div className="mt-2 flex justify-between border-t border-[#D9E2EC] pt-2 text-lg font-bold text-[#123B5D]">
+                <div className="mt-2 flex justify-between border-t border-[#D9E2EC] pt-2 text-base font-bold text-[#123B5D]">
 
                   <span>TOTAL</span>
 
@@ -1633,32 +1678,32 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
               </section>
 
-              {/* BOTÓN */}
+              {/* CONFIRMAR */}
 
               <button
                 type="button"
                 onClick={finishOrder}
                 disabled={sendingOrder}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F4C81] py-4 text-sm font-bold text-white disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0F4C81] py-3.5 text-xs font-bold text-white disabled:opacity-60"
               >
 
                 {sendingOrder ? (
                   <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    Generando pedido...
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    GENERANDO PEDIDO...
                   </>
                 ) : (
                   <>
-                    <MessageCircle className="h-5 w-5" />
+                    <MessageCircle className="h-4 w-4" />
                     CONFIRMAR Y ENVIAR
                   </>
                 )}
 
               </button>
 
-              <p className="pb-3 text-center text-[9px] text-[#64748B]">
-                Se generará automáticamente tu comprobante
-                PDF y se abrirá WhatsApp.
+              <p className="pb-2 text-center text-[8px] text-[#64748B]">
+                Se generará tu comprobante PDF y se
+                abrirá WhatsApp.
               </p>
 
             </div>
@@ -1669,32 +1714,31 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
       )}
 
-      {/* ======================================
-          PEDIDO GENERADO
-      ======================================= */}
+      {/* ==============================================
+          ÉXITO
+      =============================================== */}
 
       {successOpen && (
 
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-[#172033]/50 p-4">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-[#172033]/50 p-3">
 
-          <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-4 shadow-2xl">
 
             <div className="text-center">
 
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#EAF3F8] text-[#0F4C81]">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#EAF3F8] text-[#0F4C81]">
 
-                <CheckCircle2 className="h-7 w-7" />
+                <CheckCircle2 className="h-6 w-6" />
 
               </div>
 
-              <h2 className="mt-3 text-lg font-bold text-[#123B5D]">
+              <h2 className="mt-2 text-base font-bold text-[#123B5D]">
                 Pedido generado
               </h2>
 
-              <p className="mt-1 text-xs text-[#64748B]">
-                Tu pedido{' '}
-                <strong>{orderNumber}</strong>{' '}
-                fue preparado correctamente.
+              <p className="mt-1 text-[10px] text-[#64748B]">
+                Pedido{' '}
+                <strong>{orderNumber}</strong>
               </p>
 
             </div>
@@ -1706,10 +1750,10 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
                 onClick={() =>
                   generatePDF(orderNumber)
                 }
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#D9E2EC] py-3 text-xs font-bold text-[#123B5D]"
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#D9E2EC] py-2.5 text-[10px] font-bold text-[#123B5D]"
               >
 
-                <Download className="h-4 w-4" />
+                <Download className="h-3.5 w-3.5" />
 
                 GUARDAR COMPROBANTE PDF
 
@@ -1717,28 +1761,13 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
 
               <button
                 type="button"
-                onClick={() => {
-                  const message =
-                    buildWhatsAppMessage(
-                      orderNumber,
-                    )
-
-                  const url =
-                    `https://wa.me/${WHATSAPP_NUMBER}` +
-                    `?text=${encodeURIComponent(
-                      message,
-                    )}`
-
-                  window.open(
-                    url,
-                    '_blank',
-                    'noopener,noreferrer',
-                  )
-                }}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F4C81] py-3 text-xs font-bold text-white"
+                onClick={
+                  openWhatsAppAgain
+                }
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0F4C81] py-2.5 text-[10px] font-bold text-white"
               >
 
-                <MessageCircle className="h-4 w-4" />
+                <MessageCircle className="h-3.5 w-3.5" />
 
                 ABRIR WHATSAPP
 
@@ -1749,9 +1778,9 @@ Gracias por confiar en *W.P. Limpieza*. 🧼`
             <button
               type="button"
               onClick={finishAndClear}
-              className="mt-3 w-full py-2 text-[10px] font-semibold text-[#64748B]"
+              className="mt-2 w-full py-2 text-[9px] font-semibold text-[#64748B]"
             >
-              Volver a productos
+              VOLVER A PRODUCTOS
             </button>
 
           </div>
