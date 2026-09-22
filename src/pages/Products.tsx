@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { jsPDF } from 'jspdf'
 import { supabase } from '../lib/supabase'
 import {
   ShoppingCart,
@@ -15,6 +16,8 @@ import {
   Store,
   CheckCircle2,
   Loader2,
+  FileText,
+  Download,
 } from 'lucide-react'
 
 type Product = {
@@ -39,7 +42,6 @@ type DeliveryLocation = {
 const WHATSAPP_NUMBER = '593979678105'
 
 const IVA_RATE = 0.15
-
 const DELIVERY_FEE = 3.0
 
 // ==========================================
@@ -53,14 +55,30 @@ const BANK_TYPE = 'Cuenta corriente'
 const BANK_HOLDER = 'W.P. LIMPIEZA Y MANTENIMIENTO'
 const BANK_ID = 'XXXXXXXXXX'
 
-// ==========================================
-// LOCAL STORAGE
-// ==========================================
-
 const CART_STORAGE_KEY = 'wp-limpieza-carrito'
+const ORDER_NUMBER_KEY = 'wp-limpieza-numero-pedido'
 
 // ==========================================
-// COMPONENTE PRINCIPAL
+// GENERAR NÚMERO DE PEDIDO
+// ==========================================
+
+function generateOrderNumber() {
+  const currentNumber = Number(
+    localStorage.getItem(ORDER_NUMBER_KEY) || '0',
+  )
+
+  const nextNumber = currentNumber + 1
+
+  localStorage.setItem(
+    ORDER_NUMBER_KEY,
+    String(nextNumber),
+  )
+
+  return `WP-${String(nextNumber).padStart(4, '0')}`
+}
+
+// ==========================================
+// COMPONENTE
 // ==========================================
 
 export default function Products() {
@@ -71,6 +89,7 @@ export default function Products() {
 
   const [cartOpen, setCartOpen] = useState(false)
   const [checkoutOpen, setCheckoutOpen] = useState(false)
+  const [successOpen, setSuccessOpen] = useState(false)
 
   const [customerName, setCustomerName] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
@@ -83,21 +102,28 @@ export default function Products() {
     useState<DeliveryLocation | null>(null)
 
   const [locating, setLocating] = useState(false)
-
   const [sendingOrder, setSendingOrder] = useState(false)
+
+  const [orderNumber, setOrderNumber] = useState('')
 
   // ==========================================
   // CARGAR CARRITO
   // ==========================================
 
   useEffect(() => {
-    const savedCart = localStorage.getItem(CART_STORAGE_KEY)
+    const savedCart = localStorage.getItem(
+      CART_STORAGE_KEY,
+    )
 
     if (savedCart) {
       try {
         setCart(JSON.parse(savedCart))
       } catch (error) {
-        console.error('Error cargando carrito:', error)
+        console.error(
+          'Error cargando carrito:',
+          error,
+        )
+
         localStorage.removeItem(CART_STORAGE_KEY)
       }
     }
@@ -115,7 +141,7 @@ export default function Products() {
   }, [cart])
 
   // ==========================================
-  // CARGAR PRODUCTOS DESDE SUPABASE
+  // PRODUCTOS SUPABASE
   // ==========================================
 
   useEffect(() => {
@@ -144,7 +170,11 @@ export default function Products() {
       })
 
     if (error) {
-      console.error('Error cargando productos:', error)
+      console.error(
+        'Error cargando productos:',
+        error,
+      )
+
       setProducts([])
     } else {
       setProducts(data || [])
@@ -214,7 +244,9 @@ export default function Products() {
 
   function removeFromCart(id: string) {
     setCart((currentCart) =>
-      currentCart.filter((item) => item.id !== id),
+      currentCart.filter(
+        (item) => item.id !== id,
+      ),
     )
   }
 
@@ -229,7 +261,8 @@ export default function Products() {
   const subtotal = useMemo(() => {
     return cart.reduce(
       (total, item) =>
-        total + Number(item.precio) * item.cantidad,
+        total +
+        Number(item.precio) * item.cantidad,
       0,
     )
   }, [cart])
@@ -241,17 +274,19 @@ export default function Products() {
       ? DELIVERY_FEE
       : 0
 
-  const total = subtotal + iva + deliveryCost
+  const total =
+    subtotal + iva + deliveryCost
 
   const cartQuantity = useMemo(() => {
     return cart.reduce(
-      (total, item) => total + item.cantidad,
+      (total, item) =>
+        total + item.cantidad,
       0,
     )
   }, [cart])
 
   // ==========================================
-  // UBICACIÓN ACTUAL
+  // UBICACIÓN
   // ==========================================
 
   function getCurrentLocation() {
@@ -267,25 +302,24 @@ export default function Products() {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const location = {
+        setDeliveryLocation({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
-        }
+        })
 
-        setDeliveryLocation(location)
         setLocating(false)
       },
 
       (error) => {
         console.error(
-          'Error obteniendo ubicación:',
+          'Error de ubicación:',
           error,
         )
 
         setLocating(false)
 
         alert(
-          'No se pudo obtener tu ubicación. Activa el permiso de ubicación del navegador e inténtalo nuevamente.',
+          'No se pudo obtener tu ubicación. Activa el permiso de ubicación del navegador.',
         )
       },
 
@@ -297,16 +331,12 @@ export default function Products() {
     )
   }
 
-  // ==========================================
-  // GOOGLE MAPS
-  // ==========================================
-
   const googleMapsUrl = deliveryLocation
     ? `https://www.google.com/maps?q=${deliveryLocation.lat},${deliveryLocation.lng}`
     : ''
 
   // ==========================================
-  // ABRIR CHECKOUT
+  // CHECKOUT
   // ==========================================
 
   function openCheckout() {
@@ -319,10 +349,6 @@ export default function Products() {
     setCheckoutOpen(true)
   }
 
-  // ==========================================
-  // CAMBIO DE ENTREGA
-  // ==========================================
-
   function handleDeliveryChange(
     type: 'domicilio' | 'retiro',
   ) {
@@ -334,10 +360,496 @@ export default function Products() {
   }
 
   // ==========================================
-  // ENVIAR PEDIDO A WHATSAPP
+  // GENERAR PDF
   // ==========================================
 
-  function sendOrderToWhatsApp() {
+  function generatePDF(
+    currentOrderNumber: string,
+  ) {
+    const doc = new jsPDF()
+
+    const pageWidth =
+      doc.internal.pageSize.getWidth()
+
+    let y = 20
+
+    // ------------------------------------------
+    // ENCABEZADO
+    // ------------------------------------------
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(18)
+    doc.setTextColor(18, 59, 93)
+
+    doc.text(
+      'W.P. LIMPIEZA',
+      20,
+      y,
+    )
+
+    y += 7
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9)
+    doc.setTextColor(100, 116, 139)
+
+    doc.text(
+      'Limpieza y Mantenimiento',
+      20,
+      y,
+    )
+
+    y += 12
+
+    doc.setDrawColor(217, 226, 236)
+
+    doc.line(
+      20,
+      y,
+      pageWidth - 20,
+      y,
+    )
+
+    y += 12
+
+    // ------------------------------------------
+    // PEDIDO
+    // ------------------------------------------
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(14)
+    doc.setTextColor(18, 59, 93)
+
+    doc.text(
+      'COMPROBANTE DE PEDIDO',
+      20,
+      y,
+    )
+
+    y += 7
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(100, 116, 139)
+
+    doc.text(
+      `Pedido: ${currentOrderNumber}`,
+      20,
+      y,
+    )
+
+    y += 6
+
+    const date = new Date()
+
+    doc.text(
+      `Fecha: ${date.toLocaleDateString(
+        'es-EC',
+      )} ${date.toLocaleTimeString(
+        'es-EC',
+        {
+          hour: '2-digit',
+          minute: '2-digit',
+        },
+      )}`,
+      20,
+      y,
+    )
+
+    y += 12
+
+    // ------------------------------------------
+    // CLIENTE
+    // ------------------------------------------
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(11)
+    doc.setTextColor(18, 59, 93)
+
+    doc.text(
+      'DATOS DEL CLIENTE',
+      20,
+      y,
+    )
+
+    y += 7
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(23, 32, 51)
+
+    doc.text(
+      `Nombre: ${customerName}`,
+      20,
+      y,
+    )
+
+    y += 6
+
+    doc.text(
+      `Teléfono: ${customerPhone}`,
+      20,
+      y,
+    )
+
+    y += 12
+
+    // ------------------------------------------
+    // PRODUCTOS
+    // ------------------------------------------
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(11)
+    doc.setTextColor(18, 59, 93)
+
+    doc.text(
+      'PRODUCTOS',
+      20,
+      y,
+    )
+
+    y += 8
+
+    doc.setFontSize(9)
+
+    cart.forEach((item) => {
+      const itemTotal =
+        Number(item.precio) *
+        item.cantidad
+
+      const productName =
+        item.nombre.length > 55
+          ? item.nombre.substring(0, 52) +
+            '...'
+          : item.nombre
+
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(23, 32, 51)
+
+      doc.text(
+        `${item.cantidad} × ${productName}`,
+        20,
+        y,
+      )
+
+      doc.text(
+        `$${itemTotal.toFixed(2)}`,
+        pageWidth - 20,
+        y,
+        {
+          align: 'right',
+        },
+      )
+
+      y += 6
+    })
+
+    y += 5
+
+    doc.setDrawColor(217, 226, 236)
+
+    doc.line(
+      20,
+      y,
+      pageWidth - 20,
+      y,
+    )
+
+    y += 9
+
+    // ------------------------------------------
+    // TOTALES
+    // ------------------------------------------
+
+    doc.setFontSize(10)
+
+    doc.text(
+      'Subtotal',
+      20,
+      y,
+    )
+
+    doc.text(
+      `$${subtotal.toFixed(2)}`,
+      pageWidth - 20,
+      y,
+      {
+        align: 'right',
+      },
+    )
+
+    y += 7
+
+    doc.text(
+      'IVA 15%',
+      20,
+      y,
+    )
+
+    doc.text(
+      `$${iva.toFixed(2)}`,
+      pageWidth - 20,
+      y,
+      {
+        align: 'right',
+      },
+    )
+
+    y += 7
+
+    doc.text(
+      'Entrega',
+      20,
+      y,
+    )
+
+    doc.text(
+      `$${deliveryCost.toFixed(2)}`,
+      pageWidth - 20,
+      y,
+      {
+        align: 'right',
+      },
+    )
+
+    y += 9
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(13)
+    doc.setTextColor(15, 76, 129)
+
+    doc.text(
+      'TOTAL',
+      20,
+      y,
+    )
+
+    doc.text(
+      `$${total.toFixed(2)}`,
+      pageWidth - 20,
+      y,
+      {
+        align: 'right',
+      },
+    )
+
+    y += 14
+
+    // ------------------------------------------
+    // ENTREGA
+    // ------------------------------------------
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(11)
+    doc.setTextColor(18, 59, 93)
+
+    doc.text(
+      'ENTREGA',
+      20,
+      y,
+    )
+
+    y += 7
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(23, 32, 51)
+
+    doc.text(
+      deliveryType === 'domicilio'
+        ? 'Domicilio'
+        : 'Retiro en local',
+      20,
+      y,
+    )
+
+    y += 7
+
+    if (
+      deliveryType === 'domicilio' &&
+      googleMapsUrl
+    ) {
+      doc.setFontSize(8)
+      doc.setTextColor(15, 76, 129)
+
+      doc.text(
+        'Ubicación:',
+        20,
+        y,
+      )
+
+      y += 5
+
+      doc.text(
+        googleMapsUrl,
+        20,
+        y,
+      )
+
+      y += 8
+    }
+
+    // ------------------------------------------
+    // PAGO
+    // ------------------------------------------
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(11)
+    doc.setTextColor(18, 59, 93)
+
+    doc.text(
+      'FORMA DE PAGO',
+      20,
+      y,
+    )
+
+    y += 7
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9)
+    doc.setTextColor(23, 32, 51)
+
+    doc.text(
+      'Transferencia bancaria',
+      20,
+      y,
+    )
+
+    y += 6
+
+    doc.text(
+      `Banco: ${BANK_NAME}`,
+      20,
+      y,
+    )
+
+    y += 5
+
+    doc.text(
+      `Cuenta: ${BANK_ACCOUNT}`,
+      20,
+      y,
+    )
+
+    y += 5
+
+    doc.text(
+      `Titular: ${BANK_HOLDER}`,
+      20,
+      y,
+    )
+
+    y += 12
+
+    // ------------------------------------------
+    // PIE
+    // ------------------------------------------
+
+    doc.setDrawColor(217, 226, 236)
+
+    doc.line(
+      20,
+      y,
+      pageWidth - 20,
+      y,
+    )
+
+    y += 9
+
+    doc.setFontSize(8)
+    doc.setTextColor(100, 116, 139)
+
+    doc.text(
+      'Este documento es un comprobante de pedido.',
+      20,
+      y,
+    )
+
+    y += 5
+
+    doc.text(
+      'El pedido será procesado una vez verificado el pago.',
+      20,
+      y,
+    )
+
+    doc.save(
+      `Pedido-${currentOrderNumber}.pdf`,
+    )
+  }
+
+  // ==========================================
+  // MENSAJE WHATSAPP
+  // ==========================================
+
+  function buildWhatsAppMessage(
+    currentOrderNumber: string,
+  ) {
+    const productLines = cart
+      .map(
+        (item) =>
+          `• ${item.nombre} ×${item.cantidad} — $${(
+            Number(item.precio) *
+            item.cantidad
+          ).toFixed(2)}`,
+      )
+      .join('\n')
+
+    const locationText =
+      deliveryType === 'domicilio'
+        ? `📍 Ubicación:
+${googleMapsUrl}`
+        : '🏪 Retiro en local'
+
+    return `🧼 W.P. LIMPIEZA Y MANTENIMIENTO
+
+🛒 *NUEVO PEDIDO ${currentOrderNumber}*
+━━━━━━━━━━━━━━━━━━
+
+👤 *CLIENTE*
+${customerName.trim()}
+📱 ${customerPhone.trim()}
+
+📦 *PRODUCTOS*
+${productLines}
+
+━━━━━━━━━━━━━━━━━━
+
+💰 *RESUMEN*
+Subtotal: $${subtotal.toFixed(2)}
+IVA 15%: $${iva.toFixed(2)}
+Entrega: $${deliveryCost.toFixed(2)}
+
+💵 *TOTAL: $${total.toFixed(2)}*
+
+━━━━━━━━━━━━━━━━━━
+
+🚚 *ENTREGA*
+${locationText}
+
+━━━━━━━━━━━━━━━━━━
+
+💳 *PAGO*
+Transferencia bancaria
+
+🏦 Banco: ${BANK_NAME}
+💳 Cuenta: ${BANK_ACCOUNT}
+👤 Titular: ${BANK_HOLDER}
+🪪 Cédula/RUC: ${BANK_ID}
+
+📎 El cliente enviará el comprobante de transferencia por este medio.
+
+📄 Comprobante del pedido generado:
+Pedido ${currentOrderNumber}
+
+Gracias por confiar en *W.P. Limpieza*. 🧼`
+  }
+
+  // ==========================================
+  // FINALIZAR PEDIDO
+  // ==========================================
+
+  function finishOrder() {
     if (sendingOrder) return
 
     if (!customerName.trim()) {
@@ -360,7 +872,7 @@ export default function Products() {
       !deliveryLocation
     ) {
       alert(
-        'Primero debes usar tu ubicación actual para el domicilio.',
+        'Usa tu ubicación actual para continuar.',
       )
 
       return
@@ -368,94 +880,54 @@ export default function Products() {
 
     setSendingOrder(true)
 
-    const productLines = cart
-      .map(
-        (item) =>
-          `• ${item.nombre} x${item.cantidad} — $${(
-            Number(item.precio) * item.cantidad
-          ).toFixed(2)}`,
+    const newOrderNumber =
+      generateOrderNumber()
+
+    setOrderNumber(newOrderNumber)
+
+    // Generamos el PDF inmediatamente
+    generatePDF(newOrderNumber)
+
+    // Construimos WhatsApp
+    const message =
+      buildWhatsAppMessage(
+        newOrderNumber,
       )
-      .join('\n')
-
-    const deliveryText =
-      deliveryType === 'domicilio'
-        ? `Domicilio — $${DELIVERY_FEE.toFixed(2)}`
-        : 'Retiro en local — $0.00'
-
-    const locationText =
-      deliveryType === 'domicilio'
-        ? `Ubicación actual:
-${googleMapsUrl}`
-        : 'El cliente retirará el pedido en el local.'
-
-    const message = `Hola, W.P. Limpieza 👋
-
-Quiero realizar el siguiente pedido:
-
-${productLines}
-
-━━━━━━━━━━━━━━━━━━
-
-Subtotal: $${subtotal.toFixed(2)}
-IVA 15%: $${iva.toFixed(2)}
-Entrega: ${deliveryText}
-
-TOTAL: $${total.toFixed(2)}
-
-━━━━━━━━━━━━━━━━━━
-
-DATOS DEL CLIENTE
-
-Nombre: ${customerName.trim()}
-Teléfono: ${customerPhone.trim()}
-
-━━━━━━━━━━━━━━━━━━
-
-FORMA DE ENTREGA
-
-${locationText}
-
-━━━━━━━━━━━━━━━━━━
-
-FORMA DE PAGO
-
-Transferencia bancaria.
-
-DATOS PARA LA TRANSFERENCIA
-
-Banco: ${BANK_NAME}
-Tipo: ${BANK_TYPE}
-Cuenta: ${BANK_ACCOUNT}
-Titular: ${BANK_HOLDER}
-Cédula/RUC: ${BANK_ID}
-
-Enviaré el comprobante de transferencia por este medio.
-
-Gracias.`
 
     const whatsappUrl =
       `https://wa.me/${WHATSAPP_NUMBER}` +
       `?text=${encodeURIComponent(message)}`
 
+    // Abrimos WhatsApp
     window.open(
       whatsappUrl,
       '_blank',
       'noopener,noreferrer',
     )
 
+    // Mostramos pantalla de éxito
     setTimeout(() => {
-      clearCart()
-
       setCheckoutOpen(false)
-
-      setCustomerName('')
-      setCustomerPhone('')
-
-      setDeliveryType('domicilio')
-      setDeliveryLocation(null)
-
+      setSuccessOpen(true)
       setSendingOrder(false)
     }, 500)
+  }
+
+  // ==========================================
+  // CERRAR ÉXITO
+  // ==========================================
+
+  function finishAndClear() {
+    clearCart()
+
+    setSuccessOpen(false)
+
+    setCustomerName('')
+    setCustomerPhone('')
+
+    setDeliveryType('domicilio')
+    setDeliveryLocation(null)
+    setOrderNumber('')
   }
 
   // ==========================================
@@ -465,13 +937,19 @@ Gracias.`
   if (loading) {
     return (
       <main className="min-h-screen bg-[#F8FAFC]">
-        <div className="mx-auto flex min-h-[60vh] max-w-7xl items-center justify-center px-6">
-          <div className="flex items-center gap-3 text-[#64748B]">
+
+        <div className="flex min-h-[50vh] items-center justify-center">
+
+          <div className="flex items-center gap-2 text-sm text-[#64748B]">
+
             <Loader2 className="h-5 w-5 animate-spin" />
 
-            <span>Cargando productos...</span>
+            Cargando productos...
+
           </div>
+
         </div>
+
       </main>
     )
   }
@@ -481,146 +959,134 @@ Gracias.`
   // ==========================================
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] text-[#172033]">
+    <main className="min-h-screen bg-[#F8FAFC] pb-24 text-[#172033]">
 
       {/* ======================================
           HEADER
       ======================================= */}
 
-      <section className="border-b border-[#D9E2EC] bg-white">
+      <header className="sticky top-0 z-30 border-b border-[#D9E2EC] bg-white/95 backdrop-blur">
 
-        <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-10">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
 
-          <div className="flex items-end justify-between gap-6">
+          <div>
 
-            <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0F4C81]">
-                W.P. Limpieza
-              </p>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#0F4C81]">
+              W.P. LIMPIEZA
+            </p>
 
-              <h1 className="text-3xl font-semibold tracking-tight text-[#123B5D] sm:text-4xl">
-                Productos
-              </h1>
-
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-[#64748B]">
-                Productos para limpieza, mantenimiento y
-                cuidado profesional.
-              </p>
-            </div>
-
-            {/* CARRITO */}
-
-            <button
-              type="button"
-              onClick={() => setCartOpen(true)}
-              className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#D9E2EC] bg-white text-[#123B5D] transition hover:border-[#0F4C81] hover:bg-[#EAF3F8]"
-              aria-label="Abrir carrito"
-            >
-              <ShoppingCart className="h-5 w-5" />
-
-              {cartQuantity > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#0F4C81] px-1 text-[10px] font-bold text-white">
-                  {cartQuantity}
-                </span>
-              )}
-            </button>
+            <h1 className="text-lg font-bold leading-none text-[#123B5D]">
+              Productos
+            </h1>
 
           </div>
 
+          <button
+            type="button"
+            onClick={() => setCartOpen(true)}
+            className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-[#D9E2EC] bg-white text-[#123B5D]"
+          >
+
+            <ShoppingCart className="h-5 w-5" />
+
+            {cartQuantity > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#0F4C81] px-1 text-[10px] font-bold text-white">
+                {cartQuantity}
+              </span>
+            )}
+
+          </button>
+
         </div>
 
-      </section>
+      </header>
 
       {/* ======================================
           PRODUCTOS
       ======================================= */}
 
-      <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-10">
+      <section className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-8">
 
         {products.length === 0 ? (
 
-          <div className="rounded-2xl border border-[#D9E2EC] bg-white px-6 py-16 text-center">
+          <div className="rounded-xl border border-[#D9E2EC] bg-white p-10 text-center">
 
-            <Package className="mx-auto h-10 w-10 text-[#64748B]" />
+            <Package className="mx-auto h-8 w-8 text-[#64748B]" />
 
-            <h2 className="mt-5 text-lg font-semibold text-[#123B5D]">
-              No hay productos disponibles
-            </h2>
-
-            <p className="mt-2 text-sm text-[#64748B]">
-              Actualmente no existen productos publicados.
+            <p className="mt-3 text-sm text-[#64748B]">
+              No hay productos disponibles.
             </p>
 
           </div>
 
         ) : (
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
 
             {products.map((product) => (
 
               <article
                 key={product.id}
-                className="group overflow-hidden rounded-2xl border border-[#D9E2EC] bg-white transition hover:-translate-y-1 hover:border-[#B8C9D8] hover:shadow-lg"
+                className="overflow-hidden rounded-xl border border-[#D9E2EC] bg-white"
               >
 
                 {/* IMAGEN */}
 
-                <div className="relative aspect-square overflow-hidden bg-[#EAF3F8]">
+                <div className="aspect-square overflow-hidden bg-[#EAF3F8]">
 
                   {product.imagen_url ? (
 
                     <img
                       src={product.imagen_url}
                       alt={product.nombre}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      className="h-full w-full object-cover"
                     />
 
                   ) : (
 
-                    <div className="flex h-full items-center justify-center text-[#64748B]">
-
-                      <Package className="h-12 w-12" />
-
+                    <div className="flex h-full items-center justify-center">
+                      <Package className="h-9 w-9 text-[#64748B]" />
                     </div>
 
                   )}
 
                 </div>
 
-                {/* INFORMACIÓN */}
+                {/* INFO */}
 
-                <div className="p-5">
+                <div className="p-2.5 sm:p-4">
 
                   {product.categoria && (
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#0F4C81]">
+                    <p className="mb-1 truncate text-[8px] font-bold uppercase tracking-wider text-[#0F4C81]">
                       {product.categoria}
                     </p>
                   )}
 
-                  <h2 className="mt-2 line-clamp-2 text-base font-semibold text-[#123B5D]">
+                  <h2 className="line-clamp-2 min-h-[32px] text-xs font-semibold leading-4 text-[#123B5D] sm:text-sm">
                     {product.nombre}
                   </h2>
 
-                  {product.descripcion && (
-                    <p className="mt-2 line-clamp-2 text-sm leading-5 text-[#64748B]">
-                      {product.descripcion}
-                    </p>
-                  )}
+                  <div className="mt-2.5 flex items-center justify-between gap-1">
 
-                  <div className="mt-5 flex items-center justify-between gap-4">
-
-                    <span className="text-xl font-bold text-[#123B5D]">
+                    <span className="text-sm font-bold text-[#123B5D] sm:text-lg">
                       ${Number(product.precio).toFixed(2)}
                     </span>
 
                     <button
                       type="button"
-                      onClick={() => addToCart(product)}
-                      className="inline-flex items-center gap-2 rounded-xl bg-[#0F4C81] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#123B5D]"
+                      onClick={() =>
+                        addToCart(product)
+                      }
+                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0F4C81] text-white sm:h-9 sm:w-auto sm:px-3"
+                      aria-label={`Agregar ${product.nombre}`}
                     >
+
                       <Plus className="h-4 w-4" />
-                      Agregar
+
+                      <span className="ml-1 hidden text-xs font-semibold sm:inline">
+                        Agregar
+                      </span>
+
                     </button>
 
                   </div>
@@ -638,6 +1104,45 @@ Gracias.`
       </section>
 
       {/* ======================================
+          BARRA CARRITO MÓVIL
+      ======================================= */}
+
+      {cartQuantity > 0 && (
+
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#D9E2EC] bg-white px-3 py-2.5 shadow-[0_-4px_20px_rgba(15,76,129,0.08)] sm:px-6">
+
+          <div className="mx-auto flex max-w-7xl items-center gap-3">
+
+            <div className="min-w-0 flex-1">
+
+              <p className="text-[10px] text-[#64748B]">
+                {cartQuantity}{' '}
+                {cartQuantity === 1
+                  ? 'producto'
+                  : 'productos'}
+              </p>
+
+              <p className="text-base font-bold text-[#123B5D]">
+                ${total.toFixed(2)}
+              </p>
+
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setCartOpen(true)}
+              className="rounded-xl bg-[#0F4C81] px-5 py-3 text-xs font-bold text-white"
+            >
+              VER CARRITO
+            </button>
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* ======================================
           CARRITO
       ======================================= */}
 
@@ -646,23 +1151,21 @@ Gracias.`
         <div className="fixed inset-0 z-50">
 
           <div
-            className="absolute inset-0 bg-[#172033]/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-[#172033]/40"
             onClick={() => setCartOpen(false)}
           />
 
-          <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
+          <aside className="absolute bottom-0 left-0 right-0 max-h-[88vh] overflow-hidden rounded-t-2xl bg-white sm:bottom-auto sm:left-auto sm:right-0 sm:top-0 sm:h-full sm:max-h-none sm:w-full sm:max-w-md sm:rounded-none">
 
-            {/* HEADER CARRITO */}
-
-            <div className="flex items-center justify-between border-b border-[#D9E2EC] px-6 py-5">
+            <div className="flex items-center justify-between border-b border-[#D9E2EC] px-4 py-3">
 
               <div>
 
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0F4C81]">
+                <p className="text-[9px] font-bold uppercase tracking-wider text-[#0F4C81]">
                   Tu pedido
                 </p>
 
-                <h2 className="mt-1 text-xl font-semibold text-[#123B5D]">
+                <h2 className="text-lg font-bold text-[#123B5D]">
                   Carrito
                 </h2>
 
@@ -671,129 +1174,117 @@ Gracias.`
               <button
                 type="button"
                 onClick={() => setCartOpen(false)}
-                className="flex h-10 w-10 items-center justify-center rounded-full text-[#64748B] hover:bg-[#EAF3F8]"
+                className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-[#EAF3F8]"
               >
                 <X className="h-5 w-5" />
               </button>
 
             </div>
 
-            {/* PRODUCTOS CARRITO */}
-
-            <div className="flex-1 overflow-y-auto px-6 py-5">
+            <div className="max-h-[55vh] overflow-y-auto p-3">
 
               {cart.length === 0 ? (
 
-                <div className="flex min-h-[300px] flex-col items-center justify-center text-center">
+                <div className="py-10 text-center">
 
-                  <ShoppingCart className="h-10 w-10 text-[#64748B]" />
+                  <ShoppingCart className="mx-auto h-8 w-8 text-[#64748B]" />
 
-                  <p className="mt-4 text-sm font-medium text-[#123B5D]">
-                    Tu carrito está vacío
-                  </p>
-
-                  <p className="mt-1 text-xs text-[#64748B]">
-                    Agrega productos para continuar.
+                  <p className="mt-3 text-sm text-[#64748B]">
+                    Tu carrito está vacío.
                   </p>
 
                 </div>
 
               ) : (
 
-                <div className="space-y-4">
+                <div className="space-y-2">
 
                   {cart.map((item) => (
 
                     <div
                       key={item.id}
-                      className="rounded-xl border border-[#D9E2EC] p-4"
+                      className="flex gap-3 rounded-xl border border-[#D9E2EC] p-2.5"
                     >
 
-                      <div className="flex gap-4">
+                      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-[#EAF3F8]">
 
-                        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-[#EAF3F8]">
+                        {item.imagen_url ? (
 
-                          {item.imagen_url ? (
+                          <img
+                            src={item.imagen_url}
+                            alt={item.nombre}
+                            className="h-full w-full object-cover"
+                          />
 
-                            <img
-                              src={item.imagen_url}
-                              alt={item.nombre}
-                              className="h-full w-full object-cover"
-                            />
+                        ) : (
+                          <div className="flex h-full items-center justify-center">
+                            <Package className="h-5 w-5 text-[#64748B]" />
+                          </div>
+                        )}
 
-                          ) : (
+                      </div>
 
-                            <div className="flex h-full items-center justify-center">
-                              <Package className="h-6 w-6 text-[#64748B]" />
-                            </div>
+                      <div className="min-w-0 flex-1">
 
-                          )}
+                        <div className="flex justify-between gap-2">
+
+                          <h3 className="line-clamp-2 text-xs font-semibold text-[#123B5D]">
+                            {item.nombre}
+                          </h3>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              removeFromCart(item.id)
+                            }
+                            className="shrink-0 text-[#64748B]"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
 
                         </div>
 
-                        <div className="min-w-0 flex-1">
+                        <div className="mt-2 flex items-center justify-between">
 
-                          <div className="flex items-start justify-between gap-2">
-
-                            <h3 className="line-clamp-2 text-sm font-semibold text-[#123B5D]">
-                              {item.nombre}
-                            </h3>
+                          <div className="flex items-center rounded-lg border border-[#D9E2EC]">
 
                             <button
                               type="button"
                               onClick={() =>
-                                removeFromCart(item.id)
+                                decreaseQuantity(
+                                  item.id,
+                                )
                               }
-                              className="shrink-0 text-[#64748B] hover:text-red-600"
+                              className="flex h-7 w-7 items-center justify-center"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Minus className="h-3 w-3" />
+                            </button>
+
+                            <span className="flex h-7 min-w-7 items-center justify-center border-x border-[#D9E2EC] text-[11px] font-bold">
+                              {item.cantidad}
+                            </span>
+
+                            <button
+                              type="button"
+                              onClick={() =>
+                                increaseQuantity(
+                                  item.id,
+                                )
+                              }
+                              className="flex h-7 w-7 items-center justify-center"
+                            >
+                              <Plus className="h-3 w-3" />
                             </button>
 
                           </div>
 
-                          <p className="mt-1 text-sm font-semibold text-[#0F4C81]">
-                            ${Number(item.precio).toFixed(2)}
-                          </p>
-
-                          <div className="mt-3 flex items-center justify-between">
-
-                            <div className="flex items-center overflow-hidden rounded-lg border border-[#D9E2EC]">
-
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  decreaseQuantity(item.id)
-                                }
-                                className="flex h-8 w-8 items-center justify-center text-[#123B5D] hover:bg-[#EAF3F8]"
-                              >
-                                <Minus className="h-3.5 w-3.5" />
-                              </button>
-
-                              <span className="flex h-8 min-w-8 items-center justify-center border-x border-[#D9E2EC] text-xs font-semibold">
-                                {item.cantidad}
-                              </span>
-
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  increaseQuantity(item.id)
-                                }
-                                className="flex h-8 w-8 items-center justify-center text-[#123B5D] hover:bg-[#EAF3F8]"
-                              >
-                                <Plus className="h-3.5 w-3.5" />
-                              </button>
-
-                            </div>
-
-                            <span className="text-sm font-bold text-[#172033]">
-                              $
-                              {(
-                                Number(item.precio) *
-                                item.cantidad
-                              ).toFixed(2)}
-                            </span>
-
-                          </div>
+                          <span className="text-xs font-bold text-[#123B5D]">
+                            $
+                            {(
+                              Number(item.precio) *
+                              item.cantidad
+                            ).toFixed(2)}
+                          </span>
 
                         </div>
 
@@ -809,55 +1300,54 @@ Gracias.`
 
             </div>
 
-            {/* TOTAL CARRITO */}
-
             {cart.length > 0 && (
 
-              <div className="border-t border-[#D9E2EC] px-6 py-5">
+              <div className="border-t border-[#D9E2EC] p-4">
 
-                <div className="flex items-center justify-between">
+                <div className="space-y-1.5 text-xs">
 
-                  <span className="text-sm text-[#64748B]">
-                    Subtotal
-                  </span>
+                  <div className="flex justify-between">
+                    <span className="text-[#64748B]">
+                      Subtotal
+                    </span>
+                    <span>
+                      ${subtotal.toFixed(2)}
+                    </span>
+                  </div>
 
-                  <span className="text-sm font-semibold">
-                    ${subtotal.toFixed(2)}
-                  </span>
+                  <div className="flex justify-between">
+                    <span className="text-[#64748B]">
+                      IVA 15%
+                    </span>
+                    <span>
+                      ${iva.toFixed(2)}
+                    </span>
+                  </div>
 
-                </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#64748B]">
+                      Entrega
+                    </span>
+                    <span>
+                      ${deliveryCost.toFixed(2)}
+                    </span>
+                  </div>
 
-                <div className="mt-2 flex items-center justify-between">
-
-                  <span className="text-sm text-[#64748B]">
-                    IVA 15%
-                  </span>
-
-                  <span className="text-sm font-semibold">
-                    ${iva.toFixed(2)}
-                  </span>
-
-                </div>
-
-                <div className="mt-4 flex items-center justify-between border-t border-[#D9E2EC] pt-4">
-
-                  <span className="font-semibold text-[#123B5D]">
-                    Total
-                  </span>
-
-                  <span className="text-xl font-bold text-[#0F4C81]">
-                    ${total.toFixed(2)}
-                  </span>
+                  <div className="flex justify-between border-t border-[#D9E2EC] pt-2 text-base font-bold text-[#123B5D]">
+                    <span>TOTAL</span>
+                    <span>
+                      ${total.toFixed(2)}
+                    </span>
+                  </div>
 
                 </div>
 
                 <button
                   type="button"
                   onClick={openCheckout}
-                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F4C81] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#123B5D]"
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F4C81] py-3.5 text-sm font-bold text-white"
                 >
-                  Continuar pedido
-                  <Navigation className="h-4 w-4" />
+                  CONTINUAR
                 </button>
 
               </div>
@@ -876,83 +1366,71 @@ Gracias.`
 
       {checkoutOpen && (
 
-        <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#172033]/50 px-4 py-6 backdrop-blur-sm sm:px-6">
+        <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#F8FAFC]">
 
-          <div className="mx-auto max-w-2xl rounded-2xl bg-white shadow-2xl">
+          <div className="mx-auto min-h-screen max-w-2xl bg-white">
 
-            {/* HEADER */}
-
-            <div className="flex items-center justify-between border-b border-[#D9E2EC] px-6 py-5">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#D9E2EC] bg-white px-4 py-3">
 
               <div>
 
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0F4C81]">
-                  Finalizar pedido
+                <p className="text-[9px] font-bold uppercase tracking-wider text-[#0F4C81]">
+                  Último paso
                 </p>
 
-                <h2 className="mt-1 text-xl font-semibold text-[#123B5D]">
-                  Datos de entrega
+                <h2 className="text-lg font-bold text-[#123B5D]">
+                  Confirmar pedido
                 </h2>
 
               </div>
 
               <button
                 type="button"
-                onClick={() => setCheckoutOpen(false)}
-                className="flex h-10 w-10 items-center justify-center rounded-full text-[#64748B] hover:bg-[#EAF3F8]"
+                onClick={() =>
+                  setCheckoutOpen(false)
+                }
+                className="flex h-9 w-9 items-center justify-center rounded-lg"
               >
                 <X className="h-5 w-5" />
               </button>
 
             </div>
 
-            <div className="space-y-7 p-6">
+            <div className="space-y-4 p-3 sm:p-5">
 
-              {/* DATOS CLIENTE */}
+              {/* DATOS */}
 
-              <section>
+              <section className="rounded-xl border border-[#D9E2EC] p-3">
 
-                <h3 className="text-sm font-semibold text-[#123B5D]">
-                  Datos del cliente
+                <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-[#123B5D]">
+                  Tus datos
                 </h3>
 
-                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-2 sm:grid-cols-2">
 
-                  <div>
+                  <input
+                    type="text"
+                    value={customerName}
+                    onChange={(event) =>
+                      setCustomerName(
+                        event.target.value,
+                      )
+                    }
+                    placeholder="Nombre completo"
+                    className="h-11 rounded-lg border border-[#D9E2EC] px-3 text-sm outline-none focus:border-[#0F4C81]"
+                  />
 
-                    <label className="mb-2 block text-xs font-medium text-[#64748B]">
-                      Nombre completo
-                    </label>
-
-                    <input
-                      type="text"
-                      value={customerName}
-                      onChange={(event) =>
-                        setCustomerName(event.target.value)
-                      }
-                      placeholder="Tu nombre"
-                      className="w-full rounded-xl border border-[#D9E2EC] bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0F4C81] focus:ring-2 focus:ring-[#EAF3F8]"
-                    />
-
-                  </div>
-
-                  <div>
-
-                    <label className="mb-2 block text-xs font-medium text-[#64748B]">
-                      Teléfono
-                    </label>
-
-                    <input
-                      type="tel"
-                      value={customerPhone}
-                      onChange={(event) =>
-                        setCustomerPhone(event.target.value)
-                      }
-                      placeholder="099..."
-                      className="w-full rounded-xl border border-[#D9E2EC] bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0F4C81] focus:ring-2 focus:ring-[#EAF3F8]"
-                    />
-
-                  </div>
+                  <input
+                    type="tel"
+                    value={customerPhone}
+                    onChange={(event) =>
+                      setCustomerPhone(
+                        event.target.value,
+                      )
+                    }
+                    placeholder="Teléfono"
+                    className="h-11 rounded-lg border border-[#D9E2EC] px-3 text-sm outline-none focus:border-[#0F4C81]"
+                  />
 
                 </div>
 
@@ -960,119 +1438,53 @@ Gracias.`
 
               {/* ENTREGA */}
 
-              <section>
+              <section className="rounded-xl border border-[#D9E2EC] p-3">
 
-                <h3 className="text-sm font-semibold text-[#123B5D]">
-                  Forma de entrega
+                <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-[#123B5D]">
+                  Entrega
                 </h3>
 
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-
-                  {/* DOMICILIO */}
+                <div className="grid grid-cols-2 gap-2">
 
                   <button
                     type="button"
                     onClick={() =>
-                      handleDeliveryChange('domicilio')
+                      handleDeliveryChange(
+                        'domicilio',
+                      )
                     }
-                    className={`rounded-xl border p-4 text-left transition ${
+                    className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-bold ${
                       deliveryType === 'domicilio'
-                        ? 'border-[#0F4C81] bg-[#EAF3F8]'
-                        : 'border-[#D9E2EC] bg-white hover:border-[#B8C9D8]'
+                        ? 'border-[#0F4C81] bg-[#EAF3F8] text-[#0F4C81]'
+                        : 'border-[#D9E2EC] text-[#64748B]'
                     }`}
                   >
-
-                    <div className="flex items-center gap-3">
-
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-[#0F4C81]">
-                        <Home className="h-5 w-5" />
-                      </div>
-
-                      <div>
-
-                        <p className="text-sm font-semibold text-[#123B5D]">
-                          Domicilio
-                        </p>
-
-                        <p className="mt-1 text-xs text-[#64748B]">
-                          Entrega a tu ubicación
-                        </p>
-
-                      </div>
-
-                    </div>
-
+                    <Home className="h-4 w-4" />
+                    Domicilio
                   </button>
 
-                  {/* RETIRO */}
-
                   <button
                     type="button"
                     onClick={() =>
-                      handleDeliveryChange('retiro')
+                      handleDeliveryChange(
+                        'retiro',
+                      )
                     }
-                    className={`rounded-xl border p-4 text-left transition ${
+                    className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-bold ${
                       deliveryType === 'retiro'
-                        ? 'border-[#0F4C81] bg-[#EAF3F8]'
-                        : 'border-[#D9E2EC] bg-white hover:border-[#B8C9D8]'
+                        ? 'border-[#0F4C81] bg-[#EAF3F8] text-[#0F4C81]'
+                        : 'border-[#D9E2EC] text-[#64748B]'
                     }`}
                   >
-
-                    <div className="flex items-center gap-3">
-
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-[#0F4C81]">
-                        <Store className="h-5 w-5" />
-                      </div>
-
-                      <div>
-
-                        <p className="text-sm font-semibold text-[#123B5D]">
-                          Retiro en local
-                        </p>
-
-                        <p className="mt-1 text-xs text-[#64748B]">
-                          Retira tu pedido
-                        </p>
-
-                      </div>
-
-                    </div>
-
+                    <Store className="h-4 w-4" />
+                    Retiro
                   </button>
 
                 </div>
 
-              </section>
+                {deliveryType === 'domicilio' && (
 
-              {/* UBICACIÓN */}
-
-              {deliveryType === 'domicilio' && (
-
-                <section>
-
-                  <div className="rounded-2xl border border-[#D9E2EC] bg-[#F8FAFC] p-5">
-
-                    <div className="flex items-start gap-4">
-
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF3F8] text-[#0F4C81]">
-                        <MapPin className="h-5 w-5" />
-                      </div>
-
-                      <div className="flex-1">
-
-                        <h3 className="text-sm font-semibold text-[#123B5D]">
-                          Ubicación de entrega
-                        </h3>
-
-                        <p className="mt-1 text-xs leading-5 text-[#64748B]">
-                          Permite que el navegador use tu
-                          ubicación actual para enviar el
-                          punto exacto de entrega por WhatsApp.
-                        </p>
-
-                      </div>
-
-                    </div>
+                  <div className="mt-2">
 
                     {!deliveryLocation ? (
 
@@ -1080,7 +1492,7 @@ Gracias.`
                         type="button"
                         onClick={getCurrentLocation}
                         disabled={locating}
-                        className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F4C81] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#123B5D] disabled:cursor-not-allowed disabled:opacity-60"
+                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0F4C81] px-4 py-3 text-xs font-bold text-white disabled:opacity-60"
                       >
 
                         {locating ? (
@@ -1091,7 +1503,7 @@ Gracias.`
                         ) : (
                           <>
                             <Navigation className="h-4 w-4" />
-                            Usar mi ubicación actual
+                            USAR MI UBICACIÓN ACTUAL
                           </>
                         )}
 
@@ -1099,51 +1511,35 @@ Gracias.`
 
                     ) : (
 
-                      <div className="mt-5 rounded-xl border border-[#B8D8C0] bg-white p-4">
+                      <div className="flex items-center gap-3 rounded-lg bg-[#EAF3F8] p-3">
 
-                        <div className="flex items-start gap-3">
+                        <CheckCircle2 className="h-5 w-5 shrink-0 text-green-600" />
 
-                          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-600" />
+                        <div className="min-w-0 flex-1">
 
-                          <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold text-[#123B5D]">
+                            Ubicación lista
+                          </p>
 
-                            <p className="text-sm font-semibold text-[#123B5D]">
-                              Ubicación obtenida
-                            </p>
-
-                            <p className="mt-1 break-all text-xs leading-5 text-[#64748B]">
-                              {deliveryLocation.lat.toFixed(
-                                6,
-                              )}
-                              ,{' '}
-                              {deliveryLocation.lng.toFixed(
-                                6,
-                              )}
-                            </p>
-
-                            <a
-                              href={googleMapsUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-[#0F4C81] hover:underline"
-                            >
-                              <MapPin className="h-3.5 w-3.5" />
-                              Ver ubicación
-                            </a>
-
-                          </div>
+                          <a
+                            href={googleMapsUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-0.5 block truncate text-[10px] text-[#0F4C81]"
+                          >
+                            Ver ubicación
+                          </a>
 
                         </div>
 
                         <button
                           type="button"
-                          onClick={getCurrentLocation}
-                          disabled={locating}
-                          className="mt-4 w-full rounded-lg border border-[#D9E2EC] px-4 py-2.5 text-xs font-semibold text-[#123B5D] transition hover:bg-[#F8FAFC]"
+                          onClick={
+                            getCurrentLocation
+                          }
+                          className="text-[10px] font-bold text-[#0F4C81]"
                         >
-                          {locating
-                            ? 'Actualizando...'
-                            : 'Actualizar ubicación'}
+                          CAMBIAR
                         </button>
 
                       </div>
@@ -1152,191 +1548,211 @@ Gracias.`
 
                   </div>
 
-                </section>
+                )}
 
-              )}
+              </section>
 
-              {/* FORMA DE PAGO */}
+              {/* PAGO */}
 
-              <section>
+              <section className="rounded-xl border border-[#D9E2EC] p-3">
 
-                <h3 className="text-sm font-semibold text-[#123B5D]">
-                  Forma de pago
-                </h3>
+                <div className="flex items-center gap-2">
 
-                <div className="mt-4 rounded-xl border border-[#0F4C81] bg-[#EAF3F8] p-4">
+                  <CreditCard className="h-4 w-4 text-[#0F4C81]" />
 
-                  <div className="flex items-start gap-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-[#123B5D]">
+                    Transferencia bancaria
+                  </h3>
 
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-[#0F4C81]">
-                      <CreditCard className="h-5 w-5" />
-                    </div>
+                </div>
 
-                    <div>
+                <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-[10px]">
 
-                      <p className="text-sm font-semibold text-[#123B5D]">
-                        Transferencia bancaria
-                      </p>
+                  <span className="text-[#64748B]">
+                    Banco
+                  </span>
 
-                      <p className="mt-1 text-xs leading-5 text-[#64748B]">
-                        Realiza la transferencia y envía
-                        el comprobante por WhatsApp.
-                      </p>
+                  <span className="text-right font-semibold">
+                    {BANK_NAME}
+                  </span>
 
-                    </div>
+                  <span className="text-[#64748B]">
+                    Cuenta
+                  </span>
 
-                  </div>
+                  <span className="text-right font-semibold">
+                    {BANK_ACCOUNT}
+                  </span>
 
-                  <div className="mt-4 rounded-lg bg-white p-4">
+                  <span className="text-[#64748B]">
+                    Titular
+                  </span>
 
-                    <div className="grid gap-3 text-xs">
-
-                      <div className="flex justify-between gap-4">
-                        <span className="text-[#64748B]">
-                          Banco
-                        </span>
-                        <span className="text-right font-semibold text-[#123B5D]">
-                          {BANK_NAME}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-between gap-4">
-                        <span className="text-[#64748B]">
-                          Tipo
-                        </span>
-                        <span className="text-right font-semibold text-[#123B5D]">
-                          {BANK_TYPE}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-between gap-4">
-                        <span className="text-[#64748B]">
-                          Cuenta
-                        </span>
-                        <span className="text-right font-semibold text-[#123B5D]">
-                          {BANK_ACCOUNT}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-between gap-4">
-                        <span className="text-[#64748B]">
-                          Titular
-                        </span>
-                        <span className="text-right font-semibold text-[#123B5D]">
-                          {BANK_HOLDER}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-between gap-4">
-                        <span className="text-[#64748B]">
-                          Cédula/RUC
-                        </span>
-                        <span className="text-right font-semibold text-[#123B5D]">
-                          {BANK_ID}
-                        </span>
-                      </div>
-
-                    </div>
-
-                  </div>
+                  <span className="text-right font-semibold">
+                    {BANK_HOLDER}
+                  </span>
 
                 </div>
 
               </section>
 
-              {/* RESUMEN */}
+              {/* TOTAL */}
 
-              <section>
+              <section className="rounded-xl bg-[#EAF3F8] p-3">
 
-                <h3 className="text-sm font-semibold text-[#123B5D]">
-                  Resumen del pedido
-                </h3>
+                <div className="flex justify-between text-xs">
+                  <span>Subtotal</span>
+                  <span>
+                    ${subtotal.toFixed(2)}
+                  </span>
+                </div>
 
-                <div className="mt-4 rounded-xl border border-[#D9E2EC] bg-white p-5">
+                <div className="mt-1 flex justify-between text-xs">
+                  <span>IVA 15%</span>
+                  <span>
+                    ${iva.toFixed(2)}
+                  </span>
+                </div>
 
-                  <div className="space-y-3">
+                <div className="mt-1 flex justify-between text-xs">
+                  <span>Entrega</span>
+                  <span>
+                    ${deliveryCost.toFixed(2)}
+                  </span>
+                </div>
 
-                    <div className="flex justify-between text-sm">
-                      <span className="text-[#64748B]">
-                        Subtotal
-                      </span>
-                      <span className="font-semibold">
-                        ${subtotal.toFixed(2)}
-                      </span>
-                    </div>
+                <div className="mt-2 flex justify-between border-t border-[#D9E2EC] pt-2 text-lg font-bold text-[#123B5D]">
 
-                    <div className="flex justify-between text-sm">
-                      <span className="text-[#64748B]">
-                        IVA 15%
-                      </span>
-                      <span className="font-semibold">
-                        ${iva.toFixed(2)}
-                      </span>
-                    </div>
+                  <span>TOTAL</span>
 
-                    <div className="flex justify-between text-sm">
-                      <span className="text-[#64748B]">
-                        Entrega
-                      </span>
-                      <span className="font-semibold">
-                        {deliveryType === 'domicilio'
-                          ? `$${DELIVERY_FEE.toFixed(2)}`
-                          : '$0.00'}
-                      </span>
-                    </div>
-
-                    <div className="border-t border-[#D9E2EC] pt-4">
-
-                      <div className="flex items-center justify-between">
-
-                        <span className="font-semibold text-[#123B5D]">
-                          Total
-                        </span>
-
-                        <span className="text-2xl font-bold text-[#0F4C81]">
-                          ${total.toFixed(2)}
-                        </span>
-
-                      </div>
-
-                    </div>
-
-                  </div>
+                  <span>
+                    ${total.toFixed(2)}
+                  </span>
 
                 </div>
 
               </section>
 
-              {/* BOTÓN WHATSAPP */}
+              {/* BOTÓN */}
 
               <button
                 type="button"
-                onClick={sendOrderToWhatsApp}
+                onClick={finishOrder}
                 disabled={sendingOrder}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F4C81] px-5 py-4 text-sm font-semibold text-white transition hover:bg-[#123B5D] disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F4C81] py-4 text-sm font-bold text-white disabled:opacity-60"
               >
 
                 {sendingOrder ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin" />
-                    Preparando pedido...
+                    Generando pedido...
                   </>
                 ) : (
                   <>
                     <MessageCircle className="h-5 w-5" />
-                    Enviar pedido por WhatsApp
+                    CONFIRMAR Y ENVIAR
                   </>
                 )}
 
               </button>
 
-              <p className="text-center text-[11px] leading-5 text-[#64748B]">
-                Al continuar se abrirá WhatsApp con el
-                detalle del pedido, total, datos de
-                transferencia y ubicación de entrega.
+              <p className="pb-3 text-center text-[9px] text-[#64748B]">
+                Se generará automáticamente tu comprobante
+                PDF y se abrirá WhatsApp.
               </p>
 
             </div>
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* ======================================
+          PEDIDO GENERADO
+      ======================================= */}
+
+      {successOpen && (
+
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-[#172033]/50 p-4">
+
+          <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl">
+
+            <div className="text-center">
+
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#EAF3F8] text-[#0F4C81]">
+
+                <CheckCircle2 className="h-7 w-7" />
+
+              </div>
+
+              <h2 className="mt-3 text-lg font-bold text-[#123B5D]">
+                Pedido generado
+              </h2>
+
+              <p className="mt-1 text-xs text-[#64748B]">
+                Tu pedido{' '}
+                <strong>{orderNumber}</strong>{' '}
+                fue preparado correctamente.
+              </p>
+
+            </div>
+
+            <div className="mt-4 space-y-2">
+
+              <button
+                type="button"
+                onClick={() =>
+                  generatePDF(orderNumber)
+                }
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#D9E2EC] py-3 text-xs font-bold text-[#123B5D]"
+              >
+
+                <Download className="h-4 w-4" />
+
+                GUARDAR COMPROBANTE PDF
+
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const message =
+                    buildWhatsAppMessage(
+                      orderNumber,
+                    )
+
+                  const url =
+                    `https://wa.me/${WHATSAPP_NUMBER}` +
+                    `?text=${encodeURIComponent(
+                      message,
+                    )}`
+
+                  window.open(
+                    url,
+                    '_blank',
+                    'noopener,noreferrer',
+                  )
+                }}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F4C81] py-3 text-xs font-bold text-white"
+              >
+
+                <MessageCircle className="h-4 w-4" />
+
+                ABRIR WHATSAPP
+
+              </button>
+
+            </div>
+
+            <button
+              type="button"
+              onClick={finishAndClear}
+              className="mt-3 w-full py-2 text-[10px] font-semibold text-[#64748B]"
+            >
+              Volver a productos
+            </button>
 
           </div>
 
